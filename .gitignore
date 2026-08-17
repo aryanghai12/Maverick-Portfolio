@@ -1,0 +1,21 @@
+node_modules/
+.next/
+out/
+dist/
+
+.env
+.env.local
+.env*.local
+
+*.tsbuildinfo
+next-env.d.ts
+
+.DS_Store
+*.log
+npm-debug.log*
+
+.vercel
+
+# data/stats.json is deliberately NOT ignored. It is the committed snapshot the
+# build falls back to when the GitHub API is rate-limited, which is common on
+# shared CI IPs. See scripts/fetch-stats.ts.

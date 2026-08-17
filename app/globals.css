@@ -1,0 +1,637 @@
+@import 'tailwindcss';
+
+/* ============================================================ 0 · tokens
+   Graphite and one ember. The accent is allowed roughly 1–2% of the pixels on
+   screen — corner ticks, the caret, one LED, active states, the figure 22. It
+   is never a headline and never a large fill.
+
+   --add / --del are not second and third accents. They are syntax, they are
+   deliberately desaturated, and they are forbidden outside a code surface.   */
+
+@theme {
+  --color-void: #06080a;
+  --color-panel-0: #0b0e12;
+  --color-panel-1: #12171c;
+  --color-panel-2: #1b2229;
+  --color-edge: #2a333c;
+
+  --color-bone: #e4e9ee;
+  --color-bone-dim: #9aa5b0;
+  --color-mute: #626d78;
+
+  --color-ember: #e3873f;
+  --color-ember-hi: #ffb067;
+
+  --color-add: #6e9f5b;
+  --color-del: #b4544a;
+
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+}
+
+:root {
+  --void: #06080a;
+  --panel-0: #0b0e12;
+  --panel-1: #12171c;
+  --panel-2: #1b2229;
+  --edge: #2a333c;
+  /* One step brighter than --edge, for lines that have to carry data rather
+     than merely divide two surfaces — the dependency graph reads at a glance
+     only if its edges sit above the noise floor. */
+  --edge-hi: #3d4954;
+
+  --bone: #e4e9ee;
+  --bone-dim: #9aa5b0;
+  --mute: #626d78;
+
+  --ember: #e3873f;
+  --ember-hi: #ffb067;
+
+  --add: #6e9f5b;
+  --del: #b4544a;
+
+  /* Feel lives in the easing curve, not the effect. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
+
+  --pad: clamp(20px, 4vw, 68px);
+  --rail: 1px;
+  --maxw: 1320px;
+
+  /* Depth in dark UI comes from light, not shadow: a surface is elevated by
+     being lighter and carrying a hairline at 8–16% white along its top edge.
+     That hairline is the highest-leverage detail on the page.               */
+  --hair: rgba(228, 233, 238, 0.13);
+  --hair-soft: rgba(228, 233, 238, 0.07);
+
+  color-scheme: dark;
+}
+
+/* ============================================================== 1 · reset
+
+   Everything below lives inside @layer base on purpose. Unlayered CSS beats
+   *every* layered rule in the cascade, including Tailwind's utilities — so an
+   unlayered `button { padding: 0 }` silently defeats `px-3` on every button on
+   the site, with no warning and no specificity conflict to notice. Layering the
+   reset puts it back underneath the utilities where a reset belongs.          */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: auto; /* Lenis owns scrolling; native smooth would fight it. */
+  }
+
+  body {
+    margin: 0;
+    background: var(--void);
+    color: var(--bone);
+    font-family: var(--font-sans);
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    line-height: 1.65;
+    letter-spacing: -0.005em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  /* The page must never scroll sideways, at any width, for any reason. */
+  body,
+  main {
+    max-width: 100vw;
+  }
+
+  img,
+  svg,
+  canvas {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  ::selection {
+    background: rgba(227, 135, 63, 0.28);
+    color: var(--bone);
+  }
+
+  /* Visible focus on every interactive surface, in the accent, always. */
+  :focus-visible {
+    outline: 2px solid var(--ember);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+/* Sections 2 to 6 sit in @layer components so Tailwind utilities, which are
+   in a later layer, override them by default rather than by !important. */
+@layer components {
+
+/* ======================================================== 2 · type scale
+   One mono for what the machine says. One grotesque for what the human says.
+   One serif italic, exactly once, for the thesis line.                      */
+
+.u-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'ss02' 1, 'zero' 1;
+}
+
+.u-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+}
+
+/* The hero name, set in mono at display size. A giant monospace headline is
+   unmistakably code, and almost nobody executes it. This is the type decision
+   that makes the site. */
+.t-display {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 10.5vw, 8.6rem);
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  text-transform: lowercase;
+}
+
+.t-h2 {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 1.1rem + 3.1vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+  text-transform: lowercase;
+}
+
+.t-h3 {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 0.95rem + 1vw, 1.65rem);
+  line-height: 1.15;
+  letter-spacing: -0.035em;
+}
+
+/* Section labels, gutter numerals, metadata: the machine's quiet voice. */
+.t-label {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.t-data {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: -0.01em;
+  color: var(--bone-dim);
+}
+
+/* A dark halo rather than a drop shadow. Invisible against a flat surface, but
+   over the hall it gives every glyph a hairline of separation so prose never
+   has to fight a bar drifting behind it. This is what lets the background stay
+   visible instead of being scrimmed into nothing. */
+.t-body,
+.t-lede,
+.t-display,
+.t-h2,
+.t-h3,
+.u-serif {
+  text-shadow: 0 1px 14px rgba(6, 8, 10, 0.92);
+}
+
+.t-body {
+  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.12rem);
+  line-height: 1.72;
+  color: var(--bone-dim);
+  max-width: 62ch;
+}
+
+.t-lede {
+  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.42rem);
+  line-height: 1.55;
+  letter-spacing: -0.015em;
+  color: var(--bone);
+  max-width: 44ch;
+}
+
+/* ========================================================== 3 · layout */
+
+.shell {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(88px, 13vh, 168px);
+}
+
+/* ========================================================= 4 · surfaces */
+
+/* Glass. The rim is a gradient — bright at the top-left, ember at the
+   bottom-right — drawn with mask-composite so it reads as a lit edge rather
+   than a border. A flat 1px rgba(255,255,255,.1) is the tutorial version and
+   looks identical to every other glass site on the internet. */
+.glass {
+  position: relative;
+  background: linear-gradient(
+    160deg,
+    rgba(26, 33, 40, 0.72) 0%,
+    rgba(11, 14, 18, 0.78) 58%,
+    rgba(11, 14, 18, 0.86) 100%
+  );
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-radius: 14px;
+  box-shadow:
+    0 1px 0 0 rgba(228, 233, 238, 0.09) inset,
+    0 24px 60px -28px rgba(0, 0, 0, 0.9),
+    0 2px 12px -6px rgba(0, 0, 0, 0.6);
+}
+
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    152deg,
+    rgba(228, 233, 238, 0.34) 0%,
+    rgba(228, 233, 238, 0.06) 34%,
+    rgba(227, 135, 63, 0.05) 68%,
+    rgba(227, 135, 63, 0.26) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* A code surface should look like code, not like a screenshot of code. */
+.code-surface {
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 0.66rem + 0.28vw, 0.85rem);
+  line-height: 1.75;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.hairline {
+  border-top: 1px solid var(--hair-soft);
+}
+
+/* Grain: feTurbulence as a data URI. Six lines, no network request, infinite
+   resolution. A downloaded grain PNG costs 400 KB and tiles visibly. */
+.grain::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ========================================================== 5 · reveals
+   Text is in the DOM at first paint and only its visibility is animated.
+   Content built by JS is invisible to crawlers and to screen readers.      */
+
+[data-rv] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+  transition:
+    opacity 0.62s var(--ease-out),
+    transform 0.62s var(--ease-out);
+  will-change: opacity, transform;
+}
+
+[data-rv='left'] {
+  transform: translate3d(-14px, 0, 0);
+}
+
+[data-rv='scale'] {
+  transform: scale(0.985);
+}
+
+.rv-in {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Kinetic text: characters resolve out of blur and rotation. The parent keeps
+   the real string as aria-label; the spans are hidden from assistive tech so a
+   screen reader gets a word rather than a stream of letters. */
+.kinetic span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em) rotateX(-70deg);
+  filter: blur(6px);
+  transition:
+    opacity 0.5s var(--ease-out),
+    transform 0.6s var(--ease-out),
+    filter 0.5s var(--ease-out);
+  will-change: opacity, transform, filter;
+}
+
+.kinetic.rv-in span {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ========================================================= 6 · behaviours */
+
+/* Tilt. Perspective lives on the wrapper so the child rotates in a real frustum
+   rather than being sheared. Rotation is capped in the component at 6°/4°. */
+.tilt {
+  perspective: 1100px;
+}
+
+.tilt-inner {
+  position: relative;
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-out);
+  will-change: transform;
+}
+
+/* Specular glint, tracked to the pointer. Sits above the panel and ignores
+   input so it never intercepts a click meant for a link inside. */
+.tilt-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  opacity: calc(var(--glint, 0) * 0.5);
+  transition: opacity 0.45s var(--ease);
+  background: radial-gradient(
+    380px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 176, 103, 0.14),
+    rgba(228, 233, 238, 0.05) 38%,
+    transparent 64%
+  );
+  z-index: 2;
+}
+
+.caret-blink {
+  animation: caret 1.15s steps(2, start) infinite;
+}
+
+@keyframes caret {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The one perpetual loop on the page, and it carries information: available. */
+.led {
+  animation: led 2.6s var(--ease-io) infinite;
+  box-shadow: 0 0 0 0 rgba(227, 135, 63, 0.5);
+}
+
+@keyframes led {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(227, 135, 63, 0.45);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 0 4px rgba(227, 135, 63, 0);
+  }
+}
+
+.cue-tick {
+  animation: cue 2.4s var(--ease-io) infinite;
+}
+
+@keyframes cue {
+  0% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* Any pane that scrolls inside the page keeps its own scroll and gets a thin
+   rail, because a full-width system scrollbar cuts a bright line through a
+   dark panel. */
+.scroll-wall {
+  scrollbar-width: thin;
+  scrollbar-color: var(--edge) transparent;
+  overscroll-behavior: contain;
+}
+
+.scroll-wall::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-wall::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+
+.scroll-wall::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* The Index fades up out of the flat ground rather than popping in when its
+   chunk lands. The page is already readable by this point; this is the machine
+   arriving behind it. */
+@keyframes index-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------- cursor
+   The native cursor is only hidden once the custom one is actually running,
+   so a browser that never reaches the effect is never left without a pointer. */
+
+.has-cursor,
+.has-cursor a,
+.has-cursor button,
+.has-cursor input,
+.has-cursor [role='button'] {
+  cursor: none;
+}
+
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform;
+}
+
+.cursor-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--bone);
+  transition: opacity 0.25s var(--ease);
+}
+
+.cursor-ring {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--chrome-ring, rgba(228, 233, 238, 0.4));
+  transition:
+    opacity 0.25s var(--ease),
+    width 0.28s var(--ease-out),
+    height 0.28s var(--ease-out),
+    border-color 0.28s var(--ease);
+}
+
+/* The one place width/height are animated rather than transform. It runs on a
+   30px fixed-position element with no siblings and no layout to invalidate, so
+   the usual objection does not apply — and scaling a bordered ring by transform
+   would scale the border with it, which is the thing that reads as cheap. */
+.cursor-ring[data-hot='1'] {
+  width: 46px;
+  height: 46px;
+  border-color: var(--ember);
+}
+
+/* A scrim that is darkest in the middle, which is the opposite of the usual
+   vignette and is the whole point: the content column runs down the centre, so
+   that is exactly where the geometry has to give way. The hall stays bright at
+   the edges of the frame, where there is nothing to read. */
+.index-canvas::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      70% 92% at 50% 50%,
+      rgba(6, 8, 10, 0.78) 0%,
+      rgba(6, 8, 10, 0.66) 42%,
+      rgba(6, 8, 10, 0.3) 76%,
+      rgba(6, 8, 10, 0.1) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(6, 8, 10, 0.66) 0%,
+      transparent 20%,
+      transparent 80%,
+      rgba(6, 8, 10, 0.66) 100%
+    );
+}
+}
+
+
+/* ===================================================== 7 · reduced motion
+   The site must be complete, legible and good-looking with zero motion.
+
+   Deliberately left unlayered. Unlayered rules outrank every layer, which is
+   the wrong default for a reset but exactly right for an accessibility
+   override: nothing a utility class does should be able to reintroduce motion
+   for someone who has asked their operating system not to show them any.     */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-rv],
+  .kinetic span {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  /* Freeze the machine: no tilt, no glint, no pulsing, no scroll cue. */
+  .tilt-inner {
+    transform: none !important;
+  }
+
+  .tilt-inner::after {
+    opacity: 0 !important;
+  }
+
+  .led,
+  .cue-tick,
+  .caret-blink {
+    animation: none !important;
+  }
+
+  /* The custom cursor never mounts under reduced motion, but if the class is
+     ever left behind the native pointer must come back. */
+  .has-cursor,
+  .has-cursor a,
+  .has-cursor button {
+    cursor: auto !important;
+  }
+
+  .cursor-dot,
+  .cursor-ring {
+    display: none !important;
+  }
+}

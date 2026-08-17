@@ -1,0 +1,301 @@
+{
+  "generatedAt": "2026-08-17T19:31:54.073Z",
+  "source": "GitHub REST API, unauthenticated public endpoints",
+  "user": {
+    "login": "aryanghai12",
+    "name": "Aryan Ghai",
+    "publicRepos": 27,
+    "contributingSince": 2023
+  },
+  "merged": {
+    "total": 30,
+    "own": 8,
+    "external": 22,
+    "externalRepoCount": 6,
+    "trueUpstream": 20,
+    "trueUpstreamRepoCount": 5
+  },
+  "upstreamRepos": [
+    {
+      "org": "kubescape",
+      "repo": "kubescape",
+      "fullName": "kubescape/kubescape",
+      "merged": 13,
+      "stars": 11651,
+      "description": "Kubescape is an open-source Kubernetes security platform for your IDE, CI/CD pipelines, and clusters. It includes risk analysis, security, compliance, and misconfiguration scanning, saving Kubernetes users and administrators precious time, effort, and resources.",
+      "url": "https://github.com/kubescape/kubescape",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/kubescape/kubescape/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
+      "org": "kubescape",
+      "repo": "node-agent",
+      "fullName": "kubescape/node-agent",
+      "merged": 3,
+      "stars": 37,
+      "description": "Kubescape eBPF agent 🥷🏻",
+      "url": "https://github.com/kubescape/node-agent",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/kubescape/node-agent/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
+      "org": "OWASP",
+      "repo": "Nest",
+      "fullName": "OWASP/Nest",
+      "merged": 2,
+      "stars": 425,
+      "description": "Your gateway to OWASP. Discover, engage, and help shape the future!",
+      "url": "https://github.com/OWASP/Nest",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/OWASP/Nest/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
+      "org": "Vanshikadahaliya",
+      "repo": "TouristSafety",
+      "fullName": "Vanshikadahaliya/TouristSafety",
+      "merged": 2,
+      "stars": 0,
+      "description": null,
+      "url": "https://github.com/Vanshikadahaliya/TouristSafety",
+      "kind": "team",
+      "prsUrl": "https://github.com/Vanshikadahaliya/TouristSafety/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
+      "org": "kubescape",
+      "repo": "regolibrary",
+      "fullName": "kubescape/regolibrary",
+      "merged": 1,
+      "stars": 131,
+      "description": "The regolibrary package contains the controls Kubescape uses for detecting misconfigurations in Kubernetes manifests.",
+      "url": "https://github.com/kubescape/regolibrary",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/kubescape/regolibrary/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
+      "org": "antiwork",
+      "repo": "gumroad",
+      "fullName": "antiwork/gumroad",
+      "merged": 1,
+      "stars": 9591,
+      "description": "See what sticks",
+      "url": "https://github.com/antiwork/gumroad",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/antiwork/gumroad/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    }
+  ],
+  "upstreamPRs": [
+    {
+      "title": "feat(rules): add modify-service-status-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3291,
+      "url": "https://github.com/kubescape/kubescape/pull/3291",
+      "mergedAt": "2026-08-17"
+    },
+    {
+      "title": "feat(rules): add modify-node-status-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3330,
+      "url": "https://github.com/kubescape/kubescape/pull/3330",
+      "mergedAt": "2026-08-17"
+    },
+    {
+      "title": "feat(rules): add modify-pod-status-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3332,
+      "url": "https://github.com/kubescape/kubescape/pull/3332",
+      "mergedAt": "2026-08-17"
+    },
+    {
+      "title": "feat(rules): add weak-namespace-pod-rce-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3147,
+      "url": "https://github.com/kubescape/kubescape/pull/3147",
+      "mergedAt": "2026-08-15"
+    },
+    {
+      "title": "feat(rules): add assign-serviceaccount-to-pod-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3148,
+      "url": "https://github.com/kubescape/kubescape/pull/3148",
+      "mergedAt": "2026-08-15"
+    },
+    {
+      "title": "feat(rules): add issue-token-secrets-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3174,
+      "url": "https://github.com/kubescape/kubescape/pull/3174",
+      "mergedAt": "2026-08-15"
+    },
+    {
+      "title": "feat(rules): add steal-privileged-pods-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3224,
+      "url": "https://github.com/kubescape/kubescape/pull/3224",
+      "mergedAt": "2026-08-15"
+    },
+    {
+      "title": "feat(rules): add modify-privileged-pods-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3146,
+      "url": "https://github.com/kubescape/kubescape/pull/3146",
+      "mergedAt": "2026-08-14"
+    },
+    {
+      "title": "feat(rules): add provider-iam-assumption-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3149,
+      "url": "https://github.com/kubescape/kubescape/pull/3149",
+      "mergedAt": "2026-08-14"
+    },
+    {
+      "title": "fix(httphandler): prevent metrics scrapes from hijacking latest scan status and results",
+      "repo": "kubescape/kubescape",
+      "number": 3034,
+      "url": "https://github.com/kubescape/kubescape/pull/3034",
+      "mergedAt": "2026-08-13"
+    },
+    {
+      "title": "test(utils): attribute missing /proc prefixes to tracer or normalization layer",
+      "repo": "kubescape/node-agent",
+      "number": 886,
+      "url": "https://github.com/kubescape/node-agent/pull/886",
+      "mergedAt": "2026-08-12"
+    },
+    {
+      "title": "feat: add rego rules for Windows securityContext compliance",
+      "repo": "kubescape/regolibrary",
+      "number": 765,
+      "url": "https://github.com/kubescape/regolibrary/pull/765",
+      "mergedAt": "2026-08-08"
+    },
+    {
+      "title": "fix(node-agent): fix ContainerProfile size accounting in ReportSyscall and ReportNetworkEvent",
+      "repo": "kubescape/node-agent",
+      "number": 882,
+      "url": "https://github.com/kubescape/node-agent/pull/882",
+      "mergedAt": "2026-08-07"
+    },
+    {
+      "title": "fix(containerprofilemanager): repair timestamp chain on LRU eviction and retry exhaustion",
+      "repo": "kubescape/node-agent",
+      "number": 884,
+      "url": "https://github.com/kubescape/node-agent/pull/884",
+      "mergedAt": "2026-08-07"
+    },
+    {
+      "title": "fix(core): treat closed/non-interactive stdin as refusal in userConfirmed to prevent CPU spin",
+      "repo": "kubescape/kubescape",
+      "number": 2712,
+      "url": "https://github.com/kubescape/kubescape/pull/2712",
+      "mergedAt": "2026-08-04"
+    },
+    {
+      "title": "fix(cautils): return error when worktree root cannot be resolved in NewLocalGitRepository",
+      "repo": "kubescape/kubescape",
+      "number": 2651,
+      "url": "https://github.com/kubescape/kubescape/pull/2651",
+      "mergedAt": "2026-08-03"
+    },
+    {
+      "title": "fix(opaprocessor): move opaRegisterOnce to package level to prevent re-registration per scan",
+      "repo": "kubescape/kubescape",
+      "number": 2624,
+      "url": "https://github.com/kubescape/kubescape/pull/2624",
+      "mergedAt": "2026-07-31"
+    },
+    {
+      "title": "fix(api-docs): align theme switch cursor and tooltip",
+      "repo": "OWASP/Nest",
+      "number": 4295,
+      "url": "https://github.com/OWASP/Nest/pull/4295",
+      "mergedAt": "2026-03-18"
+    },
+    {
+      "title": "docs: add local GitHub OAuth setup instructions to CONTRIBUTING.md",
+      "repo": "OWASP/Nest",
+      "number": 4092,
+      "url": "https://github.com/OWASP/Nest/pull/4092",
+      "mergedAt": "2026-03-07"
+    },
+    {
+      "title": "migrate _icons.scss to tailwind",
+      "repo": "antiwork/gumroad",
+      "number": 2242,
+      "url": "https://github.com/antiwork/gumroad/pull/2242",
+      "mergedAt": "2025-12-10"
+    },
+    {
+      "title": "User",
+      "repo": "Vanshikadahaliya/TouristSafety",
+      "number": 3,
+      "url": "https://github.com/Vanshikadahaliya/TouristSafety/pull/3",
+      "mergedAt": "2025-09-06"
+    },
+    {
+      "title": "location sharing",
+      "repo": "Vanshikadahaliya/TouristSafety",
+      "number": 4,
+      "url": "https://github.com/Vanshikadahaliya/TouristSafety/pull/4",
+      "mergedAt": "2025-09-06"
+    }
+  ],
+  "projects": [
+    {
+      "id": "cavix",
+      "name": "Cavix",
+      "repo": "CavixCode",
+      "url": "https://github.com/aryanghai12/CavixCode",
+      "homepage": "https://cavix-f5ib.onrender.com/",
+      "description": "AI code review that verifies findings by running them. Writes a failing test, runs it in a network-isolated sandbox, applies a fix, re-runs. Unreproducible findings are dropped.",
+      "stars": 0,
+      "pushedAt": "2026-08-14T17:24:03Z",
+      "languages": {
+        "TypeScript": 2042620,
+        "Go": 144254,
+        "JavaScript": 115766,
+        "CSS": 53778,
+        "HTML": 45605,
+        "HCL": 2754,
+        "Shell": 1142,
+        "Go Template": 591
+      },
+      "languagesDerived": true
+    },
+    {
+      "id": "tracecv",
+      "name": "TraceCV",
+      "repo": "TraceCV",
+      "url": "https://github.com/aryanghai12/TraceCV",
+      "homepage": null,
+      "description": null,
+      "stars": 0,
+      "pushedAt": "2026-08-10T14:58:42Z",
+      "languages": {
+        "TypeScript": 799845,
+        "JavaScript": 20078,
+        "CSS": 4013
+      },
+      "languagesDerived": true
+    },
+    {
+      "id": "repopulse",
+      "name": "RepoPulse",
+      "repo": "RepoPulse",
+      "url": "https://github.com/aryanghai12/RepoPulse",
+      "homepage": null,
+      "description": null,
+      "stars": 0,
+      "pushedAt": "2026-03-12T04:44:42Z",
+      "languages": {
+        "R": 124784,
+        "TeX": 6377
+      },
+      "languagesDerived": false
+    }
+  ],
+  "gitlab": {
+    "user": "aryanghai1205",
+    "profileUrl": "https://gitlab.com/aryanghai1205",
+    "verifiedUpstreamMerge": "https://gitlab.com/owasp-blt/blt-toasty/-/merge_requests/10"
+  }
+}
