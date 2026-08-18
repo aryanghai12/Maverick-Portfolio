@@ -225,7 +225,7 @@ export function RepoPulseInstrument() {
   }, [current]);
 
   return (
-    <div ref={ref} className="glass overflow-hidden">
+    <div ref={ref} className="inst-plot overflow-hidden">
       <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           K-Means · PCA projection

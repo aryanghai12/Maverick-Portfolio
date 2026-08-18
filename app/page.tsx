@@ -1,7 +1,6 @@
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Work } from '@/components/Work';
-import { Stack } from '@/components/Stack';
 import { Upstream } from '@/components/Upstream';
 import { Connect } from '@/components/Connect';
 import { Nav } from '@/components/Nav';
@@ -32,11 +31,15 @@ export default function Page() {
       {/* Sits above the canvas. The canvas is decorative and never intercepts
           a pointer, so everything here stays clickable. */}
       <main id="main" className="relative z-10">
+        {/* Prove first, explain second.
+             The 23 merges into repositories with maintainers are the rarest and
+             most checkable thing here, and they used to arrive as section four
+             of six, after two thousand words. An argument lands harder once the
+             evidence is already on the table. */}
         <Hero />
-        <About />
-        <Work />
-        <Stack />
         <Upstream />
+        <Work />
+        <About />
         <Connect />
       </main>
     </>

@@ -16,8 +16,8 @@ import { Kinetic } from './Kinetic';
  * hand, and the build fails rather than shipping a stale one.
  */
 const gauges = [
-  { value: String(stats.merged.external), label: 'merged upstream' },
-  { value: String(stats.merged.externalRepoCount), label: 'external repos' },
+  { value: String(stats.merged.trueUpstream), label: 'merged upstream' },
+  { value: String(stats.merged.trueUpstreamRepoCount), label: 'repos I do not own' },
   { value: String(stats.user.publicRepos), label: 'public repos' },
   { value: String(stats.user.contributingSince), label: 'contributing since' },
 ];
@@ -53,32 +53,38 @@ export function Hero() {
         {/* Two actions, ranked. The primary one goes to the evidence rather
             than to a contact form, because the evidence is the argument. */}
         <div className="mt-10 flex flex-wrap items-center gap-3 sm:mt-12" data-rv>
+          {/* The address is written out, in the markup, in the primary
+              action. Neither call to action here used to say hire me, and the
+              one conversion event on the site was reachable only by operating
+              a terminal widget. */}
           <a
-            href="#work"
+            href={links.email}
             className="group inline-flex items-center gap-2.5 rounded-full bg-[var(--bone)] px-5 py-2.5 text-[0.83rem] font-medium tracking-[-0.01em] text-[#0e0e11] transition-all duration-300 [transition-timing-function:var(--ease)] hover:bg-white hover:shadow-[0_0_28px_-6px_rgba(255,255,255,0.45)]"
           >
-            See the work
+            {identity.email}
             <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[3px]">
               →
             </span>
           </a>
           <a
-            href={links.github}
-            target="_blank"
-            rel="noreferrer noopener"
+            href="#upstream"
             className="group inline-flex items-center gap-2.5 rounded-full border border-[var(--edge)] px-5 py-2.5 text-[0.83rem] font-medium tracking-[-0.01em] text-[var(--bone-dim)] transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--bone)] hover:text-[var(--bone)]"
           >
-            GitHub
-            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[3px]">
-              ↗
+            See the proof
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-y-[2px]">
+              ↓
             </span>
           </a>
-          <span className="ml-1 flex items-center gap-2.5">
-            <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
-            <span className="t-label !text-[0.6rem] !text-[var(--bone-dim)]">
-              open to internships
-            </span>
+        </div>
+
+        {/* Availability, stated concretely enough to act on. */}
+        <div className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-2" data-rv>
+          <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
+          <span className="t-label !text-[0.6rem] !text-[var(--bone-dim)]">
+            {identity.status}
           </span>
+          <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
+          <span className="t-label !text-[0.6rem]">{identity.availability}</span>
         </div>
 
         {/* The evidence, stated as four measured figures. */}

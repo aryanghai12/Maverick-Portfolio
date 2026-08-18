@@ -1,15 +1,22 @@
 import stats from '@/data/stats.json';
+import { CNCF_ORGS, prHighlights, ruleGroup } from '@/lib/content';
 import { SectionHead } from './SectionHead';
 import { Kinetic } from './Kinetic';
 
 const fmtStars = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
+/* Display names for the CNCF orgs present in the data. Derived, not asserted:
+   if a merge into one of these disappears, the claim disappears with it. */
+const ORG_NAMES: Record<string, string> = {
+  kubescape: 'Kubescape',
+  openyurtio: 'OpenYurt',
+};
+
 /* The date the figures on this page were actually measured.
  *
  * Printed rather than hidden. Every number here comes from the GitHub API at
  * build time, and saying when turns a snapshot into a dated measurement instead
- * of an implied claim about this exact second. It is also the honest answer to
- * "how do you know", and it is the same answer the projects themselves give. */
+ * of an implied claim about this exact second. */
 const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'short',
@@ -18,156 +25,230 @@ const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
 });
 
 /**
- * The section that does the most work on the whole site.
+ * The proof.
  *
- * A double-digit run of merged pull requests into a CNCF project is rarer than
- * any project card, and it is the one claim here that a stranger can verify in
- * ten seconds: every row links to the real pull request. The argument of the site is proof
- * over assertion, so this section demonstrates it rather than stating it.
+ * This is the one section a stranger can verify in ten seconds, so it is now
+ * the first thing after the hero and the only section that breaks the column
+ * every other section lives in.
  *
- * Every number is read from data/stats.json, written at build time from the
- * GitHub API. Nothing here is typed by hand.
+ * The figures lead with trueUpstream rather than external. The difference is a
+ * student team project, counted separately below: two pull requests titled
+ * "User" and "location sharing" on a classmate's app are real, but folding them
+ * into the headline dilutes twenty three merges into repositories with
+ * maintainers, and the larger number is the weaker claim.
  */
 export function Upstream() {
   const { merged, upstreamRepos, upstreamPRs } = stats;
 
+  const team = upstreamRepos.filter((r) => r.kind === 'team');
+  const real = upstreamRepos.filter((r) => r.kind !== 'team');
+  const teamRepoNames = new Set(team.map((r) => r.fullName));
+
+  const cncf = [...new Set(real.map((r) => r.org).filter((o) => CNCF_ORGS.has(o)))]
+    .map((o) => ORG_NAMES[o] ?? o)
+    .sort();
+
+  const byNumber = new Map(upstreamPRs.map((pr) => [pr.number, pr]));
+  const highlights = prHighlights
+    .map((h) => ({ ...h, pr: byNumber.get(h.number) }))
+    .filter((h) => h.pr);
+
+  const highlighted = new Set(highlights.map((h) => h.number));
+  const rules = upstreamPRs.filter((pr) => pr.title.startsWith('feat(rules)'));
+  const ruleNumbers = new Set(rules.map((pr) => pr.number));
+
+  const rest = upstreamPRs.filter(
+    (pr) =>
+      !highlighted.has(pr.number) &&
+      !ruleNumbers.has(pr.number) &&
+      !teamRepoNames.has(pr.repo),
+  );
+
   return (
-    <section id="upstream" data-cam="upstream" className="section">
+    <section id="upstream" data-cam="upstream" className="relative pt-4 pb-20 sm:pb-28">
       <div className="shell">
-        <SectionHead index="04" label="upstream" />
+        <SectionHead index="01" label="proof" />
+      </div>
 
-        <div className="grid [&>*]:min-w-0 gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-16">
-          <div>
-            <h2 className="t-h2 max-w-[16ch] text-[var(--bone)]" data-rv>
-              <Kinetic text="Code that shipped somewhere else" />
-            </h2>
+      {/* The band. The only element on the site that leaves the column. */}
+      <div className="band py-12 sm:py-16">
+        <div className="shell-wide">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-14">
+            <span className="figure-xl shrink-0" data-rv>
+              {merged.trueUpstream}
+            </span>
 
-            <div className="mt-10 flex flex-wrap items-end gap-x-6 gap-y-3" data-rv>
-              <span className="u-mono text-[clamp(3.2rem,2rem+5.6vw,5.4rem)] leading-[0.8] font-medium tracking-[-0.05em] text-[var(--bone)]">
-                {merged.external}
-              </span>
-              {/* Set as a sentence, not as a tracked uppercase label. Beside a
-                  numeral this size, 0.2em tracking broke the caption to one
-                  word per line and made the pair look cramped. */}
-              <p className="mb-1 max-w-[24ch] text-[0.98rem] leading-[1.5] text-[var(--bone-dim)]">
-                merged pull requests into {merged.externalRepoCount} repositories I do not own
+            <div className="max-w-[46ch] pb-2">
+              <h2 className="t-h2 text-[var(--bone)]" data-rv>
+                <Kinetic text="Merged into code I do not own" stagger={16} />
+              </h2>
+              <p className="t-body mt-5" data-rv>
+                {merged.trueUpstream} pull requests merged into{' '}
+                {merged.trueUpstreamRepoCount} repositories owned by other people,
+                {cncf.length > 0 ? (
+                  <>
+                    {' '}
+                    including {cncf.join(' and ')}
+                    {cncf.length > 1 ? ', both CNCF projects' : ', a CNCF project'}
+                  </>
+                ) : null}
+                . Reviewed by maintainers whose standards were not mine to set. Every
+                row below links to the pull request itself.
               </p>
             </div>
+          </div>
 
-            <p className="t-body mt-8" data-rv>
-              Merged in repositories where the standards were not mine to set. Every row
-              below links to the real pull request. This is the one section of the site
-              you can check in ten seconds without taking my word for anything.
-            </p>
+          {/* Repository strip, full width. */}
+          <ul className="mt-12 grid list-none gap-px border border-[var(--hair-soft)] bg-[var(--hair-soft)] p-0 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+            {real.map((r, i) => (
+              <li key={r.fullName} data-rv style={{ transitionDelay: `${i * 45}ms` }}>
+                <a
+                  href={r.prsUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="group flex h-full items-baseline gap-5 bg-[var(--void)] px-5 py-6 transition-colors duration-300 hover:bg-[var(--panel-0)] sm:px-6 sm:py-7"
+                >
+                  <span className="u-mono w-10 shrink-0 text-[1.6rem] leading-none font-medium tracking-[-0.04em] text-[var(--bone)]">
+                    {r.merged}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="u-mono block truncate text-[0.86rem] text-[var(--bone-dim)] transition-colors duration-300 group-hover:text-[var(--bone)]">
+                      {r.fullName}
+                    </span>
+                    <span className="t-label mt-2 block !text-[0.56rem]">
+                      {fmtStars(r.stars)} stars
+                      {CNCF_ORGS.has(r.org) ? ' · CNCF' : ''}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden
+                    className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--bone)]"
+                  >
+                    ↗
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-            {/* Repository table */}
-            <ul className="mt-10 list-none space-y-px p-0">
-              {upstreamRepos.map((r, i) => (
+      <div className="shell-wide mt-16 sm:mt-24">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+          {/* Hardest first. Sorting newest first buried these under ten rule
+              PRs whose titles differ by three words. */}
+          <div>
+            <h3 className="t-label !text-[0.62rem] !text-[var(--bone-dim)]" data-rv>
+              the ones that were hard
+            </h3>
+            <ul className="mt-7 list-none space-y-px p-0">
+              {highlights.map((h, i) => (
                 <li
-                  key={r.fullName}
+                  key={h.number}
                   data-rv
-                  style={{ transitionDelay: `${i * 55}ms` }}
-                  className="border-t border-[var(--hair-soft)]"
+                  style={{ transitionDelay: `${i * 50}ms` }}
+                  className="border-t border-[var(--hair-soft)] last:border-b last:border-b-[var(--hair-soft)]"
                 >
                   <a
-                    href={r.prsUrl}
+                    href={h.pr!.url}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="group flex items-center gap-4 py-4 transition-[padding-left] duration-300 [transition-timing-function:var(--ease)] hover:pl-3"
+                    className="group block py-5 transition-[padding-left] duration-300 [transition-timing-function:var(--ease)] hover:pl-3"
                   >
-                    <span className="u-mono w-8 shrink-0 text-[0.95rem] font-bold text-[var(--accent)]">
-                      {r.merged}
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="u-mono block truncate text-[0.85rem] text-[var(--bone)]">
-                        {r.fullName}
+                    <p className="m-0 text-[0.98rem] leading-[1.55] text-[var(--bone)]">
+                      {h.gloss}
+                    </p>
+                    <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="u-mono text-[0.68rem] text-[var(--mute)]">
+                        {h.pr!.repo}
                       </span>
-                      <span className="t-label mt-1 block !text-[0.56rem]">
-                        {r.kind === 'team' ? 'student team project' : `${fmtStars(r.stars)} stars`}
+                      <span className="u-mono text-[0.68rem] text-[var(--bone-dim)] transition-colors group-hover:text-[var(--bone)]">
+                        #{h.number}
                       </span>
-                    </span>
-                    <span
-                      aria-hidden
-                      className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--accent)]"
-                    >
-                      ↗
-                    </span>
+                      <span className="u-mono ml-auto text-[0.64rem] text-[var(--mute)]">
+                        {h.pr!.mergedAt}
+                      </span>
+                    </div>
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* The wall */}
-          <div data-rv="scale">
-            <div className="glass overflow-hidden">
-              <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
-                <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
-                  merged
-                </span>
-                <span className="t-label ml-auto !text-[0.56rem]">newest first</span>
-              </div>
+          <div>
+            {/* The rules, stated once as the thing they collectively are. */}
+            <div className="pane p-6 sm:p-7" data-rv>
+              <h3 className="t-h3 text-[var(--bone)]">
+                {ruleGroup.title.replace('Ten', String(rules.length))}
+              </h3>
+              <p className="t-body mt-4 !text-[0.95rem]">{ruleGroup.body}</p>
 
-              <ul
-                className="scroll-wall m-0 max-h-[540px] list-none overflow-y-auto p-0"
-                tabIndex={0}
-                data-lenis-prevent
-                aria-label="Merged pull requests, newest first"
-              >
-                {upstreamPRs.map((pr) => (
-                  <li key={pr.url} className="border-b border-[var(--hair-soft)] last:border-b-0">
+              <ul className="mt-6 grid list-none gap-x-6 gap-y-1.5 p-0 sm:grid-cols-2">
+                {rules.map((pr) => (
+                  <li key={pr.number}>
                     <a
                       href={pr.url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="group block px-4 py-3.5 transition-colors duration-300 hover:bg-[var(--panel-1)] sm:px-5"
+                      className="u-mono block truncate text-[0.68rem] text-[var(--mute)] transition-colors hover:text-[var(--bone)]"
+                      title={pr.title}
                     >
-                      <div className="flex items-start gap-3">
-                        <span
-                          aria-hidden
-                          className="mt-[5px] text-[0.6rem] text-[var(--mute)] transition-colors duration-300 group-hover:text-[var(--accent)]"
-                        >
-                          ◈
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <p className="u-mono m-0 text-[0.74rem] leading-[1.55] break-words text-[var(--bone-dim)] transition-colors duration-300 group-hover:text-[var(--bone)]">
-                            {pr.title}
-                          </p>
-                          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                            <span className="t-label !text-[0.54rem]">{pr.repo}</span>
-                            <span className="u-mono text-[0.6rem] text-[var(--mute)]">
-                              #{pr.number}
-                            </span>
-                            <span className="u-mono ml-auto text-[0.6rem] text-[var(--mute)]">
-                              {pr.mergedAt}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                      {pr.title.replace('feat(rules): add ', '')}
                     </a>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* GitLab is linked but carries no number: its API exposes no public
-                aggregate MR count per author, so any figure here would be a guess. */}
-            <p className="t-label mt-4 !normal-case !tracking-[0.02em] !text-[0.68rem] !leading-[1.6]">
-              Also on{' '}
-              <a
-                href={stats.gitlab.profileUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="ul-draw text-[var(--bone)] transition-colors hover:text-[var(--accent)]"
-              >
-                GitLab
-              </a>
-              , where the OWASP BLT work lives. No count is shown there because GitLab
-              publishes no per-author merge total, and I am not going to estimate one.
-            </p>
+            {/* Everything else, compact. */}
+            <h3 className="t-label mt-12 !text-[0.62rem] !text-[var(--bone-dim)]" data-rv>
+              also merged
+            </h3>
+            <ul className="mt-5 list-none space-y-px p-0">
+              {rest.map((pr, i) => (
+                <li
+                  key={pr.url}
+                  data-rv
+                  style={{ transitionDelay: `${i * 30}ms` }}
+                  className="border-t border-[var(--hair-soft)] last:border-b last:border-b-[var(--hair-soft)]"
+                >
+                  <a
+                    href={pr.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="group flex items-baseline gap-3 py-3"
+                  >
+                    <span className="u-mono min-w-0 flex-1 truncate text-[0.74rem] text-[var(--bone-dim)] transition-colors group-hover:text-[var(--bone)]">
+                      {pr.title}
+                    </span>
+                    <span className="u-mono shrink-0 text-[0.64rem] text-[var(--mute)]">
+                      {pr.repo.split('/')[1]} #{pr.number}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
 
-            <p className="t-label mt-3 !text-[0.56rem] !leading-[1.7]">
-              every figure on this page counted from the github api · measured {measured}
+            {/* Counted, labelled, and kept out of the headline. */}
+            {team.length > 0 ? (
+              <p className="t-label mt-7 !normal-case !tracking-[0.02em] !text-[0.66rem] !leading-[1.65]" data-rv>
+                Not counted above: {merged.external - merged.trueUpstream} further merges
+                into{' '}
+                <a
+                  href={team[0].prsUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="ul-draw text-[var(--bone-dim)]"
+                >
+                  {team[0].fullName}
+                </a>
+                , a classmate&rsquo;s project I worked on as part of the team. Real work,
+                but not the same claim, so it does not get to inflate the number.
+              </p>
+            ) : null}
+
+            <p className="t-label mt-6 !text-[0.56rem] !leading-[1.7]" data-rv>
+              every figure counted from the github api · measured {measured}
             </p>
           </div>
         </div>

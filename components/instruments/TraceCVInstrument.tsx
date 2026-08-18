@@ -116,7 +116,7 @@ export function TraceCVInstrument() {
   const traced = blocks.filter((b) => b.trace && b.y + b.h <= progress);
 
   return (
-    <div ref={ref} className="glass overflow-hidden">
+    <div ref={ref} className="inst-document overflow-hidden">
       <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           Parse X-ray

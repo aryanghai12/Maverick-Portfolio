@@ -111,7 +111,7 @@ export function Connect() {
   return (
     <section id="connect" data-cam="connect" className="section pb-28">
       <div className="shell">
-        <SectionHead index="05" label="connect" />
+        <SectionHead index="04" label="contact" />
 
         <div className="grid [&>*]:min-w-0 gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
           <div>
@@ -126,6 +126,29 @@ export function Connect() {
             <p className="t-body mt-6" data-rv>
               {connect.body}
             </p>
+
+            {/* The address, in plain selectable text, in the markup.
+                
+                It used to exist only inside a JavaScript array, reachable by
+                operating a terminal widget. That put a puzzle in front of the
+                single conversion event on the site, and it meant the address
+                was absent entirely with JavaScript disabled, on a page whose
+                README claims it works without it. */}
+            <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3" data-rv>
+              <a
+                href={links.email}
+                className="ul-draw u-mono text-[clamp(1rem,0.9rem+0.7vw,1.4rem)] tracking-[-0.02em] text-[var(--bone)] transition-colors hover:text-white"
+              >
+                {identity.email}
+              </a>
+              <button
+                type="button"
+                onClick={() => copy(identity.email, 'email')}
+                className="u-mono shrink-0 rounded-full border border-[var(--edge)] px-3 py-1.5 text-[0.66rem] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--bone)] hover:text-[var(--bone)]"
+              >
+                {copied === 'email' ? 'copied' : 'copy'}
+              </button>
+            </div>
 
             {/* Status */}
             <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2" data-rv>

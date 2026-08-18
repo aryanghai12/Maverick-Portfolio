@@ -4,10 +4,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 const SECTIONS = [
   ['hero', 'Home'],
-  ['about', 'About'],
+  ['upstream', 'Proof'],
   ['work', 'Work'],
-  ['stack', 'Stack'],
-  ['upstream', 'Upstream'],
+  ['about', 'About'],
   ['connect', 'Contact'],
 ] as const;
 

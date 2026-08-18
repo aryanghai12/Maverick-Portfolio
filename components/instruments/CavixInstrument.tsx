@@ -37,7 +37,7 @@ export function CavixInstrument() {
   const at = (i: number) => (step > i ? 'opacity-100' : 'opacity-0');
 
   return (
-    <div ref={ref} className="glass overflow-hidden">
+    <div ref={ref} className="inst-terminal overflow-hidden">
       {/* Check run header */}
       <div
         className={`flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 transition-opacity duration-500 sm:px-5 ${at(0)}`}

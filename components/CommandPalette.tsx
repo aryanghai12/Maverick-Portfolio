@@ -43,11 +43,10 @@ export function CommandPalette() {
   const items: Item[] = useMemo(
     () => [
       { id: 'hero', label: 'Top', hint: 'section 00', group: 'go', run: () => go('hero') },
-      { id: 'about', label: 'README.md', hint: 'section 01', group: 'go', run: () => go('about') },
-      { id: 'work', label: 'Selected work', hint: 'section 02', group: 'go', run: () => go('work') },
-      { id: 'stack', label: 'Dependencies', hint: 'section 03', group: 'go', run: () => go('stack') },
-      { id: 'upstream', label: 'Upstream', hint: 'section 04', group: 'go', run: () => go('upstream') },
-      { id: 'connect', label: 'Connect', hint: 'section 05', group: 'go', run: () => go('connect') },
+      { id: 'upstream', label: 'Proof', hint: 'section 01', group: 'go', run: () => go('upstream') },
+      { id: 'work', label: 'Work', hint: 'section 02', group: 'go', run: () => go('work') },
+      { id: 'about', label: 'Who', hint: 'section 03', group: 'go', run: () => go('about') },
+      { id: 'connect', label: 'Contact', hint: 'section 04', group: 'go', run: () => go('connect') },
       ...projects.map((p) => ({
         id: `p-${p.id}`,
         label: p.name,

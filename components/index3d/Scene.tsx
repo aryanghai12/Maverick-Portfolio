@@ -16,11 +16,10 @@ import { damp, measureStations, progressFor, type StationTable } from '@/lib/sta
  */
 const STATIONS: { z: number; y: number; lookY: number; fov: number }[] = [
   { z: 26, y: 0.4, lookY: 0, fov: 54 }, // 00 hero, at the mouth, hall at rest
-  { z: 6, y: 1.1, lookY: -0.4, fov: 52 }, // 01 readme, moving in
-  { z: -26, y: 0.2, lookY: 0.2, fov: 50 }, // 02 work, among the call graph
-  { z: -58, y: -0.6, lookY: 0.5, fov: 50 }, // 03 dependencies
-  { z: -92, y: 0.8, lookY: -0.2, fov: 52 }, // 04 upstream
-  { z: -128, y: 0.2, lookY: 0, fov: 56 }, // 05 connect, the corridor opens out
+  { z: -14, y: 0.9, lookY: -0.3, fov: 52 }, // 01 proof, through the rings
+  { z: -56, y: 0.1, lookY: 0.3, fov: 50 }, // 02 work, among the call graph
+  { z: -94, y: -0.5, lookY: 0.4, fov: 52 }, // 03 who
+  { z: -132, y: 0.2, lookY: 0, fov: 56 }, // 04 contact, the corridor opens out
 ];
 
 const COUNT_DESKTOP = 7400;
@@ -224,11 +223,11 @@ export function Scene({ reduced }: { reduced: boolean }) {
       edgeRef.current.visible = mat.opacity > 0.005;
     }
 
-    /* Upstream: concentric rings the camera passes through, one per external
-       repository. Commit history read the way you read a tree, and the count
-       is not decorative, it is the six repos in the section beside it. */
+    /* Proof: concentric rings the camera passes through, one per repository
+       merged into. The count is not decorative, it is the six repos in the
+       section beside it. */
     if (ringsRef.current) {
-      const wanted = Math.max(0, 1 - Math.abs(r.smooth - 4) * 0.9);
+      const wanted = Math.max(0, 1 - Math.abs(r.smooth - 1) * 0.9);
       ringsRef.current.children.forEach((child, i) => {
         const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
         const target = wanted * (i === 0 ? 0.3 : 0.16);
@@ -241,7 +240,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
     /* Connect: everything converges on a single beam running down the axis of
        the corridor, terminating where the console panel sits. */
     if (beamRef.current) {
-      const wanted = Math.max(0, 1 - Math.abs(r.smooth - 5) * 1.15);
+      const wanted = Math.max(0, 1 - Math.abs(r.smooth - 4) * 1.15);
       beamRef.current.children.forEach((child) => {
         const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
         const target = wanted * 0.24;
@@ -314,7 +313,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
         <lineBasicMaterial color="#ffffff" transparent opacity={0} />
       </lineSegments>
 
-      <group ref={ringsRef} position={[0, 0, -104]} visible={false}>
+      <group ref={ringsRef} position={[0, 0, -26]} visible={false}>
         {ringRadii.map((rad, i) => (
           <mesh key={rad} rotation={[0, 0, i * 0.4]}>
             <ringGeometry args={[rad, rad + 0.055, 96]} />
@@ -335,7 +334,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
           section with light, which was a lens flare demo rather than a beam. It is now
           a thin line receding to the vanishing point, which is what a beam
           terminating on the console was supposed to look like. */}
-      <group ref={beamRef} position={[0, -0.4, -186]} visible={false}>
+      <group ref={beamRef} position={[0, -0.4, -190]} visible={false}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.035, 0.035, 46, 6, 1, true]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} />

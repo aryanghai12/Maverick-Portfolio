@@ -1,7 +1,6 @@
 import { about, education, experience } from '@/lib/content';
 import { Kinetic } from './Kinetic';
 import { SectionHead } from './SectionHead';
-import { Console } from './Console';
 
 /**
  * The log rows carry education and experience. The brief's section table left
@@ -30,13 +29,17 @@ export function About() {
   return (
     <section id="about" data-cam="about" className="section">
       <div className="shell">
-        <SectionHead index="01" label="README.md" />
+        <SectionHead index="03" label="who" />
 
         <h2 className="t-h2 max-w-[18ch] text-[var(--bone)]" data-rv>
           <Kinetic text={about.heading} />
         </h2>
 
-        <div className="mt-12 grid [&>*]:min-w-0 gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] lg:gap-16">
+        {/* The decorative terminal that used to sit here printed five facts
+             that are all stated elsewhere on the page, in a fake shell that
+             accepted no input. The working console in Contact does the same
+             trick and actually runs. One of them had to go. */}
+        <div className="mt-12 grid [&>*]:min-w-0 gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:gap-16">
           <div>
             {about.paragraphs.map((p, i) => (
               <p
@@ -50,8 +53,10 @@ export function About() {
             ))}
           </div>
 
-          <div className="lg:pt-2">
-            <Console />
+          <div className="lg:pt-1">
+            <p className="t-statement border-l-2 border-[var(--bone)] pl-5" data-rv>
+              {about.aside}
+            </p>
           </div>
         </div>
 

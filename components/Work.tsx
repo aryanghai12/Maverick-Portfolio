@@ -6,6 +6,7 @@ import { Tilt } from './Tilt';
 import { CavixInstrument } from './instruments/CavixInstrument';
 import { TraceCVInstrument } from './instruments/TraceCVInstrument';
 import { RepoPulseInstrument } from './instruments/RepoPulseInstrument';
+import { DependencyGraph } from './DependencyGraph';
 
 const instruments = {
   cavix: CavixInstrument,
@@ -19,10 +20,10 @@ export function Work() {
   return (
     <section id="work" data-cam="work" className="section">
       <div className="shell">
-        <SectionHead index="02" label="selected work" />
+        <SectionHead index="02" label="work" />
 
         <h2 className="t-h2 max-w-[20ch] text-[var(--bone)]" data-rv>
-          <Kinetic text="Three things I built" />
+          <Kinetic text="What I build" />
         </h2>
 
         <div className="mt-14 space-y-20 sm:mt-16 sm:space-y-28">
@@ -128,8 +129,10 @@ export function Work() {
           })}
         </div>
 
+        <DependencyGraph />
+
         {/* Kept off the headline slots so three projects stay three projects. */}
-        <div className="mt-20 border-t border-[var(--hair-soft)] pt-10" data-rv>
+        <div className="mt-24 border-t border-[var(--hair-soft)] pt-12" data-rv>
           <span className="t-label">also built</span>
           <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
             {alsoBuilt.map((a) => (

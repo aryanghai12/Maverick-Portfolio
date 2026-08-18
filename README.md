@@ -67,6 +67,7 @@ API; if it cannot, it uses the committed snapshot and says so.
 | `npm run fetch-stats` | Refresh `data/stats.json` from the GitHub API |
 | `npm run build` | Fetch stats, then build a static site into `./out` |
 | `npm start` | Serve the production build |
+| `npm run og` | Re-render `public/og.png` from the measured figures (needs Chrome) |
 
 ### Optional but recommended
 
@@ -172,6 +173,7 @@ Making it yours takes about ten minutes:
 | 4 | `app/layout.tsx` | `metadataBase`, title, description, keywords. |
 | 5 | `app/globals.css` | The token block at the top is the whole palette and type scale. |
 | 6 | `components/instruments/` | Three project demos. Replace with your own, or delete and simplify `Work.tsx`. |
+| 7 | `NEXT_PUBLIC_SITE_URL` | Set it, or Open Graph URLs resolve against the wrong host. Then `npm run og`. |
 
 The only thing I would ask, and it is a request rather than a licence term: swap
 out my name, my writing and my measurements before you publish it. A portfolio

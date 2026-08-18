@@ -19,18 +19,17 @@ How the site is put together, and why each piece is the way it is.
 
 ## 1. Shape of the thing
 
-One page, six sections, statically exported to plain files. There is no server
+One page, five sections, statically exported to plain files. There is no server
 at runtime and no client-side data fetching. `next.config.mjs` sets
 `output: 'export'`, so `npm run build` produces a directory of HTML, CSS, JS and
 fonts that any static host can serve.
 
 ```
-00  hero        the statement, and four measured figures
-01  about       who, plus a terminal that prints the same thing
-02  work        three projects, each with a working reduction of itself
-03  stack       a bipartite graph weighted by real language byte counts
-04  upstream    every merged pull request, each linking to the real PR
-05  connect     a console that genuinely runs six commands
+00  hero        the statement, the address, and four measured figures
+01  proof       every merged pull request, hardest first, full bleed
+02  work        three projects, each a working reduction of itself
+03  who         the argument, made after the evidence
+04  contact     the address in plain text, and a console that runs
 ```
 
 Everything the page displays is either a string in `lib/content.ts` or a number
@@ -48,11 +47,11 @@ app/
 components/
   Nav.tsx           fixed pill navigation, sliding active state, progress rail
   Hero.tsx          section 00
-  About.tsx         section 01, plus Console.tsx
-  Work.tsx          section 02, pulls in one instrument per project
-  Stack.tsx         section 03, the dependency graph
-  Upstream.tsx      section 04, the pull request wall
-  Connect.tsx       section 05, the working console
+  Upstream.tsx      section 01, the proof, the one full-bleed section
+  Work.tsx          section 02, one instrument per project
+  DependencyGraph.tsx  a block inside Work, weighted by real byte counts
+  About.tsx         section 03
+  Connect.tsx       section 04, the working console
   CommandPalette.tsx  Cmd+K navigation
   Cursor.tsx        custom pointer, pointer-fine devices only
   Reveals.tsx       one IntersectionObserver driving every staged reveal
@@ -79,6 +78,7 @@ lib/
 
 scripts/
   fetch-stats.ts    build-time GitHub API fetch, see docs/github-api.md
+  make-og.ts        renders public/og.png from the measured figures
 
 data/
   stats.json        committed snapshot and build fallback

@@ -17,7 +17,11 @@ export const identity = {
   name: 'Aryan Ghai',
   role: 'Backend & Systems Engineer',
   location: 'Greater Noida, India',
-  status: 'Open to Software Engineering internships',
+  /* TODO(aryan): add the term and duration you actually want, for example
+     "Summer 2027, 12 weeks". A recruiter decides whether you are viable before
+     they read anything else, and right now this line does not let them. */
+  status: 'Open to software engineering internships',
+  availability: 'Remote, or relocating within India',
   timezone: 'Asia/Kolkata',
   tzLabel: 'IST (UTC+5:30)',
   email: 'aryanghai1205@gmail.com',
@@ -31,6 +35,71 @@ export const thesis = {
     'Backend and systems work, mostly Go and Python, mostly in the place where ' +
     'one program has to make a judgement about another. Guessing is cheap there. ' +
     'Being right is not.',
+} as const;
+
+/* ---------------------------------------------------------------- upstream
+
+   The proof section is the strongest thing on this site and it needed a data
+   model rather than a flat list.
+
+   Two problems it solves. Ten of the merged pull requests are Rego detection
+   rules whose titles differ by a few words, so scanned as a flat list they read
+   as one templated contribution repeated ten times, and the count silently
+   deflates. And the hardest work, the race conditions and lifecycle bugs, was
+   buried under them by a newest-first sort.
+
+   So: the hard bugs lead and carry a plain-English gloss, the rules are grouped
+   once with a frame that states what they actually are, and everything else
+   follows. Every gloss below is a restatement of the pull request title and
+   nothing more. */
+
+/** Repositories that belong to a CNCF project. Used only to phrase the claim. */
+export const CNCF_ORGS = new Set(['kubescape', 'openyurtio']);
+
+/** Pull requests worth a sentence, keyed by number. Ordered hardest first. */
+export const prHighlights: { number: number; gloss: string }[] = [
+  {
+    number: 2624,
+    gloss:
+      'OPA rule registration ran once per scan instead of once per process. ' +
+      'Moved to package scope.',
+  },
+  {
+    number: 3034,
+    gloss:
+      'A metrics scrape could overwrite the stored status and results of the ' +
+      'last real scan.',
+  },
+  {
+    number: 884,
+    gloss:
+      'Container profile timestamps broke their chain when the cache evicted an ' +
+      'entry or a retry ran out.',
+  },
+  {
+    number: 2712,
+    gloss:
+      'A closed or non-interactive stdin spun the CPU in a confirmation prompt ' +
+      'instead of being read as a refusal.',
+  },
+  {
+    number: 882,
+    gloss:
+      'Size accounting for a container profile counted the wrong thing on the ' +
+      'syscall and network report paths.',
+  },
+];
+
+/** The ten Rego rules, stated once, as the thing they collectively are. */
+export const ruleGroup = {
+  title: 'Ten Rego detection rules, merged into Kubescape',
+  body:
+    'Each one maps a distinct Kubernetes privilege escalation primitive into ' +
+    'policy that runs against real clusters: service account assignment, token ' +
+    'issuance, privileged pod modification, node and pod status writes, ' +
+    'namespace scoped remote execution, provider IAM assumption. They share a ' +
+    'title format because they share a rule format, not because they are one ' +
+    'contribution.',
 } as const;
 
 export const links = {
@@ -63,6 +132,13 @@ export const about = {
       'standards were not mine to set. That is the only code review that really ' +
       'tells you where you stand.',
   ],
+  /* The one line on the site that is not defending a claim.
+     TODO(aryan): if you have a real story here, a specific thing that broke and
+     sent you down this path, it will beat anything written for you. */
+  aside:
+    'The honest version: I would rather be corrected by a failing test than ' +
+    'believed by a reviewer who is being polite. Most of what I build is a way ' +
+    'of arranging for that to happen automatically.',
   /* The console session in section 01. The command is typed; output is staggered
      by whole line, never character by character. */
   console: {
@@ -231,8 +307,9 @@ export const skillQualifiers: Record<string, string> = {
 
 export const connect = {
   heading: 'Get in touch',
-  lede: 'Open to Software Engineering internships.',
+  lede: 'Open to software engineering internships.',
   body:
-    'Email is the fastest way to reach me. Everything I have built or ' +
-    'contributed to is linked below and open to inspection, which is the point.',
+    'Email is the fastest way to reach me, and it is written out below in plain ' +
+    'text rather than hidden behind anything. Everything I have built or ' +
+    'contributed to is linked here and open to inspection, which is the point.',
 } as const;

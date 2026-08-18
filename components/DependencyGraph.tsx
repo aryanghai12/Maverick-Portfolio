@@ -3,11 +3,14 @@
 import { useMemo, useState } from 'react';
 import stats from '@/data/stats.json';
 import { projects as projectCopy } from '@/lib/content';
-import { SectionHead } from './SectionHead';
-import { Kinetic } from './Kinetic';
 
 /**
- * The stack, as a bipartite graph rather than a wall of badges.
+ * The dependency graph, as a bipartite graph rather than a wall of badges.
+ *
+ * This used to be section 03 of six, at full section weight, which gave a
+ * chart about bytes on disk the same billing as twenty three merged pull
+ * requests. It is now a block inside the work section, where a measurement of
+ * what each project is made of actually belongs.
  *
  * A badge wall communicates nothing: every badge looks equally weighted whether
  * it stands for two megabytes of TypeScript or one import line. Here an edge's
@@ -63,7 +66,7 @@ function buildGraph() {
 const fmtBytes = (n: number) =>
   n >= 1_000_000 ? `${(n / 1_000_000).toFixed(2)} MB` : `${Math.round(n / 1000)} KB`;
 
-export function Stack() {
+export function DependencyGraph() {
   const { edges, techs, maxBytes } = useMemo(buildGraph, []);
   const [active, setActive] = useState<string | null>(null);
 
@@ -79,16 +82,17 @@ export function Stack() {
   const isLit = (e: Edge) => !active || e.tech === active || e.project === active;
 
   return (
-    <section id="stack" data-cam="work" className="section">
-      <div className="shell">
-        <SectionHead index="03" label="dependencies" />
+    <div className="mt-24 border-t border-[var(--hair-soft)] pt-12 sm:mt-32">
+      <span className="t-label" data-rv>
+        what actually got used
+      </span>
 
-        <div className="grid [&>*]:min-w-0 gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:gap-16">
+      <div className="mt-10 grid [&>*]:min-w-0 gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:gap-16">
           <div>
-            <h2 className="t-h2 max-w-[15ch] text-[var(--bone)]" data-rv>
-              <Kinetic text="What actually got used" />
-            </h2>
-            <p className="t-body mt-7" data-rv>
+            <h3 className="t-h3 max-w-[22ch] text-[var(--bone)]" data-rv>
+              Edges weighted by bytes actually on disk
+            </h3>
+            <p className="t-body mt-6" data-rv>
               Edge thickness is the number of bytes GitHub measured in each repository,
               so a thin edge stays thin. Dashed edges are runtimes the project genuinely
               depends on but which have no source of their own to weigh.
@@ -279,8 +283,7 @@ export function Stack() {
               ))}
             </ul>
           </div>
-        </div>
       </div>
-    </section>
+    </div>
   );
 }

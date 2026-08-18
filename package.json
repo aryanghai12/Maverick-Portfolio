@@ -7,7 +7,8 @@
     "prebuild": "npm run fetch-stats",
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "og": "tsx scripts/make-og.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
