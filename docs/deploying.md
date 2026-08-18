@@ -15,6 +15,7 @@ can serve this site, and none of it needs a server at runtime.
 6. [Any other host](#6-any-other-host)
 7. [Custom domain](#7-custom-domain)
 8. [What to check after the first deploy](#8-what-to-check-after-the-first-deploy)
+9. [Troubleshooting](#9-troubleshooting)
 
 ---
 
@@ -47,8 +48,9 @@ functions, no image optimisation, no database.
 
 1. Push the repository to GitHub.
 2. Go to [vercel.com/new](https://vercel.com/new) and import it.
-3. Vercel detects Next.js. Leave every build setting on its default, because
-   `vercel.json` already pins the build command and the output directory.
+3. Vercel detects Next.js. **Leave the Output Directory setting empty**, on its
+   default. This one matters and is explained in
+   [Troubleshooting](#9-troubleshooting) below.
 4. Open **Environment Variables** before deploying and add:
 
    | Name | Value | Environments |
@@ -148,6 +150,53 @@ Graph and canonical URLs point at the real address, then redeploy.
 - The page has no horizontal scrollbar at 375px wide.
 - `prefers-reduced-motion` genuinely stops the camera. Toggle it in your OS
   accessibility settings and reload.
+
+## 9. Troubleshooting
+
+### `The file "/vercel/path0/out/routes-manifest.json" couldn't be found`
+
+The single most common way to break a Next.js static export on Vercel, and the
+error message points at the wrong culprit first.
+
+This project sets `output: 'export'` in `next.config.mjs`, so `next build`
+writes a finished static site to `out/`. It does **not** write
+`routes-manifest.json` there. That file is part of the normal server build and
+lives in `.next/`.
+
+Vercel's Next.js builder reads the **Output Directory** setting as your
+`distDir`, so pointing it at `out` tells the builder "the Next.js build lives
+here", it goes looking for `.next` artifacts in a folder full of finished HTML,
+finds no manifest, and fails.
+
+**The fix is to not set it at all.** Vercel detects `output: 'export'` on its
+own and serves the exported files. Check both places, because either one alone
+will reproduce the error:
+
+1. `vercel.json` must have **no** `outputDirectory` key. This repository's
+   `vercel.json` is already correct.
+2. Vercel dashboard → **Settings** → **Build and Deployment** → **Output
+   Directory** must be **empty and not overridden**. If the override toggle is
+   on and the box says `out`, turn the override off.
+
+Then redeploy. Do not use "Redeploy with existing Build Cache"; you want a
+clean build.
+
+The other documented fix is to change the Framework Preset to **Other** and set
+Output Directory to `out`, which bypasses the Next.js builder entirely and
+treats the project as a plain static site. That works too, but it gives up
+Vercel's Next.js detection for no benefit, so prefer leaving the preset on
+Next.js.
+
+### The deploy succeeds but the figures are stale
+
+The build fell back to the committed `data/stats.json`. Search the build log for
+`⚠ Falling back` and see [GitHub API and rate limits](github-api.md).
+
+### Assets 404 on a subpath deployment
+
+If the site is served from something other than the domain root, set `basePath`
+in `next.config.mjs` to the subpath. Static exports bake asset URLs at build
+time, so this cannot be fixed by host configuration.
 
 ---
 
