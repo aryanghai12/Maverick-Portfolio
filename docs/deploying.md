@@ -48,9 +48,11 @@ functions, no image optimisation, no database.
 
 1. Push the repository to GitHub.
 2. Go to [vercel.com/new](https://vercel.com/new) and import it.
-3. Vercel detects Next.js. **Leave the Output Directory setting empty**, on its
-   default. This one matters and is explained in
-   [Troubleshooting](#9-troubleshooting) below.
+3. Leave every build setting on its default. `vercel.json` pins the three that
+   matter (`buildCommand`, `outputDirectory`, `framework`) and values in
+   `vercel.json` override the dashboard, so there is nothing to configure here.
+   If a deploy fails looking for `routes-manifest.json`, see
+   [Troubleshooting](#9-troubleshooting).
 4. Open **Environment Variables** before deploying and add:
 
    | Name | Value | Environments |
@@ -156,36 +158,47 @@ Graph and canonical URLs point at the real address, then redeploy.
 ### `The file "/vercel/path0/out/routes-manifest.json" couldn't be found`
 
 The single most common way to break a Next.js static export on Vercel, and the
-error message points at the wrong culprit first.
+error names the wrong culprit first.
 
-This project sets `output: 'export'` in `next.config.mjs`, so `next build`
-writes a finished static site to `out/`. It does **not** write
-`routes-manifest.json` there. That file is part of the normal server build and
+**What is actually happening.** This project sets `output: 'export'`, so
+`next build` writes a finished static site to `out/`. It does not write
+`routes-manifest.json` there. That file belongs to the normal server build and
 lives in `.next/`.
 
 Vercel's Next.js builder reads the **Output Directory** setting as your
-`distDir`, so pointing it at `out` tells the builder "the Next.js build lives
-here", it goes looking for `.next` artifacts in a folder full of finished HTML,
-finds no manifest, and fails.
+`distDir`. Pointing it at `out` tells the builder "the Next.js build lives
+here", so it looks for `.next` artifacts in a directory of finished HTML, finds
+no manifest, and fails.
 
-**The fix is to not set it at all.** Vercel detects `output: 'export'` on its
-own and serves the exported files. Check both places, because either one alone
-will reproduce the error:
+**Why this repository no longer hits it.** `vercel.json` sets:
 
-1. `vercel.json` must have **no** `outputDirectory` key. This repository's
-   `vercel.json` is already correct.
-2. Vercel dashboard → **Settings** → **Build and Deployment** → **Output
-   Directory** must be **empty and not overridden**. If the override toggle is
-   on and the box says `out`, turn the override off.
+```json
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "out",
+  "framework": null
+}
+```
 
-Then redeploy. Do not use "Redeploy with existing Build Cache"; you want a
-clean build.
+`"framework": null` is the Other preset. It means the Next.js builder is never
+invoked, so nothing ever goes looking for a routes manifest. Vercel runs the
+build command and serves `out/` as what it actually is: a directory of static
+files. Nothing is lost by doing this, because a static export uses no
+server-side Vercel feature. There is no ISR, no image optimisation, and no
+serverless function to give up.
 
-The other documented fix is to change the Framework Preset to **Other** and set
-Output Directory to `out`, which bypasses the Next.js builder entirely and
-treats the project as a plain static site. That works too, but it gives up
-Vercel's Next.js detection for no benefit, so prefer leaving the preset on
-Next.js.
+**Settings in `vercel.json` override the dashboard**, which is the important
+part. All three keys are pinned, so a stale Output Directory override left in
+the project settings can no longer break the build.
+
+If you are adapting this for a fork and want to keep the Next.js preset
+instead, that also works, but then **Output Directory must be left empty** in
+both `vercel.json` and the dashboard, and Vercel will detect `output: 'export'`
+on its own. Pinning it to `out` while the preset is Next.js is the one
+combination that cannot work.
+
+After changing any of this, trigger a plain **Redeploy**. Do not use "Redeploy
+with existing Build Cache"; you want the new configuration read from scratch.
 
 ### The deploy succeeds but the figures are stale
 
