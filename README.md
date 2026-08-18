@@ -50,8 +50,8 @@ lining a corridor the camera travels down as you scroll. Two draw calls.
 Requires Node 20 or newer.
 
 ```bash
-git clone https://github.com/aryanghai12/portfolio.git
-cd portfolio
+git clone https://github.com/aryanghai12/Maverick-Portfolio.git
+cd Maverick-Portfolio
 npm install
 npm run dev            # http://localhost:3000
 ```
