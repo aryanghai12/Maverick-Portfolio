@@ -9,22 +9,22 @@ import { damp, measureStations, progressFor, type StationTable } from '@/lib/sta
 /**
  * The camera stations, one per data-cam section.
  *
- * The camera does one thing — travel forward down the corridor — and the
+ * The camera does one thing, travel forward down the corridor, and the
  * sections change how far in it is and how it is angled. Small moves: the hall
  * should feel like a place the visitor is walking through, not a camera doing
  * tricks around them.
  */
 const STATIONS: { z: number; y: number; lookY: number; fov: number }[] = [
-  { z: 26, y: 0.4, lookY: 0, fov: 54 }, // 00 hero — at the mouth, hall at rest
-  { z: 6, y: 1.1, lookY: -0.4, fov: 52 }, // 01 readme — moving in
-  { z: -26, y: 0.2, lookY: 0.2, fov: 50 }, // 02 work — among the call graph
+  { z: 26, y: 0.4, lookY: 0, fov: 54 }, // 00 hero, at the mouth, hall at rest
+  { z: 6, y: 1.1, lookY: -0.4, fov: 52 }, // 01 readme, moving in
+  { z: -26, y: 0.2, lookY: 0.2, fov: 50 }, // 02 work, among the call graph
   { z: -58, y: -0.6, lookY: 0.5, fov: 50 }, // 03 dependencies
   { z: -92, y: 0.8, lookY: -0.2, fov: 52 }, // 04 upstream
-  { z: -128, y: 0.2, lookY: 0, fov: 56 }, // 05 connect — the corridor opens out
+  { z: -128, y: 0.2, lookY: 0, fov: 56 }, // 05 connect, the corridor opens out
 ];
 
-const COUNT_DESKTOP = 5200;
-const COUNT_MOBILE = 1900;
+const COUNT_DESKTOP = 7400;
+const COUNT_MOBILE = 2400;
 
 export function Scene({ reduced }: { reduced: boolean }) {
   const { camera, size } = useThree();
@@ -117,7 +117,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
   useEffect(() => {
     if (reduced) return;
     const skip = () => {
-      // Not a jump to 1 — that would snap the camera. Fast-forward instead.
+      // Not a jump to 1, which would snap the camera. Fast forward instead.
       rig.current.intro = Math.max(rig.current.intro, 0.72);
     };
     window.addEventListener('wheel', skip, { passive: true, once: true });
@@ -149,7 +149,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
     const r = rig.current;
 
     /* Adaptive resolution. If the device cannot hold the frame, drop pixels
-       before dropping frames — a soft background at 60fps beats a sharp one at
+       before dropping frames. A soft background at 60fps beats a sharp one at
        28. It ratchets back up when there is headroom again. */
     if (!r.locked && state.clock.elapsedTime > 2) {
       r.acc += delta;
@@ -171,11 +171,11 @@ export function Scene({ reduced }: { reduced: boolean }) {
     if (r.intro < 1) r.intro = Math.min(1, r.intro + dt / 1.9);
 
     r.prog = progressFor(window.scrollY, table.current);
-    // Reduced motion still tracks scroll — the visitor asked for less motion,
+    // Reduced motion still tracks scroll. The visitor asked for less motion,
     // not for a frozen backdrop that ignores where they are on the page.
     r.smooth = reduced ? r.prog : damp(r.smooth, r.prog, 4.2, dt);
-    r.mx = reduced ? 0 : damp(r.mx, r.tmx, 2.4, dt);
-    r.my = reduced ? 0 : damp(r.my, r.tmy, 2.4, dt);
+    r.mx = reduced ? 0 : damp(r.mx, r.tmx, 1.5, dt);
+    r.my = reduced ? 0 : damp(r.my, r.tmy, 1.5, dt);
 
     const i = Math.min(STATIONS.length - 1, Math.max(0, Math.floor(r.smooth)));
     const j = Math.min(STATIONS.length - 1, i + 1);
@@ -195,8 +195,8 @@ export function Scene({ reduced }: { reduced: boolean }) {
 
     // Parallax is small on purpose. Enough to feel like a held camera; not
     // enough to swing the hall around when someone moves the mouse to a link.
-    camera.position.set(r.mx * 1.5, y + r.my * -0.6, z + introZ);
-    target.set(r.mx * 0.7, lookY, z - 24);
+    camera.position.set(r.mx * 0.75, y + r.my * -0.3, z + introZ);
+    target.set(r.mx * 0.35, lookY, z - 24);
     camera.lookAt(target);
 
     const cam = camera as THREE.PerspectiveCamera;
@@ -210,7 +210,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
        the whole concept in one object: it is the reviewer moving through the
        code. Everything else is set dressing. */
     if (readHead.current) {
-      readHead.current.position.set(r.mx * 1.5, y + 0.6, z - 9);
+      readHead.current.position.set(r.mx * 0.75, y + 0.6, z - 9);
     }
 
     /* Call-graph edges belong to the work section. They fade in as the camera
@@ -218,20 +218,20 @@ export function Scene({ reduced }: { reduced: boolean }) {
        whole time, so they read as a thing that section does. */
     if (edgeRef.current) {
       const d = Math.abs(r.smooth - 2);
-      const wanted = Math.max(0, 1 - d * 0.85) * 0.5;
+      const wanted = Math.max(0, 1 - d * 0.85) * 0.28;
       const mat = edgeRef.current.material as THREE.LineBasicMaterial;
       mat.opacity = reduced ? wanted : damp(mat.opacity, wanted, 5, dt);
       edgeRef.current.visible = mat.opacity > 0.005;
     }
 
     /* Upstream: concentric rings the camera passes through, one per external
-       repository. Commit history read the way you read a tree — and the count
+       repository. Commit history read the way you read a tree, and the count
        is not decorative, it is the six repos in the section beside it. */
     if (ringsRef.current) {
       const wanted = Math.max(0, 1 - Math.abs(r.smooth - 4) * 0.9);
       ringsRef.current.children.forEach((child, i) => {
         const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-        const target = wanted * (i === 0 ? 0.55 : 0.3);
+        const target = wanted * (i === 0 ? 0.3 : 0.16);
         mat.opacity = reduced ? target : damp(mat.opacity, target, 4.5, dt);
         child.rotation.z += reduced ? 0 : dt * (0.04 + i * 0.012);
       });
@@ -244,7 +244,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
       const wanted = Math.max(0, 1 - Math.abs(r.smooth - 5) * 1.15);
       beamRef.current.children.forEach((child) => {
         const mat = (child as THREE.Mesh).material as THREE.MeshBasicMaterial;
-        const target = wanted * 0.42;
+        const target = wanted * 0.24;
         mat.opacity = reduced ? target : damp(mat.opacity, target, 4, dt);
       });
       beamRef.current.visible = wanted > 0.01;
@@ -259,19 +259,24 @@ export function Scene({ reduced }: { reduced: boolean }) {
     <>
       {/* Fog is what sells the depth and what keeps the geometry budget honest:
           distant instances dissolve instead of needing detail. */}
-      <fogExp2 attach="fog" args={['#06080a', 0.0185]} />
-      <color attach="background" args={['#06080a']} />
+      <fogExp2 attach="fog" args={['#0e0e11', 0.0108]} />
+      <color attach="background" args={['#0e0e11']} />
 
-      {/* Enough ambient to keep distant geometry from going pure black, and no
-          more — the depth in this scene comes from the fog and the read head. */}
-      <ambientLight intensity={0.5} color="#6c7c8c" />
-      <directionalLight position={[8, 18, 12]} intensity={0.55} color="#9fb3c4" />
+      {/* Neutral light only, and not much of it.
+          
+          The hall is scenery. It should be the thing you notice second, on the
+          way back up, not the thing competing with the sentence you are trying
+          to read. The read head is the one exception: a small travelling pool
+          of light gives the corridor its depth and its only real motion, so it
+          keeps enough intensity to be legible as a light source. */}
+      <ambientLight intensity={0.5} color="#ffffff" />
+      <directionalLight position={[8, 18, 12]} intensity={0.5} color="#ffffff" />
       <pointLight
         ref={readHead}
-        intensity={62}
-        distance={34}
+        intensity={54}
+        distance={40}
         decay={2.1}
-        color="#ffd0a0"
+        color="#ffffff"
       />
 
       <instancedMesh
@@ -296,7 +301,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
               .replace('#include <common>', '#include <common>\nvarying vec3 vAColor;')
               .replace(
                 '#include <color_fragment>',
-                '#include <color_fragment>\ndiffuseColor.rgb *= vAColor * 1.95;',
+                '#include <color_fragment>\ndiffuseColor.rgb *= vAColor * 1.05;',
               );
           }}
         />
@@ -306,7 +311,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[edges, 3]} />
         </bufferGeometry>
-        <lineBasicMaterial color="#e3873f" transparent opacity={0} />
+        <lineBasicMaterial color="#ffffff" transparent opacity={0} />
       </lineSegments>
 
       <group ref={ringsRef} position={[0, 0, -104]} visible={false}>
@@ -314,7 +319,7 @@ export function Scene({ reduced }: { reduced: boolean }) {
           <mesh key={rad} rotation={[0, 0, i * 0.4]}>
             <ringGeometry args={[rad, rad + 0.055, 96]} />
             <meshBasicMaterial
-              color={i === 0 ? '#e3873f' : '#5c6a76'}
+              color={i === 0 ? '#ffffff' : '#6b6b75'}
               transparent
               opacity={0}
               side={THREE.DoubleSide}
@@ -327,14 +332,13 @@ export function Scene({ reduced }: { reduced: boolean }) {
       {/* The beam sits ahead of the camera rather than around it.
           The first attempt was a wide cone centred on the camera at station 5,
           which put the camera *inside* the volume and flooded the entire
-          section with orange — a lens-flare demo, and a straight breach of the
-          rule that the accent gets one or two per cent of the pixels. It is now
+          section with light, which was a lens flare demo rather than a beam. It is now
           a thin line receding to the vanishing point, which is what a beam
           terminating on the console was supposed to look like. */}
       <group ref={beamRef} position={[0, -0.4, -186]} visible={false}>
         <mesh rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.035, 0.035, 46, 6, 1, true]} />
-          <meshBasicMaterial color="#ffb067" transparent opacity={0} depthWrite={false} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} />
         </mesh>
       </group>
     </>

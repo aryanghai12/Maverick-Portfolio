@@ -1,20 +1,25 @@
 import stats from '@/data/stats.json';
-import { identity, thesis } from '@/lib/content';
+import { identity, links, thesis } from '@/lib/content';
 import { Kinetic } from './Kinetic';
 
 /**
- * No boot sequence, no progress bar, no "INITIALIZING". The page paints
- * immediately with every word already in the DOM; only visibility is animated.
+ * The landing section.
  *
- * Each figure below is read from data/stats.json, which is written at build time
- * by scripts/fetch-stats.ts from the public GitHub API. None of them is typed by
+ * The name is not the headline. A visitor who has just arrived has no reason
+ * to care about a name yet, and a 90px name is the single most recognisable
+ * shape of a generated portfolio. The statement leads, the name signs it, and
+ * the four figures underneath are the evidence that the statement is not just
+ * a nice sentence.
+ *
+ * Every figure is read from data/stats.json, written at build time by
+ * scripts/fetch-stats.ts from the public GitHub API. None of them is typed by
  * hand, and the build fails rather than shipping a stale one.
  */
 const gauges = [
-  { value: String(stats.merged.external), label: 'merged\nupstream' },
-  { value: String(stats.merged.externalRepoCount), label: 'external\nrepos' },
-  { value: String(stats.user.publicRepos), label: 'public\nrepos' },
-  { value: String(stats.user.contributingSince), label: 'contributing\nsince' },
+  { value: String(stats.merged.external), label: 'merged upstream' },
+  { value: String(stats.merged.externalRepoCount), label: 'external repos' },
+  { value: String(stats.user.publicRepos), label: 'public repos' },
+  { value: String(stats.user.contributingSince), label: 'contributing since' },
 ];
 
 export function Hero() {
@@ -22,59 +27,85 @@ export function Hero() {
     <section
       id="hero"
       data-cam="hero"
-      className="relative flex min-h-[100svh] flex-col justify-center pt-28 pb-16"
+      className="relative flex min-h-[100svh] flex-col justify-center pt-32 pb-20 sm:pt-28"
     >
       <div className="shell">
-        {/* The name is the one place mono runs at display size. */}
-        <h1 className="t-display text-[var(--bone)]">
-          <Kinetic text={identity.name} />
-        </h1>
-
-        {/* The dividers are dropped below sm rather than wrapped. A pipe stranded
-            at the end of a line reads as a typo, and three stacked lines need no
-            separator to be understood as three things. */}
-        <div
-          className="mt-7 flex flex-col gap-y-1.5 sm:mt-9 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-3 sm:gap-y-2"
-          data-rv
-        >
-          <span className="t-label !text-[var(--bone-dim)]">{identity.role}</span>
-          <span aria-hidden className="hidden h-3 w-px bg-[var(--edge)] sm:block" />
-          <span className="t-label">{identity.location}</span>
-          <span aria-hidden className="hidden h-3 w-px bg-[var(--edge)] sm:block" />
-          <span className="t-label !text-[var(--ember)]">open to SWE internships</span>
+        {/* Signature line. Small, set in the machine voice, sitting above the
+            statement the way a byline sits above a piece of writing. */}
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2" data-rv>
+          <span className="u-mono text-[0.78rem] font-medium tracking-[0.16em] text-[var(--bone)] uppercase">
+            {identity.name}
+          </span>
+          <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
+          <span className="t-label !text-[0.63rem]">{identity.role}</span>
+          <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
+          <span className="t-label !text-[0.63rem]">{identity.location}</span>
         </div>
 
-        {/* The single serif italic moment on the entire site. */}
-        <p className="u-serif mt-10 max-w-[46ch] text-[clamp(1.15rem,1rem+1vw,1.72rem)] leading-[1.42] text-[var(--bone)] sm:mt-14" data-rv>
-          {thesis}
+        <h1 className="t-display mt-7 max-w-[19ch] text-[var(--bone)] sm:mt-9">
+          <Kinetic text={thesis.headline} stagger={13} />
+        </h1>
+
+        <p className="t-lede mt-7 !max-w-[54ch] !text-[var(--bone-dim)] sm:mt-9" data-rv>
+          {thesis.support}
         </p>
 
-        <dl className="mt-14 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-[var(--edge)] bg-[var(--edge)] sm:mt-20 sm:grid-cols-4">
+        {/* Two actions, ranked. The primary one goes to the evidence rather
+            than to a contact form, because the evidence is the argument. */}
+        <div className="mt-10 flex flex-wrap items-center gap-3 sm:mt-12" data-rv>
+          <a
+            href="#work"
+            className="group inline-flex items-center gap-2.5 rounded-full bg-[var(--bone)] px-5 py-2.5 text-[0.83rem] font-medium tracking-[-0.01em] text-[#0e0e11] transition-all duration-300 [transition-timing-function:var(--ease)] hover:bg-white hover:shadow-[0_0_28px_-6px_rgba(255,255,255,0.45)]"
+          >
+            See the work
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[3px]">
+              →
+            </span>
+          </a>
+          <a
+            href={links.github}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-[var(--edge)] px-5 py-2.5 text-[0.83rem] font-medium tracking-[-0.01em] text-[var(--bone-dim)] transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--bone)] hover:text-[var(--bone)]"
+          >
+            GitHub
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[3px]">
+              ↗
+            </span>
+          </a>
+          <span className="ml-1 flex items-center gap-2.5">
+            <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
+            <span className="t-label !text-[0.6rem] !text-[var(--bone-dim)]">
+              open to internships
+            </span>
+          </span>
+        </div>
+
+        {/* The evidence, stated as four measured figures. */}
+        <dl className="mt-16 grid grid-cols-2 border-t border-[var(--hair-soft)] sm:mt-20 sm:grid-cols-4">
           {gauges.map((g, i) => (
             <div
               key={g.label}
-              className="bg-[var(--panel-0)] px-5 py-6 sm:px-6 sm:py-7"
+              className="border-b border-[var(--hair-soft)] py-5 pr-4 sm:border-b-0 sm:py-6 [&:not(:first-child)]:sm:border-l [&:not(:first-child)]:sm:border-[var(--hair-soft)] [&:not(:first-child)]:sm:pl-6"
               data-rv
               style={{ transitionDelay: `${i * 70}ms` }}
             >
-              <dd className="u-mono text-[clamp(1.7rem,1.2rem+2vw,2.6rem)] font-bold leading-none tracking-[-0.05em] text-[var(--ember)]">
+              <dd className="u-mono text-[clamp(1.9rem,1.3rem+2vw,2.7rem)] leading-none font-medium tracking-[-0.045em] text-[var(--bone)]">
                 {g.value}
               </dd>
-              <dt className="t-label mt-3 whitespace-pre-line !text-[0.62rem] !leading-[1.5]">
-                {g.label}
-              </dt>
+              <dt className="t-label mt-3 !text-[0.6rem] !leading-[1.5]">{g.label}</dt>
             </div>
           ))}
         </dl>
       </div>
 
-      {/* Scroll cue: one ember tick that descends and resets. Not a bouncing mouse. */}
+      {/* Scroll cue: one tick that descends and resets. Not a bouncing mouse. */}
       <div
         aria-hidden
-        className="shell pointer-events-none mt-16 flex items-center gap-3 sm:mt-24"
+        className="shell pointer-events-none mt-14 flex items-center gap-3 sm:mt-20"
       >
-        <span className="cue-tick h-6 w-px bg-gradient-to-b from-transparent to-[var(--ember)]" />
-        <span className="t-label !text-[0.6rem]">scroll</span>
+        <span className="cue-tick h-6 w-px bg-gradient-to-b from-transparent to-[var(--bone-dim)]" />
+        <span className="t-label !text-[0.58rem]">scroll</span>
       </div>
     </section>
   );

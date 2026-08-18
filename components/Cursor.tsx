@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
  * Two-element cursor: an exact dot and a ring that trails it.
  *
  * The ring lerps toward the pointer at 0.16 per frame and never catches it.
- * The lag is the effect — a ring that tracks perfectly is just a bigger cursor.
+ * The lag is the effect. A ring that tracks perfectly is just a bigger cursor.
  *
  * Both elements are written with transform only, inside one rAF loop, so any
  * number of pointer events between frames collapse into a single style write.

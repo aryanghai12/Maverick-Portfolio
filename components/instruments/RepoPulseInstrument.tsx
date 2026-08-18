@@ -7,7 +7,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
  *
  * This is not a scripted animation of a clustering result. The points are
  * generated once from a seeded PRNG, and Lloyd's algorithm genuinely runs over
- * them below — assign every point to its nearest centroid, move each centroid to
+ * them below: assign every point to its nearest centroid, move each centroid to
  * the mean of its members, repeat until nothing moves. The frames you see are
  * the real iterations, including the fact that it converges in a handful of them.
  *
@@ -29,7 +29,7 @@ function mulberry32(seed: number) {
 
 type Pt = { x: number; y: number };
 
-/** Box–Muller, so the clouds look like real measurements rather than a grid. */
+/** Box-Muller, so the clouds look like real measurements rather than a grid. */
 function gaussian(rnd: () => number, mean: number, sd: number) {
   const u = Math.max(rnd(), 1e-9);
   const v = rnd();
@@ -51,7 +51,7 @@ const q = (n: number) => Math.round(n * 1e4) / 1e4;
 function buildPoints(): Pt[] {
   const rnd = mulberry32(20260318);
   const spec = [
-    // [count, mean x, mean y, sd] — x is log time-to-merge, y is review friction
+    // [count, mean x, mean y, sd]. x is log time to merge, y is review friction
     [26, 0.22, 0.24, 0.075],
     [28, 0.5, 0.52, 0.095],
     [14, 0.79, 0.79, 0.085],
@@ -124,7 +124,7 @@ function lloyd(points: Pt[], k = 3, maxIter = 12): Frame[] {
 
 /**
  * Personas are assigned after convergence by where each centroid landed, not by
- * cluster index — k-means indices are arbitrary, so labelling by index would be
+ * cluster index, because k-means indices are arbitrary and labelling by index would be
  * a coin flip that happens to look right on this seed.
  *
  * Colour and shape both carry the distinction. Colour alone would fail for a
@@ -134,7 +134,7 @@ function lloyd(points: Pt[], k = 3, maxIter = 12): Frame[] {
 const personas = [
   { key: 'fast', label: 'Fast Track', color: 'var(--mute)', shape: 'circle' as const },
   { key: 'avg', label: 'Average Churn', color: 'var(--bone-dim)', shape: 'square' as const },
-  { key: 'hole', label: 'Review Black Hole', color: 'var(--ember)', shape: 'triangle' as const },
+  { key: 'hole', label: 'Review Black Hole', color: 'var(--accent)', shape: 'triangle' as const },
 ];
 
 const VB = 100;
@@ -318,7 +318,7 @@ export function RepoPulseInstrument() {
               </svg>
               <span
                 className="t-label !text-[0.56rem]"
-                style={p.key === 'hole' ? { color: 'var(--ember)' } : undefined}
+                style={p.key === 'hole' ? { color: 'var(--accent)' } : undefined}
               >
                 {p.label}
               </span>
@@ -329,7 +329,7 @@ export function RepoPulseInstrument() {
         <div className="code-surface mt-4 px-3 py-3 sm:px-4">
           <div className="t-label mb-2 !text-[0.54rem]">objective</div>
           <p className="m-0 text-[0.74rem] text-[var(--bone-dim)]">
-            argmin <span className="text-[var(--ember)]">Σ</span> ‖x − μ
+            argmin <span className="text-[var(--accent)]">Σ</span> ‖x − μ
             <sub>i</sub>‖²
           </p>
           <p className="mt-2 mb-0 text-[0.66rem] leading-[1.6] text-[var(--mute)]">

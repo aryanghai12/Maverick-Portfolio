@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { links, projects } from '@/lib/content';
+import { scrollToId } from '@/lib/scroll';
 
 /**
  * A real keyboard interface, which on a site about developer tooling is
@@ -9,9 +10,9 @@ import { links, projects } from '@/lib/content';
  *
  * Opens on Cmd/Ctrl+K, filters sections, projects and links, arrows navigate,
  * Enter executes, Escape closes. Focus is trapped while open and returned to
- * whatever had it before — a palette that strands keyboard focus is worse than
- * no palette. There is also a visible trigger, because a feature only reachable
- * by a shortcut nobody told you about is a feature for nobody.
+ * whatever had it before, because a palette that strands keyboard focus is
+ * worse than no palette. There is also a visible trigger, because a feature
+ * only reachable by a shortcut nobody told you about is a feature for nobody.
  */
 
 type Item = {
@@ -30,9 +31,10 @@ export function CommandPalette() {
   const listRef = useRef<HTMLUListElement>(null);
   const restoreTo = useRef<HTMLElement | null>(null);
 
-  const go = useCallback((id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+  /* Jumps go through the shared scroll helper rather than scrollIntoView.
+     Smooth scrolling drives window.scrollTo on every frame, so a native smooth
+     jump fires at the same time and the two fight over the same pixels. */
+  const go = useCallback((id: string) => scrollToId(id), []);
 
   const openUrl = useCallback((url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
@@ -97,7 +99,7 @@ export function CommandPalette() {
    * A fixed corner button collides with whatever happens to be under it, and
    * down there that is the footer. It is also redundant by then: Connect has a
    * working console of its own doing the same job, two hundred pixels away. The
-   * Cmd+K shortcut keeps working the whole time — only the affordance leaves. */
+   * Cmd+K shortcut keeps working the whole time. Only the affordance leaves. */
   const [triggerHidden, setTriggerHidden] = useState(false);
   useEffect(() => {
     const el = document.getElementById('connect');
@@ -177,11 +179,9 @@ export function CommandPalette() {
       <button
         type="button"
         onClick={show}
-        /* Bottom-left, not bottom-centre: centred it sat on top of the footer
-           and the closing paragraph of whichever section was in view. The left
-           corner is the only edge of the frame with nothing else in it — the
-           section rail owns the right, the HUD ticks own the corners. */
-        className="palette-trigger u-mono fixed bottom-5 left-5 z-50 flex items-center gap-2 rounded-full border border-[var(--edge)] bg-[var(--panel-0)]/85 px-3.5 py-2 text-[0.66rem] text-[var(--bone-dim)] backdrop-blur-md transition-colors duration-300 hover:border-[var(--ember)] hover:text-[var(--ember)]"
+        /* Bottom left, not bottom centre: centred it sat on top of the footer
+           and the closing paragraph of whichever section was in view. */
+        className="palette-trigger u-mono fixed bottom-5 left-5 z-50 hidden items-center gap-2 sm:flex rounded-full border border-[var(--edge)] bg-[var(--panel-0)]/85 px-3.5 py-2 text-[0.66rem] text-[var(--bone-dim)] backdrop-blur-md transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]"
         aria-haspopup="dialog"
         tabIndex={triggerHidden ? -1 : 0}
         aria-hidden={triggerHidden}
@@ -218,7 +218,7 @@ export function CommandPalette() {
             style={{ animation: 'palette-in 220ms var(--ease-out) both' }}
           >
             <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3">
-              <span aria-hidden className="u-mono text-[0.8rem] text-[var(--ember)]">
+              <span aria-hidden className="u-mono text-[0.8rem] text-[var(--accent)]">
                 ›
               </span>
               <input
@@ -226,7 +226,7 @@ export function CommandPalette() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={onKeyDown}
-                placeholder="jump to a section, project or link"
+                placeholder="Jump to a section, project or link"
                 spellCheck={false}
                 autoComplete="off"
                 aria-label="Filter commands"
@@ -238,10 +238,14 @@ export function CommandPalette() {
               </kbd>
             </div>
 
-            <ul ref={listRef} className="scroll-wall m-0 max-h-[46vh] list-none overflow-y-auto p-1.5">
+            <ul
+              ref={listRef}
+              className="scroll-wall m-0 max-h-[46vh] list-none overflow-y-auto p-1.5"
+              data-lenis-prevent
+            >
               {filtered.length === 0 ? (
                 <li className="u-mono px-3 py-6 text-center text-[0.75rem] text-[var(--mute)]">
-                  nothing matches “{query}”
+                  Nothing matches “{query}”
                 </li>
               ) : (
                 filtered.map((it, i) => {
@@ -263,19 +267,19 @@ export function CommandPalette() {
                         }}
                         className="flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-left transition-colors duration-150"
                         style={{
-                          background: i === active ? 'rgba(227,135,63,0.1)' : 'transparent',
+                          background: i === active ? 'rgba(255,255,255,0.09)' : 'transparent',
                         }}
                       >
                         <span
                           aria-hidden
                           className="w-2 shrink-0 text-[0.6rem]"
-                          style={{ color: i === active ? 'var(--ember)' : 'transparent' }}
+                          style={{ color: i === active ? 'var(--accent)' : 'transparent' }}
                         >
                           ◈
                         </span>
                         <span
                           className="u-mono shrink-0 text-[0.8rem]"
-                          style={{ color: i === active ? 'var(--ember)' : 'var(--bone)' }}
+                          style={{ color: i === active ? 'var(--accent)' : 'var(--bone)' }}
                         >
                           {it.label}
                         </span>

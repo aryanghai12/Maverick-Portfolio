@@ -1,55 +1,61 @@
 @import 'tailwindcss';
 
 /* ============================================================ 0 · tokens
-   Graphite and one ember. The accent is allowed roughly 1–2% of the pixels on
-   screen — corner ticks, the caret, one LED, active states, the figure 22. It
-   is never a headline and never a large fill.
+   Monochrome. There is no hue anywhere on this site: every surface, rule,
+   label and highlight is a step on one neutral ramp from near black to pure
+   white. Colour is the cheapest way to make a page look decorated and the
+   fastest way to make it look generic, so the whole design is carried by
+   contrast, weight and space instead.
 
-   --add / --del are not second and third accents. They are syntax, they are
-   deliberately desaturated, and they are forbidden outside a code surface.   */
+   White is the accent. It is spent the way an accent colour would be: the
+   active nav item, the live indicator, the figure that matters, the rule under
+   a hovered link. Everything else lives in the greys.                        */
 
 @theme {
-  --color-void: #06080a;
-  --color-panel-0: #0b0e12;
-  --color-panel-1: #12171c;
-  --color-panel-2: #1b2229;
-  --color-edge: #2a333c;
+  --color-void: #0e0e11;
+  --color-panel-0: #151519;
+  --color-panel-1: #1c1c21;
+  --color-panel-2: #24242a;
+  --color-edge: #32323a;
 
-  --color-bone: #e4e9ee;
-  --color-bone-dim: #9aa5b0;
-  --color-mute: #626d78;
+  --color-bone: #f4f4f6;
+  --color-bone-dim: #b2b2ba;
+  --color-mute: #7c7c86;
 
-  --color-ember: #e3873f;
-  --color-ember-hi: #ffb067;
+  --color-accent: #ffffff;
+  --color-accent-hi: #ffffff;
 
-  --color-add: #6e9f5b;
-  --color-del: #b4544a;
+  --color-add: #e8e8ec;
+  --color-del: #74747e;
 
-  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
-  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
-  --void: #06080a;
-  --panel-0: #0b0e12;
-  --panel-1: #12171c;
-  --panel-2: #1b2229;
-  --edge: #2a333c;
-  /* One step brighter than --edge, for lines that have to carry data rather
-     than merely divide two surfaces — the dependency graph reads at a glance
-     only if its edges sit above the noise floor. */
-  --edge-hi: #3d4954;
+  /* The ground is lifted well off pure black. A #06080a page reads as a void
+     with text floating on it; a real dark interface sits around #0e-#14 so
+     that panels above it have somewhere to go. */
+  --void: #0e0e11;
+  --panel-0: #151519;
+  --panel-1: #1c1c21;
+  --panel-2: #24242a;
+  --edge: #32323a;
+  /* One step brighter than --edge, for lines that carry data rather than
+     merely divide two surfaces. */
+  --edge-hi: #45454f;
 
-  --bone: #e4e9ee;
-  --bone-dim: #9aa5b0;
-  --mute: #626d78;
+  --bone: #f4f4f6;
+  --bone-dim: #b2b2ba;
+  --mute: #7c7c86;
 
-  --ember: #e3873f;
-  --ember-hi: #ffb067;
+  --accent: #ffffff;
+  --accent-hi: #ffffff;
 
-  --add: #6e9f5b;
-  --del: #b4544a;
+  /* Two states, no hue available. Pass is bright, fail is dim. These are the
+     only two tokens allowed on a code surface and nowhere else. */
+  --add: #e8e8ec;
+  --del: #74747e;
 
   /* Feel lives in the easing curve, not the effect. */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -58,13 +64,14 @@
 
   --pad: clamp(20px, 4vw, 68px);
   --rail: 1px;
-  --maxw: 1320px;
+  --maxw: 1240px;
+  --nav-h: 62px;
 
   /* Depth in dark UI comes from light, not shadow: a surface is elevated by
-     being lighter and carrying a hairline at 8–16% white along its top edge.
-     That hairline is the highest-leverage detail on the page.               */
-  --hair: rgba(228, 233, 238, 0.13);
-  --hair-soft: rgba(228, 233, 238, 0.07);
+     being lighter and carrying a hairline at 8-16% white along its top edge.
+     That hairline is the highest-leverage detail on the page. */
+  --hair: rgba(255, 255, 255, 0.14);
+  --hair-soft: rgba(255, 255, 255, 0.075);
 
   color-scheme: dark;
 }
@@ -72,10 +79,10 @@
 /* ============================================================== 1 · reset
 
    Everything below lives inside @layer base on purpose. Unlayered CSS beats
-   *every* layered rule in the cascade, including Tailwind's utilities — so an
+   *every* layered rule in the cascade, including Tailwind's utilities, so an
    unlayered `button { padding: 0 }` silently defeats `px-3` on every button on
    the site, with no warning and no specificity conflict to notice. Layering the
-   reset puts it back underneath the utilities where a reset belongs.          */
+   reset puts it back underneath the utilities where a reset belongs. */
 
 @layer base {
   *,
@@ -87,6 +94,7 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: auto; /* Lenis owns scrolling; native smooth would fight it. */
+    scroll-padding-top: calc(var(--nav-h) + 24px);
   }
 
   body {
@@ -94,9 +102,9 @@
     background: var(--void);
     color: var(--bone);
     font-family: var(--font-sans);
-    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.04rem);
     line-height: 1.65;
-    letter-spacing: -0.005em;
+    letter-spacing: -0.008em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: clip;
@@ -130,15 +138,15 @@
   }
 
   ::selection {
-    background: rgba(227, 135, 63, 0.28);
-    color: var(--bone);
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
   }
 
-  /* Visible focus on every interactive surface, in the accent, always. */
+  /* Visible focus on every interactive surface, always. */
   :focus-visible {
-    outline: 2px solid var(--ember);
+    outline: 2px solid var(--accent);
     outline-offset: 3px;
-    border-radius: 2px;
+    border-radius: 3px;
   }
 }
 
@@ -147,61 +155,64 @@
 @layer components {
 
 /* ======================================================== 2 · type scale
-   One mono for what the machine says. One grotesque for what the human says.
-   One serif italic, exactly once, for the thesis line.                      */
+
+   Geist for everything a person reads, Geist Mono for everything a machine
+   produced: labels, counts, timestamps, tags, paths and terminal output.
+
+   The previous build set every heading in monospace at display size. Mono
+   gives every glyph the same advance width, which is the point when you are
+   aligning code and a defect when you are setting a headline: narrow letters
+   float in a pocket of air, wide ones get squeezed, and a long name develops
+   visible holes. Mono is now capped well below display size and confined to
+   the job it is actually good at. */
 
 .u-mono {
   font-family: var(--font-mono);
-  font-feature-settings: 'ss02' 1, 'zero' 1;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'zero' 1;
 }
 
-.u-serif {
-  font-family: var(--font-serif);
-  font-style: italic;
-}
-
-/* The hero name, set in mono at display size. A giant monospace headline is
-   unmistakably code, and almost nobody executes it. This is the type decision
-   that makes the site. */
+/* Display. Used for the opening statement and nothing else. Sentence case,
+   because a name in 90px lowercase is a template, not a decision. */
 .t-display {
-  font-family: var(--font-mono);
-  font-weight: 800;
-  font-size: clamp(2.6rem, 10.5vw, 8.6rem);
-  line-height: 0.92;
-  letter-spacing: -0.055em;
-  text-transform: lowercase;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 1.25rem + 3.6vw, 4.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.038em;
+  text-wrap: balance;
 }
 
 .t-h2 {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: clamp(1.75rem, 1.1rem + 3.1vw, 3.6rem);
-  line-height: 1.02;
-  letter-spacing: -0.045em;
-  text-transform: lowercase;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(1.62rem, 1.15rem + 2vw, 2.72rem);
+  line-height: 1.14;
+  letter-spacing: -0.032em;
 }
 
 .t-h3 {
-  font-family: var(--font-mono);
-  font-weight: 700;
-  font-size: clamp(1.15rem, 0.95rem + 1vw, 1.65rem);
-  line-height: 1.15;
-  letter-spacing: -0.035em;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: clamp(1.08rem, 0.95rem + 0.62vw, 1.38rem);
+  line-height: 1.28;
+  letter-spacing: -0.022em;
 }
 
 /* Section labels, gutter numerals, metadata: the machine's quiet voice. */
 .t-label {
   font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
+  font-size: 0.67rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--mute);
 }
 
 .t-data {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   color: var(--bone-dim);
 }
@@ -215,23 +226,34 @@
 .t-display,
 .t-h2,
 .t-h3,
-.u-serif {
-  text-shadow: 0 1px 14px rgba(6, 8, 10, 0.92);
+.t-statement {
+  text-shadow: 0 1px 16px rgba(8, 8, 10, 0.94);
 }
 
 .t-body {
-  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.12rem);
+  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.09rem);
   line-height: 1.72;
   color: var(--bone-dim);
-  max-width: 62ch;
+  max-width: 64ch;
 }
 
 .t-lede {
-  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.42rem);
+  font-size: clamp(1.08rem, 1rem + 0.55vw, 1.36rem);
   line-height: 1.55;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.018em;
   color: var(--bone);
-  max-width: 44ch;
+  max-width: 46ch;
+}
+
+/* The pull quote that closes a section. Sans, not serif: a lone italic serif
+   dropped into an otherwise grotesque page is the oldest tell there is. */
+.t-statement {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(1.12rem, 1rem + 0.75vw, 1.6rem);
+  line-height: 1.46;
+  letter-spacing: -0.024em;
+  color: var(--bone);
 }
 
 /* ========================================================== 3 · layout */
@@ -245,30 +267,30 @@
 
 .section {
   position: relative;
-  padding-block: clamp(88px, 13vh, 168px);
+  padding-block: clamp(76px, 9vh, 118px);
 }
 
 /* ========================================================= 4 · surfaces */
 
-/* Glass. The rim is a gradient — bright at the top-left, ember at the
-   bottom-right — drawn with mask-composite so it reads as a lit edge rather
-   than a border. A flat 1px rgba(255,255,255,.1) is the tutorial version and
-   looks identical to every other glass site on the internet. */
+/* Glass. The rim is a gradient, bright at the top-left and fading to nothing
+   at the bottom-right, drawn with mask-composite so it reads as a lit edge
+   rather than a border. A flat 1px rgba(255,255,255,.1) is the tutorial
+   version and looks identical to every other glass site on the internet. */
 .glass {
   position: relative;
   background: linear-gradient(
-    160deg,
-    rgba(26, 33, 40, 0.72) 0%,
-    rgba(11, 14, 18, 0.78) 58%,
-    rgba(11, 14, 18, 0.86) 100%
+    158deg,
+    rgba(46, 46, 54, 0.62) 0%,
+    rgba(24, 24, 29, 0.72) 55%,
+    rgba(17, 17, 21, 0.82) 100%
   );
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  border-radius: 14px;
+  backdrop-filter: blur(22px) saturate(0.9);
+  -webkit-backdrop-filter: blur(22px) saturate(0.9);
+  border-radius: 16px;
   box-shadow:
-    0 1px 0 0 rgba(228, 233, 238, 0.09) inset,
-    0 24px 60px -28px rgba(0, 0, 0, 0.9),
-    0 2px 12px -6px rgba(0, 0, 0, 0.6);
+    0 1px 0 0 rgba(255, 255, 255, 0.1) inset,
+    0 28px 64px -30px rgba(0, 0, 0, 0.95),
+    0 2px 14px -8px rgba(0, 0, 0, 0.7);
 }
 
 .glass::before {
@@ -278,11 +300,11 @@
   border-radius: inherit;
   padding: 1px;
   background: linear-gradient(
-    152deg,
-    rgba(228, 233, 238, 0.34) 0%,
-    rgba(228, 233, 238, 0.06) 34%,
-    rgba(227, 135, 63, 0.05) 68%,
-    rgba(227, 135, 63, 0.26) 100%
+    150deg,
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.09) 38%,
+    rgba(255, 255, 255, 0.03) 66%,
+    rgba(255, 255, 255, 0.16) 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -293,15 +315,40 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+  z-index: 1;
+}
+
+/* A lighter pane for content that sits inside the reading column, where full
+   glass would be too much furniture. */
+.pane {
+  position: relative;
+  background: rgba(21, 21, 25, 0.62);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--hair-soft);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.06) inset;
+  transition:
+    border-color 0.4s var(--ease),
+    background-color 0.4s var(--ease),
+    transform 0.4s var(--ease-out);
+}
+
+/* Cards that respond. The lift is 2px and the rim brightens: enough to feel
+   alive under the pointer, not enough to bounce. */
+.pane-hover:hover {
+  border-color: var(--hair);
+  background: rgba(28, 28, 33, 0.72);
+  transform: translateY(-2px);
 }
 
 /* A code surface should look like code, not like a screenshot of code. */
 .code-surface {
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 10px;
+  background: rgba(18, 18, 22, 0.8);
+  border: 1px solid var(--hair-soft);
+  border-radius: 12px;
   font-family: var(--font-mono);
-  font-size: clamp(0.72rem, 0.66rem + 0.28vw, 0.85rem);
+  font-size: clamp(0.72rem, 0.66rem + 0.28vw, 0.84rem);
   line-height: 1.75;
   overflow-x: auto;
   overscroll-behavior-x: contain;
@@ -319,29 +366,151 @@
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.032;
+  opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ========================================================== 5 · reveals
+/* ============================================================== 5 · nav
+
+   A real navigation bar, centred, floating, glass. The previous build hid
+   navigation in a column of 10px tick marks on the right edge that appeared
+   only above 1024px and told you nothing until you hovered one. */
+
+.nav-bar {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: 999px;
+  background: rgba(20, 20, 24, 0.72);
+  backdrop-filter: blur(18px) saturate(1.1);
+  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  border: 1px solid var(--hair-soft);
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.07) inset,
+    0 16px 40px -20px rgba(0, 0, 0, 0.9);
+
+  /* Six words do not fit on a 375px screen. Rather than dropping items, or
+     collapsing into a hamburger that hides the whole structure of the site
+     behind a tap, the bar scrolls sideways and keeps every destination
+     reachable. The rail is hidden because the pill already shows position. */
+  max-width: calc(100vw - 20px);
+  overflow-x: auto;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+}
+
+.nav-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* The fade is applied only when the bar genuinely overflows, and only on the
+   side that has more to show. A permanent edge fade would dim a destination
+   that is already fully visible. */
+.nav-bar[data-of='end'] {
+  mask-image: linear-gradient(to right, #000 82%, transparent 100%);
+}
+
+.nav-bar[data-of='start'] {
+  mask-image: linear-gradient(to right, transparent 0, #000 18%);
+}
+
+.nav-bar[data-of='both'] {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 14%,
+    #000 86%,
+    transparent 100%
+  );
+}
+
+@media (max-width: 560px) {
+  .nav-bar {
+    top: 10px;
+    gap: 2px;
+    padding: 4px;
+  }
+
+  .nav-link {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .nav-pill {
+    top: 4px;
+    bottom: 4px;
+  }
+}
+
+.nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 7px 13px;
+  font-family: var(--font-sans);
+  font-size: 0.79rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--bone-dim);
+  white-space: nowrap;
+  transition:
+    color 0.32s var(--ease),
+    background-color 0.32s var(--ease);
+}
+
+.nav-link:hover {
+  color: var(--bone);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+/* The active pill is a shared element that slides between items rather than
+   six pills cross-fading. One element, one transform, no layout thrash. */
+.nav-pill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--hair-soft);
+  pointer-events: none;
+  transition:
+    transform 0.44s var(--ease-out),
+    width 0.44s var(--ease-out),
+    opacity 0.3s var(--ease);
+  will-change: transform, width;
+}
+
+.nav-link[data-active='1'] {
+  color: #ffffff;
+}
+
+/* ========================================================== 6 · reveals
    Text is in the DOM at first paint and only its visibility is animated.
-   Content built by JS is invisible to crawlers and to screen readers.      */
+   Content built by JS is invisible to crawlers and to screen readers. */
 
 [data-rv] {
   opacity: 0;
-  transform: translate3d(0, 14px, 0);
+  transform: translate3d(0, 16px, 0);
   transition:
-    opacity 0.62s var(--ease-out),
-    transform 0.62s var(--ease-out);
+    opacity 0.68s var(--ease-out),
+    transform 0.68s var(--ease-out);
   will-change: opacity, transform;
 }
 
 [data-rv='left'] {
-  transform: translate3d(-14px, 0, 0);
+  transform: translate3d(-16px, 0, 0);
 }
 
 [data-rv='scale'] {
-  transform: scale(0.985);
+  transform: scale(0.982) translate3d(0, 10px, 0);
 }
 
 .rv-in {
@@ -349,18 +518,18 @@
   transform: none !important;
 }
 
-/* Kinetic text: characters resolve out of blur and rotation. The parent keeps
-   the real string as aria-label; the spans are hidden from assistive tech so a
-   screen reader gets a word rather than a stream of letters. */
+/* Kinetic text: words rise and resolve out of blur. The parent keeps the real
+   string as aria-label; the spans are hidden from assistive tech so a screen
+   reader gets a sentence rather than a stream of letters. */
 .kinetic span {
   display: inline-block;
   opacity: 0;
-  transform: translateY(0.4em) rotateX(-70deg);
-  filter: blur(6px);
+  transform: translateY(0.32em);
+  filter: blur(7px);
   transition:
-    opacity 0.5s var(--ease-out),
-    transform 0.6s var(--ease-out),
-    filter 0.5s var(--ease-out);
+    opacity 0.62s var(--ease-out),
+    transform 0.72s var(--ease-out),
+    filter 0.62s var(--ease-out);
   will-change: opacity, transform, filter;
 }
 
@@ -370,10 +539,10 @@
   filter: none;
 }
 
-/* ========================================================= 6 · behaviours */
+/* ========================================================= 7 · behaviours */
 
 /* Tilt. Perspective lives on the wrapper so the child rotates in a real frustum
-   rather than being sheared. Rotation is capped in the component at 6°/4°. */
+   rather than being sheared. Rotation is capped in the component at 6/4 deg. */
 .tilt {
   perspective: 1100px;
 }
@@ -392,17 +561,40 @@
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 14px;
+  border-radius: 16px;
   pointer-events: none;
-  opacity: calc(var(--glint, 0) * 0.5);
+  opacity: calc(var(--glint, 0) * 0.55);
   transition: opacity 0.45s var(--ease);
   background: radial-gradient(
-    380px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(255, 176, 103, 0.14),
-    rgba(228, 233, 238, 0.05) 38%,
-    transparent 64%
+    400px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.04) 40%,
+    transparent 66%
   );
   z-index: 2;
+}
+
+/* A link that draws its own underline on hover, left to right. */
+.ul-draw {
+  position: relative;
+}
+
+.ul-draw::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.42s var(--ease-out);
+}
+
+.ul-draw:hover::after,
+.ul-draw:focus-visible::after {
+  transform: scaleX(1);
 }
 
 .caret-blink {
@@ -423,18 +615,18 @@
 /* The one perpetual loop on the page, and it carries information: available. */
 .led {
   animation: led 2.6s var(--ease-io) infinite;
-  box-shadow: 0 0 0 0 rgba(227, 135, 63, 0.5);
+  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
 }
 
 @keyframes led {
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(227, 135, 63, 0.45);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
   }
   50% {
-    opacity: 0.55;
-    box-shadow: 0 0 0 4px rgba(227, 135, 63, 0);
+    opacity: 0.5;
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0);
   }
 }
 
@@ -458,20 +650,28 @@
 
 /* Any pane that scrolls inside the page keeps its own scroll and gets a thin
    rail, because a full-width system scrollbar cuts a bright line through a
-   dark panel. */
+   dark panel.
+
+   These panes also carry data-lenis-prevent in the markup. Smooth scrolling
+   listens on the window, so without it a wheel gesture over a nested list
+   scrolled the entire page instead of the list under the pointer. */
 .scroll-wall {
   scrollbar-width: thin;
-  scrollbar-color: var(--edge) transparent;
+  scrollbar-color: var(--edge-hi) transparent;
   overscroll-behavior: contain;
 }
 
 .scroll-wall::-webkit-scrollbar {
-  width: 6px;
+  width: 7px;
 }
 
 .scroll-wall::-webkit-scrollbar-thumb {
-  background: var(--edge);
-  border-radius: 3px;
+  background: var(--edge-hi);
+  border-radius: 4px;
+}
+
+.scroll-wall::-webkit-scrollbar-thumb:hover {
+  background: #56565f;
 }
 
 .scroll-wall::-webkit-scrollbar-track {
@@ -528,7 +728,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--bone);
+  background: #ffffff;
   transition: opacity 0.25s var(--ease);
 }
 
@@ -536,7 +736,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid var(--chrome-ring, rgba(228, 233, 238, 0.4));
+  border: 1px solid rgba(255, 255, 255, 0.4);
   transition:
     opacity 0.25s var(--ease),
     width 0.28s var(--ease-out),
@@ -546,12 +746,12 @@
 
 /* The one place width/height are animated rather than transform. It runs on a
    30px fixed-position element with no siblings and no layout to invalidate, so
-   the usual objection does not apply — and scaling a bordered ring by transform
+   the usual objection does not apply, and scaling a bordered ring by transform
    would scale the border with it, which is the thing that reads as cheap. */
 .cursor-ring[data-hot='1'] {
   width: 46px;
   height: 46px;
-  border-color: var(--ember);
+  border-color: #ffffff;
 }
 
 /* A scrim that is darkest in the middle, which is the opposite of the usual
@@ -565,30 +765,30 @@
   pointer-events: none;
   background:
     radial-gradient(
-      70% 92% at 50% 50%,
-      rgba(6, 8, 10, 0.78) 0%,
-      rgba(6, 8, 10, 0.66) 42%,
-      rgba(6, 8, 10, 0.3) 76%,
-      rgba(6, 8, 10, 0.1) 100%
+      62% 92% at 44% 50%,
+      rgba(14, 14, 17, 0.94) 0%,
+      rgba(14, 14, 17, 0.88) 44%,
+      rgba(14, 14, 17, 0.38) 78%,
+      rgba(14, 14, 17, 0) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(6, 8, 10, 0.66) 0%,
-      transparent 20%,
-      transparent 80%,
-      rgba(6, 8, 10, 0.66) 100%
+      rgba(14, 14, 17, 0.7) 0%,
+      transparent 22%,
+      transparent 78%,
+      rgba(14, 14, 17, 0.7) 100%
     );
 }
 }
 
 
-/* ===================================================== 7 · reduced motion
+/* ===================================================== 8 · reduced motion
    The site must be complete, legible and good-looking with zero motion.
 
    Deliberately left unlayered. Unlayered rules outrank every layer, which is
    the wrong default for a reset but exactly right for an accessibility
    override: nothing a utility class does should be able to reintroduce motion
-   for someone who has asked their operating system not to show them any.     */
+   for someone who has asked their operating system not to show them any. */
 
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -1,151 +1,186 @@
+<div align="center">
+
 # aryanghai.dev
 
-Personal engineering portfolio. Single page, scroll-driven, WebGL background.
+**A portfolio built on one rule: no number on this site is typed by hand.**
 
-Built from [PORTFOLIO-BRIEF.md](PORTFOLIO-BRIEF.md), which is the design document
-and the argument for every decision here.
+Single page. Scroll driven. Monochrome. A codebase rendered as architecture
+behind it, in WebGL.
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![three.js](https://img.shields.io/badge/three.js-r185-000000?style=flat-square&logo=three.js&logoColor=white)](https://threejs.org)
+[![Licence](https://img.shields.io/badge/licence-MIT-3d3d44?style=flat-square)](LICENSE)
+
+[Quick start](#quick-start) ·
+[The rule](#the-rule) ·
+[Architecture](docs/architecture.md) ·
+[GitHub API and rate limits](docs/github-api.md) ·
+[Deploying](docs/deploying.md)
+
+</div>
 
 ---
 
-## The rule this repo is built on
+## What this is
 
-**No number on this site is typed by hand.**
+My engineering portfolio. It is open source because the argument it makes is
+that claims should be checkable, and a site making that argument should be
+readable itself. Fork it and do whatever you like with it.
 
-Everything measurable — merged pull requests, repository counts, stars, language
-byte weights — is fetched from the public GitHub API at build time by
-[`scripts/fetch-stats.ts`](scripts/fetch-stats.ts), written to
-[`data/stats.json`](data/stats.json), and imported statically by the page. The
-page also prints the date the figures were measured.
+Three things make it different from the usual template:
 
-Deliberately absent, and not to be reintroduced: *98% fewer hallucinations*,
+**Every figure is measured.** Merged pull requests, repository counts, stars and
+language byte weights are fetched from the public GitHub API at build time, and
+the page prints the date they were measured. See [The rule](#the-rule).
+
+**Each project shows a working reduction of itself, not a screenshot.** The
+Cavix panel assembles a real review comment. The TraceCV panel sweeps a scan line
+down a document and colours it by parse quality. The RepoPulse panel genuinely
+runs Lloyd's algorithm in your browser.
+
+**The background is a codebase.** Roughly 5,200 instanced bars, each one a line
+of source whose length is the length of that line, stacked into file blocks
+lining a corridor the camera travels down as you scroll. Two draw calls.
+
+---
+
+## Quick start
+
+Requires Node 20 or newer.
+
+```bash
+git clone https://github.com/aryanghai12/portfolio.git
+cd portfolio
+npm install
+npm run dev            # http://localhost:3000
+```
+
+That is the whole setup. The first run fetches fresh figures from the GitHub
+API; if it cannot, it uses the committed snapshot and says so.
+
+### Every command
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Development server on port 3000 |
+| `npm run fetch-stats` | Refresh `data/stats.json` from the GitHub API |
+| `npm run build` | Fetch stats, then build a static site into `./out` |
+| `npm start` | Serve the production build |
+
+### Optional but recommended
+
+Unauthenticated GitHub API access is limited to 60 requests an hour **per IP
+address**, which is fine locally and a real problem on shared CI runners. A token
+with no scopes raises that to 5,000 an hour.
+
+```bash
+cp .env.example .env.local
+# paste a fine-grained token with zero permissions into .env.local
+npm run fetch-stats     # the budget line should now read 5000, not 60
+```
+
+Full instructions, including what to do when it goes wrong, are in
+**[docs/github-api.md](docs/github-api.md)**.
+
+---
+
+## The rule
+
+> No number on this site is typed by hand.
+
+`scripts/fetch-stats.ts` runs before every build, pulls everything measurable
+from the public GitHub API, and writes `data/stats.json`. The page imports that
+file statically, so the browser never talks to GitHub. The measurement date is
+printed on the page, under the pull request wall.
+
+```
+npm run build
+  └─ prebuild → fetch-stats → data/stats.json → next build → ./out
+```
+
+When the API is unreachable or rate limited, the build retries, then falls back
+to the committed snapshot and says loudly that it did. Those figures really did
+come from the API and the page shows when, so a snapshot a few days old is dated
+rather than dishonest. A build with no snapshot at all fails on purpose, because
+at that point there is nothing honest left to render.
+
+**Deliberately absent, and not to be reintroduced:** *98% fewer hallucinations*,
 *40% review bottleneck reduction*, *sub-100ms under load*, *30% less triage
 time*. All four are self-measured against a private baseline. On a site whose
 whole argument is proof over assertion, they are the fastest way to lose a
 reader who knows what they are looking at. Mechanism is stated instead, which is
-both more impressive and fully checkable.
+both more convincing and fully checkable.
 
 ---
 
-## Running it
+## Documentation
 
-```bash
-npm install
-npm run dev          # http://localhost:3000
-```
-
-```bash
-npm run fetch-stats  # refresh data/stats.json from the GitHub API
-npm run build        # runs fetch-stats first, then builds to ./out
-```
-
-The build emits a fully static site (`output: 'export'`). There is no server at
-runtime.
+| Document | Read it for |
+|---|---|
+| **[Architecture](docs/architecture.md)** | File map, the design system, how the WebGL background works, scrolling, accessibility, performance |
+| **[GitHub API and rate limits](docs/github-api.md)** | What the limits are, what one build spends, what happens when you hit them, how to make it robust |
+| **[Deploying](docs/deploying.md)** | Vercel, Netlify, Cloudflare Pages, GitHub Pages, custom domains |
 
 ---
 
-## Deploying to Vercel (free)
+## Stack
 
-The Hobby tier covers this completely: it is static files, no serverless
-functions, no image optimisation, no database.
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16, App Router, static export |
+| Language | TypeScript |
+| Styling | Tailwind CSS v4, with design tokens in `app/globals.css` |
+| 3D | three.js via react-three-fiber |
+| Scrolling | Lenis |
+| Type | Geist and Geist Mono, self-hosted through `next/font` |
+| Hosting | Any static host. Vercel Hobby is enough. |
 
-### One-time setup
-
-1. Push this repository to GitHub.
-2. Go to [vercel.com/new](https://vercel.com/new) and import it.
-3. Vercel detects Next.js. Leave every build setting on its default —
-   `vercel.json` already pins the build command and the `out` directory.
-4. **Add an environment variable** (strongly recommended, see below):
-
-   | Name | Value | Environments |
-   |---|---|---|
-   | `GITHUB_TOKEN` | a GitHub fine-grained PAT with **no scopes** | Production, Preview, Development |
-
-5. Deploy.
-
-### Why `GITHUB_TOKEN` matters here
-
-The build calls the GitHub API. Unauthenticated, that is limited to 60 REST
-requests an hour and 10 search requests a minute **per IP** — and Vercel builds
-run from shared IPs, so somebody else's build can exhaust the quota before yours
-starts.
-
-Without a token the build does not fail: it falls back to the committed
-`data/stats.json` snapshot, prints a loud warning, and the page shows the date
-that snapshot was measured. With a token you get 5,000 requests an hour and the
-figures refresh on every deploy.
-
-The token needs **no scopes at all** — every endpoint used is public. Generate
-one at [github.com/settings/tokens](https://github.com/settings/tokens) and grant
-it nothing.
-
-### Custom domain
-
-Vercel → Project → Settings → Domains. Free on the Hobby tier. After pointing a
-domain at it, update `metadataBase` in [`app/layout.tsx`](app/layout.tsx) so
-Open Graph URLs resolve correctly.
-
-### Other hosts
-
-Any static host works — the build output is plain files:
-
-```bash
-npm run build      # → ./out
-npx serve out      # preview the production build locally
-```
-
-Netlify: build `npm run build`, publish `out`.
-Cloudflare Pages: build `npm run build`, output `out`.
+No UI kit, no component library, no stock assets, no icon font.
 
 ---
 
-## Architecture
+## Accessibility
 
-```
-app/
-  layout.tsx        fonts, metadata, viewport
-  page.tsx          section composition
-  globals.css       design tokens, type scale, layered base and components
-  icon.svg          favicon
-components/
-  index3d/          The Index — the WebGL background
-    hall.ts         geometry generation (pure data, seeded, deterministic)
-    Scene.tsx       instancing, camera rig, lights, section accents
-    IndexBackground.tsx   canvas, WebGL probe, lazy mount
-  instruments/      one working reduction per project
-  ...               sections, cursor, palette, HUD, reveals
-lib/
-  content.ts        every string the site displays
-  stations.ts       scroll → fractional camera station
-  useStagedReveal.ts
-scripts/
-  fetch-stats.ts    build-time GitHub API fetch
-data/
-  stats.json        committed snapshot + build fallback
-```
+The site is complete without JavaScript, without WebGL, and without motion.
 
-### The Index
+- All content is in the DOM at first paint. Nothing is built by JS, so crawlers
+  and screen readers get real text.
+- `prefers-reduced-motion` stops the camera, drops tilt and the custom cursor,
+  and jumps every staged reveal to its final state.
+- WebGL is probed rather than assumed. If it is unavailable the page is exactly
+  as legible as it was.
+- Focus is visible on every interactive surface. The command palette traps focus
+  while open and returns it afterwards.
+- No horizontal overflow at 375px.
 
-The background is a codebase rendered as architecture. Each instance is one line
-of source: a thin bar whose length is the length of the line, with indentation
-that walks the way real source does. Lines stack into file blocks, blocks lane
-either side of an empty corridor, and the camera travels down it on scroll. A
-point light rides just ahead of the camera — that light is the reviewer reading
-the code, and it is the whole concept in one object.
+---
 
-Two draw calls. Instance matrices are written once; the camera is what moves.
-Fog does the culling work. An adaptive resolution governor measures real frame
-time and trades pixels for frames when the device cannot keep up.
+## Fork it
 
-### Accessibility
+This is MIT licensed and that is meant literally. Fork it, strip it for parts,
+rebuild it as your own, ship it commercially. You do not need to ask me and you
+do not need to credit me, though a star or a link back is always nice.
 
-`prefers-reduced-motion` is honoured throughout: the camera stops travelling,
-tilt and the custom cursor never mount, every staged reveal jumps to its final
-state, and Lenis is disabled. All content is in the DOM at first paint and the
-site is complete with JavaScript disabled and with WebGL unavailable.
+Making it yours takes about ten minutes:
+
+| Step | File | What to change |
+|---|---|---|
+| 1 | `lib/content.ts` | Every string the site displays lives here. Nothing else holds copy. |
+| 2 | `scripts/fetch-stats.ts` | `USER`, `GITLAB_USER` and `PROJECTS` at the top. |
+| 3 | `data/stats.json` | Delete it, then run `npm run fetch-stats` to generate your own. |
+| 4 | `app/layout.tsx` | `metadataBase`, title, description, keywords. |
+| 5 | `app/globals.css` | The token block at the top is the whole palette and type scale. |
+| 6 | `components/instruments/` | Three project demos. Replace with your own, or delete and simplify `Work.tsx`. |
+
+The only thing I would ask, and it is a request rather than a licence term: swap
+out my name, my writing and my measurements before you publish it. A portfolio
+with somebody else's achievements in it does not do either of us any good.
+
+Found a bug or made it better? Issues and pull requests are welcome.
 
 ---
 
 ## Licence
 
-Code MIT. Written content and the CV material are not — please don't ship a copy
-of this as your own portfolio.
+[MIT](LICENSE). Use it however you like.

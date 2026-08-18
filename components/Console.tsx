@@ -12,7 +12,7 @@ const { command, prompt, output } = about.console;
  *
  * 1. The *command* is typed character by character. The *output* is not. Reading
  *    runs about 250 wpm and character typing runs about 30, so typing prose is
- *    user-hostile — it makes a visitor wait on a machine pretending to be slow.
+ *    user hostile. It makes a visitor wait on a machine pretending to be slow.
  *    Output lines stagger in whole, ~90ms apart.
  *
  * 2. Every character is in the DOM at first paint and only its opacity changes.
@@ -77,7 +77,7 @@ export function Console() {
         <span
           aria-hidden
           className={`h-[6px] w-[6px] rounded-full transition-colors duration-500 ${
-            done ? 'bg-[var(--ember)]' : 'bg-[var(--mute)]'
+            done ? 'bg-[var(--accent)]' : 'bg-[var(--mute)]'
           }`}
         />
         <span className="t-label !text-[0.6rem]">session · zsh</span>
@@ -89,7 +89,7 @@ export function Console() {
       <div className="px-4 py-5 font-[family-name:var(--font-mono)] text-[clamp(0.74rem,0.68rem+0.3vw,0.86rem)] leading-[1.9] sm:px-6 sm:py-6">
         {/* Command line */}
         <div aria-label={`${prompt} ~ % ${command}`}>
-          <span className="text-[var(--ember)]" aria-hidden>
+          <span className="text-[var(--accent)]" aria-hidden>
             {prompt}
           </span>
           <span className="text-[var(--mute)]" aria-hidden>
@@ -109,7 +109,7 @@ export function Console() {
           </span>
           <span
             aria-hidden
-            className={`ml-[2px] inline-block h-[1.05em] w-[7px] translate-y-[0.18em] bg-[var(--ember)] ${
+            className={`ml-[2px] inline-block h-[1.05em] w-[7px] translate-y-[0.18em] bg-[var(--accent)] ${
               done ? 'caret-blink' : ''
             }`}
           />

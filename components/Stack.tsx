@@ -12,11 +12,11 @@ import { Kinetic } from './Kinetic';
  * A badge wall communicates nothing: every badge looks equally weighted whether
  * it stands for two megabytes of TypeScript or one import line. Here an edge's
  * thickness comes from the actual byte counts GitHub reports, so Go being a thin
- * edge on Cavix is visible — and that honesty is the whole argument of the site.
+ * edge on Cavix is visible, and that honesty is the whole argument of the site.
  *
  * Two kinds of edge, distinguished on purpose:
- *   solid  — measured. Thickness from the GitHub languages API.
- *   dashed — declared. A runtime or library the repo genuinely uses but which
+ *   solid    measured. Thickness from the GitHub languages API.
+ *   dashed   declared. A runtime or library the repo genuinely uses but which
  *            has no source bytes of its own to measure.
  */
 
@@ -70,7 +70,7 @@ export function Stack() {
   const projectIds: string[] = projectCopy.map((p) => p.id);
   const nameOf = (id: string) => projectCopy.find((p) => p.id === id)?.name ?? id;
 
-  // Deterministic layout in percentage space — no DOM measurement needed.
+  // Deterministic layout in percentage space, so no DOM measurement is needed.
   const techY = (i: number) => ((i + 0.5) / techs.length) * 100;
   const projY = (i: number) => ((i + 0.5) / projectIds.length) * 100;
   const TECH_X = 34;
@@ -86,7 +86,7 @@ export function Stack() {
         <div className="grid [&>*]:min-w-0 gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1fr)] lg:gap-16">
           <div>
             <h2 className="t-h2 max-w-[15ch] text-[var(--bone)]" data-rv>
-              <Kinetic text="what actually got used" />
+              <Kinetic text="What actually got used" />
             </h2>
             <p className="t-body mt-7" data-rv>
               Edge thickness is the number of bytes GitHub measured in each repository,
@@ -96,7 +96,7 @@ export function Stack() {
             <ul className="mt-7 list-none space-y-2 p-0" data-rv>
               <li className="flex items-center gap-3">
                 <svg width="26" height="8" aria-hidden className="shrink-0">
-                  <line x1="0" y1="4" x2="26" y2="4" stroke="var(--ember)" strokeWidth="2.4" />
+                  <line x1="0" y1="4" x2="26" y2="4" stroke="var(--accent)" strokeWidth="2.4" />
                 </svg>
                 <span className="t-label !text-[0.58rem]">measured · bytes on disk</span>
               </li>
@@ -118,8 +118,8 @@ export function Stack() {
 
             <p className="t-label mt-8 !normal-case !tracking-[0.02em] !text-[0.68rem] !leading-[1.65]" data-rv>
               RepoPulse is set to R by hand. GitHub reports it as 87% HTML because Shiny
-              commits rendered output — technically sourced, materially false, so it does
-              not get to be the badge.
+              commits rendered output, which is technically sourced and materially false,
+              so it does not get to be the badge.
             </p>
           </div>
 
@@ -153,7 +153,7 @@ export function Stack() {
                     vectorEffect="non-scaling-stroke"
                     stroke={
                       lit && active
-                        ? 'var(--ember)'
+                        ? 'var(--accent)'
                         : e.measured
                           ? 'var(--edge-hi)'
                           : 'var(--edge)'
@@ -187,7 +187,7 @@ export function Stack() {
                     style={{
                       color:
                         active === t
-                          ? 'var(--ember)'
+                          ? 'var(--accent)'
                           : !active
                             ? 'var(--bone-dim)'
                             : edges.some((e) => e.tech === t && e.project === active)
@@ -221,7 +221,7 @@ export function Stack() {
                       aria-hidden
                       className="h-2.5 w-2.5 shrink-0 rotate-45 transition-colors duration-300"
                       style={{
-                        background: active === id ? 'var(--ember)' : 'var(--bone-dim)',
+                        background: active === id ? 'var(--accent)' : 'var(--bone-dim)',
                       }}
                     />
                     <span
@@ -229,7 +229,7 @@ export function Stack() {
                       style={{
                         color:
                           active === id
-                            ? 'var(--ember)'
+                            ? 'var(--accent)'
                             : !active
                               ? 'var(--bone)'
                               : edges.some((e) => e.project === id && e.tech === active)

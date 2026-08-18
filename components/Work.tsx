@@ -22,10 +22,10 @@ export function Work() {
         <SectionHead index="02" label="selected work" />
 
         <h2 className="t-h2 max-w-[20ch] text-[var(--bone)]" data-rv>
-          <Kinetic text="three things I built" />
+          <Kinetic text="Three things I built" />
         </h2>
 
-        <div className="mt-16 space-y-24 sm:mt-20 sm:space-y-32">
+        <div className="mt-14 space-y-20 sm:mt-16 sm:space-y-28">
           {projects.map((p) => {
             const Instrument = instruments[p.id];
             const repo = repoFor(p.id);
@@ -36,7 +36,7 @@ export function Work() {
                   {/* Copy column */}
                   <div>
                     <div className="flex items-baseline gap-4" data-rv>
-                      <span className="u-mono text-[0.78rem] font-bold tracking-[0.14em] text-[var(--ember)]">
+                      <span className="u-mono text-[0.78rem] font-bold tracking-[0.14em] text-[var(--accent)]">
                         {p.index}
                       </span>
                       <span className="t-label !text-[0.62rem]">{p.period}</span>
@@ -44,10 +44,10 @@ export function Work() {
 
                     <h3
                       id={`proj-${p.id}`}
-                      className="t-h2 mt-4 !text-[clamp(1.9rem,1.2rem+2.6vw,3.1rem)] text-[var(--bone)]"
+                      className="t-h2 mt-4 !text-[clamp(1.75rem,1.2rem+2.2vw,2.6rem)] text-[var(--bone)]"
                       data-rv
                     >
-                      {p.name.toLowerCase()}
+                      {p.name}
                     </h3>
 
                     <p
@@ -82,7 +82,7 @@ export function Work() {
                       {p.stack.map((s) => (
                         <li
                           key={s}
-                          className="u-mono rounded border border-[var(--edge)] bg-[var(--panel-0)] px-2.5 py-1 text-[0.68rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--ember)] hover:text-[var(--ember)]"
+                          className="u-mono rounded border border-[var(--edge)] bg-[var(--panel-0)] px-2.5 py-1 text-[0.68rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]"
                         >
                           {s}
                         </li>
@@ -90,7 +90,7 @@ export function Work() {
                     </ul>
 
                     <p
-                      className="u-mono mt-8 border-l-2 border-[var(--ember)] pl-4 text-[0.88rem] leading-[1.6] text-[var(--ember)]"
+                      className="t-statement mt-9 border-l-2 border-[var(--bone)] pl-5 !text-[clamp(1rem,0.92rem+0.4vw,1.18rem)]"
                       data-rv
                     >
                       {p.endcap}
@@ -102,11 +102,9 @@ export function Work() {
                           href={repo.url}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="group u-mono inline-flex items-center gap-2 text-[0.78rem] text-[var(--bone)] transition-colors duration-300 hover:text-[var(--ember)]"
+                          className="group u-mono inline-flex items-center gap-2 text-[0.78rem] text-[var(--bone)] transition-colors duration-300 hover:text-[var(--accent)]"
                         >
-                          <span className="border-b border-[var(--edge)] pb-[2px] transition-colors duration-300 group-hover:border-[var(--ember)]">
-                            source
-                          </span>
+                          <span className="ul-draw">source</span>
                           <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-[3px]">
                             ↗
                           </span>
@@ -131,24 +129,24 @@ export function Work() {
         </div>
 
         {/* Kept off the headline slots so three projects stay three projects. */}
-        <div className="mt-28 border-t border-[var(--hair-soft)] pt-10" data-rv>
+        <div className="mt-20 border-t border-[var(--hair-soft)] pt-10" data-rv>
           <span className="t-label">also built</span>
-          <ul className="mt-6 grid list-none gap-px overflow-hidden rounded-lg border border-[var(--edge)] bg-[var(--edge)] p-0 sm:grid-cols-2">
+          <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
             {alsoBuilt.map((a) => (
-              <li key={a.name} className="bg-[var(--panel-0)]">
+              <li key={a.name} className="pane pane-hover overflow-hidden">
                 <a
                   href={a.url}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group block px-5 py-6 transition-colors duration-300 hover:bg-[var(--panel-1)] sm:px-6"
+                  className="group block px-5 py-6 sm:px-6"
                 >
                   <div className="flex items-center gap-3">
-                    <h3 className="u-mono text-[0.98rem] font-bold tracking-[-0.03em] text-[var(--bone)]">
+                    <h3 className="t-h3 !text-[1.02rem] text-[var(--bone)]">
                       {a.name}
                     </h3>
                     <span
                       aria-hidden
-                      className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--ember)]"
+                      className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--accent)]"
                     >
                       ↗
                     </span>

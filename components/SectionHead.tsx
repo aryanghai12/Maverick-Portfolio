@@ -1,7 +1,6 @@
 /**
  * The section header: an index numeral, a machine-voice label, and a rule that
- * runs to the edge of the shell. The ember tick at the left is one of the few
- * places the accent is spent.
+ * runs to the edge of the shell.
  */
 export function SectionHead({
   index,
@@ -16,7 +15,7 @@ export function SectionHead({
     <div className="mb-12 flex items-center gap-4 sm:mb-16" data-rv>
       <span
         aria-hidden
-        className="h-[7px] w-[7px] shrink-0 rounded-[1px] bg-[var(--ember)]"
+        className="h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--bone)]"
       />
       <span className="t-label shrink-0 !text-[var(--bone-dim)]" id={id}>
         {index}

@@ -7,11 +7,11 @@ import { Kinetic } from './Kinetic';
 
 /**
  * The section that has to convert, so it is the most alive thing on the page and
- * the only fully-lit surface on the site.
+ * the only fully lit surface on the site.
  *
- * The console genuinely works. Six commands, each doing something real — and
- * each also available as a clickable chip, because gating contact details behind
- * knowing to type would be a puzzle, not a portfolio.
+ * The console genuinely works. Six commands, each doing something real, and each
+ * also available as a clickable chip, because gating contact details behind
+ * knowing to type would be a puzzle rather than a portfolio.
  */
 
 type Cmd = {
@@ -34,8 +34,8 @@ export function Connect() {
   const [now, setNow] = useState<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
-  /* Live local time. Rendered only after mount so the server-rendered HTML and
-     the first client render agree — a clock in the markup is a hydration
+  /* Live local time. Rendered only after mount so the server rendered HTML and
+     the first client render agree. A clock in the markup is a hydration
      mismatch waiting to happen. */
   useEffect(() => {
     const fmt = () =>
@@ -71,7 +71,7 @@ export function Connect() {
       run: () => {
         copy(identity.email, 'mail');
         open(links.email);
-        return `${identity.email} — copied, and your mail client should be opening`;
+        return `${identity.email} copied. Your mail client should be opening.`;
       },
     },
     { name: 'gh', hint: 'github', run: () => (open(links.github), 'opening github.com/aryanghai12') },
@@ -96,7 +96,7 @@ export function Connect() {
       const found = commands.find((c) => c.name === cmd);
       const out = found
         ? found.run()
-        : `${cmd}: not found. try "help" for the six things this understands.`;
+        : `${cmd}: not found. Try "help" for the six things this understands.`;
       setHistory((h) => [...h.slice(-6), { cmd, out }]);
     },
     // `commands` is rebuilt each render but its behaviour is stable.
@@ -116,10 +116,10 @@ export function Connect() {
         <div className="grid [&>*]:min-w-0 gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
           <div>
             <h2 className="t-h2 max-w-[14ch] text-[var(--bone)]" data-rv>
-              <Kinetic text="say something" />
+              <Kinetic text={connect.heading} />
             </h2>
 
-            <p className="u-serif mt-8 text-[clamp(1.15rem,1rem+0.8vw,1.6rem)] leading-[1.4] text-[var(--bone)]" data-rv>
+            <p className="t-statement mt-8" data-rv>
               {connect.lede}
             </p>
 
@@ -130,8 +130,8 @@ export function Connect() {
             {/* Status */}
             <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2" data-rv>
               <span className="flex items-center gap-2.5">
-                <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--ember)]" />
-                <span className="t-label !text-[0.6rem] !text-[var(--ember)]">available</span>
+                <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
+                <span className="t-label !text-[0.6rem] !text-[var(--accent)]">available</span>
               </span>
               <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
               <span className="t-label !text-[0.6rem]">{identity.location}</span>
@@ -147,7 +147,7 @@ export function Connect() {
               <ul className="m-0 list-none space-y-1.5 p-0">
                 {remotes.map((r) => (
                   <li key={r.name} className="flex items-center gap-3 text-[0.72rem]">
-                    <span className="w-14 shrink-0 text-[var(--ember)]">{r.name}</span>
+                    <span className="w-14 shrink-0 text-[var(--accent)]">{r.name}</span>
                     <a
                       href={r.href}
                       target="_blank"
@@ -160,7 +160,7 @@ export function Connect() {
                     <button
                       type="button"
                       onClick={() => copy(`https://${r.url}`, r.name)}
-                      className="shrink-0 px-1 text-[var(--mute)] transition-colors hover:text-[var(--ember)]"
+                      className="shrink-0 px-1 text-[var(--mute)] transition-colors hover:text-[var(--accent)]"
                       aria-label={`Copy ${r.name} URL`}
                     >
                       {copied === r.name ? '✓' : '⧉'}
@@ -175,7 +175,7 @@ export function Connect() {
           <div data-rv="scale">
             <div className="glass overflow-hidden">
               <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
-                <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--ember)]" />
+                <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
                 <span className="t-label !text-[0.6rem]">contact · interactive</span>
                 <span className="t-label ml-auto !text-[0.58rem]">type or click</span>
               </div>
@@ -188,7 +188,7 @@ export function Connect() {
                       <button
                         type="button"
                         onClick={() => exec(c.name)}
-                        className="u-mono rounded border border-[var(--edge)] bg-[var(--panel-0)] px-2.5 py-1.5 text-[0.7rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--ember)] hover:text-[var(--ember)]"
+                        className="u-mono rounded border border-[var(--edge)] bg-[var(--panel-0)] px-2.5 py-1.5 text-[0.7rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                       >
                         {c.name}
                       </button>
@@ -199,20 +199,21 @@ export function Connect() {
                 <div
                   ref={logRef}
                   className="scroll-wall mt-4 max-h-[220px] min-h-[132px] overflow-y-auto font-[family-name:var(--font-mono)] text-[0.72rem] leading-[1.75]"
+                  data-lenis-prevent
                   role="log"
                   aria-live="polite"
                   aria-label="Console output"
                 >
                   {history.length === 0 ? (
                     <p className="m-0 text-[var(--mute)]">
-                      six commands. try <span className="text-[var(--ember)]">help</span>, or
+                      Six commands. Try <span className="text-[var(--accent)]">help</span>, or
                       just press a chip.
                     </p>
                   ) : (
                     history.map((h, i) => (
                       <div key={i} className="mb-2 last:mb-0">
                         <div>
-                          <span className="text-[var(--ember)]">aryan@index</span>
+                          <span className="text-[var(--accent)]">aryan@index</span>
                           <span className="text-[var(--mute)]"> ~ % </span>
                           <span className="text-[var(--bone)]">{h.cmd}</span>
                         </div>
@@ -232,7 +233,7 @@ export function Connect() {
                   }}
                   className="mt-3 flex items-center gap-2 border-t border-[var(--hair-soft)] pt-3"
                 >
-                  <span aria-hidden className="u-mono text-[0.72rem] text-[var(--ember)]">
+                  <span aria-hidden className="u-mono text-[0.72rem] text-[var(--accent)]">
                     ~ %
                   </span>
                   <input
@@ -249,8 +250,8 @@ export function Connect() {
             </div>
 
             {/* Competitive profiles: linked, never rendered as figures. A rating
-                shown as a hero number next to 13 merged Kubescape PRs would be
-                the weakest thing on the page. */}
+                shown as a hero number next to the merged Kubescape work would
+                be the weakest thing on the page. */}
             <ul className="mt-5 flex list-none flex-wrap gap-x-5 gap-y-2 p-0" data-rv>
               {[
                 ['LeetCode', links.leetcode],
@@ -262,7 +263,7 @@ export function Connect() {
                     href={href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="t-label border-b border-transparent !text-[0.6rem] transition-colors hover:!text-[var(--ember)] hover:border-[var(--ember)]"
+                    className="t-label ul-draw !text-[0.6rem] transition-colors hover:!text-[var(--accent)]"
                   >
                     {label} ↗
                   </a>
@@ -275,11 +276,11 @@ export function Connect() {
         <footer className="mt-24 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--hair-soft)] pt-8">
           <span className="t-label !text-[0.58rem]">aryan ghai · {new Date().getFullYear()}</span>
           <span className="t-label !text-[0.58rem]">
-            built with next, three.js and no stock assets
+            built with next.js, three.js and no stock assets
           </span>
           <a
             href="#hero"
-            className="t-label ml-auto !text-[0.58rem] transition-colors hover:!text-[var(--ember)]"
+            className="t-label ul-draw ml-auto !text-[0.58rem] transition-colors hover:!text-[var(--accent)]"
           >
             back to top ↑
           </a>

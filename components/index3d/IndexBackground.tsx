@@ -13,7 +13,7 @@ const Scene = dynamic(() => import('./Scene').then((m) => m.Scene), { ssr: false
  *
  * Mounted only after first paint and only when the browser can actually run it.
  * If WebGL is unavailable, blocked, or the device is too small to be worth it,
- * nothing renders and the site is exactly as legible as it was — the canvas is
+ * nothing renders and the site is exactly as legible as it was. The canvas is
  * decorative and carries no information that is not also in the text.
  */
 export function IndexBackground() {

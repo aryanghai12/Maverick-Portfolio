@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
  *
  * Under prefers-reduced-motion it jumps straight to the final step: the panel is
  * complete and readable, it just does not perform. That is the accessibility
- * floor for every animation on this site — nothing is ever only available to
+ * floor for every animation on this site. Nothing is ever only available to
  * someone who can watch it happen.
  */
 export function useStagedReveal(

@@ -56,7 +56,7 @@ export function About() {
         </div>
 
         {/* The log */}
-        <ol className="mt-20 list-none space-y-px p-0 sm:mt-28">
+        <ol className="mt-16 list-none space-y-px p-0 sm:mt-20">
           {log.map((row) => (
             <li
               key={row.title}
@@ -66,7 +66,7 @@ export function About() {
               {/* Ember tick appears in the gutter on hover. */}
               <span
                 aria-hidden
-                className="absolute top-[26px] left-0 h-[7px] w-[7px] rounded-[1px] bg-[var(--ember)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:top-[30px]"
+                className="absolute top-[26px] left-0 h-[7px] w-[7px] rounded-[1px] bg-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:top-[30px]"
               />
               <div className="grid gap-4 sm:grid-cols-[13rem_1fr] sm:gap-8">
                 <div className="t-data !text-[var(--mute)]">{row.stamp}</div>

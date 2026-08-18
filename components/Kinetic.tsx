@@ -3,7 +3,7 @@ import { Fragment } from 'react';
 /**
  * Per-character reveal, rendered on the server.
  *
- * The spans exist in the HTML at first paint — nothing here is built by JS — so
+ * The spans exist in the HTML at first paint and nothing here is built by JS, so
  * crawlers and screen readers see real text. The parent carries the original
  * string as aria-label and the spans are aria-hidden, so assistive tech reads a
  * word rather than a stream of letters.

@@ -4,7 +4,7 @@ import { Work } from '@/components/Work';
 import { Stack } from '@/components/Stack';
 import { Upstream } from '@/components/Upstream';
 import { Connect } from '@/components/Connect';
-import { Hud } from '@/components/Hud';
+import { Nav } from '@/components/Nav';
 import { Reveals } from '@/components/Reveals';
 import { SmoothScroll } from '@/components/SmoothScroll';
 import { IndexBackground } from '@/components/index3d/IndexBackground';
@@ -25,7 +25,7 @@ export default function Page() {
       <SmoothScroll />
       <Reveals />
       <IndexBackground />
-      <Hud />
+      <Nav />
       <Cursor />
       <CommandPalette />
 

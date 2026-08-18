@@ -44,16 +44,22 @@ function mulberry32(seed: number) {
   };
 }
 
-/* Palette, as linear rgb triples.
+/* Palette, as linear rgb triples. Neutral greys only: the site has no hue in
+   it anywhere, and a background carrying a blue or olive cast is the fastest
+   way to make the foreground look like it was designed by someone else.
 
-   The overwhelming majority of lines are dormant slate. A minority are
-   "indexed" bone. Ember is spent on roughly one line in seventy, which is what
-   keeps the accent at the 1–2% of pixels the design allows — an ember bar is
-   a changed line, and most lines in a repository are not changed. */
-const SLATE: [number, number, number] = [0.106, 0.132, 0.156];
-const SLATE_HI: [number, number, number] = [0.148, 0.182, 0.212];
-const BONE: [number, number, number] = [0.34, 0.38, 0.42];
-const EMBER: [number, number, number] = [0.62, 0.3, 0.09];
+   Every value here is deliberately below the text.
+
+   The first pass ran the brightest bars up to near white, which put background
+   geometry at the same luminance as the headline. The eye then has two things
+   competing for it and picks the moving one, which is exactly backwards: the
+   words are the subject and the hall is the room they are standing in. The
+   ceiling is now roughly 0.40, so the brightest thing the background can
+   produce still sits well under --bone-dim, let alone --bone. */
+const DORMANT: [number, number, number] = [0.075, 0.075, 0.085];
+const DORMANT_HI: [number, number, number] = [0.115, 0.115, 0.128];
+const INDEXED: [number, number, number] = [0.27, 0.27, 0.295];
+const CHANGED: [number, number, number] = [0.4, 0.4, 0.43];
 
 /**
  * Indentation is what makes this legible as code rather than as a barcode.
@@ -77,7 +83,7 @@ export function buildHall({ count, nearZ, farZ }: HallConfig): Hall {
   const blockIds = new Uint16Array(count);
 
   const centres: number[] = [];
-  const LINE_H = 0.17;
+  const LINE_H = 0.148;
 
   let i = 0;
   let block = 0;
@@ -85,24 +91,24 @@ export function buildHall({ count, nearZ, farZ }: HallConfig): Hall {
   /* Lanes sit either side of a wide empty corridor.
 
      The first pass put the innermost lane at ±6.4 and the hall ran straight
-     through the body copy — legible geometry behind illegible prose, which is
+     through the body copy, which is legible geometry behind illegible prose,
      the wrong trade every time. The content column is the subject; the hall is
      the room it is standing in. Nothing is drawn where the text lives. */
-  const lanes = [-24, -17.5, -11.5, 11.5, 17.5, 24];
+  const lanes = [-25, -18.5, -12.6, 12.6, 18.5, 25];
 
   while (i < count) {
     const lane = lanes[block % lanes.length];
-    const depth = nearZ - ((block / lanes.length) | 0) * 10.6 - rnd() * 3.4;
+    const depth = nearZ - ((block / lanes.length) | 0) * 7.4 - rnd() * 2.2;
     if (depth < -farZ) break;
 
-    const lines = 16 + ((rnd() * 42) | 0);
+    const lines = 22 + ((rnd() * 46) | 0);
     const baseY = 6.5 - rnd() * 13;
     const jitterX = (rnd() - 0.5) * 3.2;
     const bx = lane + jitterX;
 
     centres.push(bx, baseY - (lines * LINE_H) / 2, depth);
 
-    // A minority of files are "touched by this change" and carry ember lines.
+    // A minority of files are "touched by this change" and carry white lines.
     const touched = rnd() < 0.14;
     let indent = 0;
 
@@ -121,17 +127,18 @@ export function buildHall({ count, nearZ, farZ }: HallConfig): Hall {
       blockIds[i] = block;
 
       /* Brighter lines are what make the wall read as source rather than as
-         texture: the eye needs a few high-contrast rows per block to lock onto
-         the indentation. Ember stays rare — a changed line, not a decoration. */
+         texture: the eye needs a few high contrast rows per block to lock onto
+         the indentation. White stays rare, because it is a changed line and
+         not a decoration. */
       const r = rnd();
       const c =
         touched && r < 0.2
-          ? EMBER
+          ? CHANGED
           : r < 0.19
-            ? BONE
+            ? INDEXED
             : r < 0.52
-              ? SLATE_HI
-              : SLATE;
+              ? DORMANT_HI
+              : DORMANT;
 
       colors[i * 3] = c[0];
       colors[i * 3 + 1] = c[1];

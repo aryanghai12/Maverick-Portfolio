@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-17T19:31:54.073Z",
-  "source": "GitHub REST API, unauthenticated public endpoints",
+  "generatedAt": "2026-08-18T17:30:13.380Z",
+  "source": "GitHub REST API, public endpoints, unauthenticated",
   "user": {
     "login": "aryanghai12",
     "name": "Aryan Ghai",
@@ -8,20 +8,20 @@
     "contributingSince": 2023
   },
   "merged": {
-    "total": 30,
+    "total": 33,
     "own": 8,
-    "external": 22,
-    "externalRepoCount": 6,
-    "trueUpstream": 20,
-    "trueUpstreamRepoCount": 5
+    "external": 25,
+    "externalRepoCount": 7,
+    "trueUpstream": 23,
+    "trueUpstreamRepoCount": 6
   },
   "upstreamRepos": [
     {
       "org": "kubescape",
       "repo": "kubescape",
       "fullName": "kubescape/kubescape",
-      "merged": 13,
-      "stars": 11651,
+      "merged": 15,
+      "stars": 11656,
       "description": "Kubescape is an open-source Kubernetes security platform for your IDE, CI/CD pipelines, and clusters. It includes risk analysis, security, compliance, and misconfiguration scanning, saving Kubernetes users and administrators precious time, effort, and resources.",
       "url": "https://github.com/kubescape/kubescape",
       "kind": "upstream",
@@ -72,11 +72,22 @@
       "prsUrl": "https://github.com/kubescape/regolibrary/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
     },
     {
+      "org": "openyurtio",
+      "repo": "openyurt",
+      "fullName": "openyurtio/openyurt",
+      "merged": 1,
+      "stars": 1999,
+      "description": "OpenYurt - Extending your native Kubernetes to edge(project under CNCF)",
+      "url": "https://github.com/openyurtio/openyurt",
+      "kind": "upstream",
+      "prsUrl": "https://github.com/openyurtio/openyurt/pulls?q=is%3Apr+author%3Aaryanghai12+is%3Amerged"
+    },
+    {
       "org": "antiwork",
       "repo": "gumroad",
       "fullName": "antiwork/gumroad",
       "merged": 1,
-      "stars": 9591,
+      "stars": 9595,
       "description": "See what sticks",
       "url": "https://github.com/antiwork/gumroad",
       "kind": "upstream",
@@ -84,6 +95,27 @@
     }
   ],
   "upstreamPRs": [
+    {
+      "title": "fix(hack): update ginkgo to v2.28.1 and fix strict flag parsing for e2e build",
+      "repo": "openyurtio/openyurt",
+      "number": 2675,
+      "url": "https://github.com/openyurtio/openyurt/pull/2675",
+      "mergedAt": "2026-08-18"
+    },
+    {
+      "title": "feat(rules): add weak-namespace-token-access-v1",
+      "repo": "kubescape/kubescape",
+      "number": 3339,
+      "url": "https://github.com/kubescape/kubescape/pull/3339",
+      "mergedAt": "2026-08-18"
+    },
+    {
+      "title": "fix(gomod): bump module path to /v4 to match release tags",
+      "repo": "kubescape/kubescape",
+      "number": 3350,
+      "url": "https://github.com/kubescape/kubescape/pull/3350",
+      "mergedAt": "2026-08-18"
+    },
     {
       "title": "feat(rules): add modify-service-status-v1",
       "repo": "kubescape/kubescape",

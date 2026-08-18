@@ -6,8 +6,8 @@ import { useEffect, useRef, useState } from 'react';
  * TraceCV, shown as its signature view: the Parse X-ray.
  *
  * A document is redrawn as the parser sees it, and a scan line sweeps down it.
- * As the line passes a block, the block resolves to how it was actually read —
- * cleanly, with risk, or not at all — and the corresponding trace line writes
+ * As the line passes a block, the block resolves to how it was actually read,
+ * cleanly or with risk or not at all, and the corresponding trace line writes
  * itself underneath.
  *
  * The document here is a generic placeholder, never a real résumé, and no score
@@ -64,8 +64,8 @@ const legend: { status: Status; label: string }[] = [
 
 const styleFor = (status: Status, lit: boolean) => {
   if (!lit) return { background: 'var(--panel-2)', borderColor: 'transparent' };
-  if (status === 'clean') return { background: 'rgba(154,165,176,0.32)', borderColor: 'transparent' };
-  if (status === 'risk') return { background: 'rgba(227,135,63,0.34)', borderColor: 'var(--ember)' };
+  if (status === 'clean') return { background: 'rgba(255,255,255,0.20)', borderColor: 'transparent' };
+  if (status === 'risk') return { background: 'rgba(255,255,255,0.30)', borderColor: 'var(--accent)' };
   return { background: 'transparent', borderColor: 'var(--mute)' };
 };
 
@@ -155,11 +155,11 @@ export function TraceCVInstrument() {
           {/* Column split marker, revealed once the scan reaches it. */}
           <span
             aria-hidden
-            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--ember)] transition-opacity duration-700"
+            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--accent)] transition-opacity duration-700"
             style={{ left: '35.5%', opacity: progress > 32 ? 0.42 : 0 }}
           />
 
-          {/* The scan line. transform only — it never touches layout. */}
+          {/* The scan line. Transform only, so it never touches layout. */}
           {progress < 100 ? (
             <span
               aria-hidden
@@ -167,8 +167,8 @@ export function TraceCVInstrument() {
               style={{
                 transform: `translateY(${progress}%) translateY(-1px)`,
                 background:
-                  'linear-gradient(90deg, transparent, var(--ember-hi) 18%, var(--ember-hi) 82%, transparent)',
-                boxShadow: '0 0 14px 1px rgba(255,176,103,0.45)',
+                  'linear-gradient(90deg, transparent, var(--accent-hi) 18%, var(--accent-hi) 82%, transparent)',
+                boxShadow: '0 0 14px 1px rgba(255,255,255,0.5)',
               }}
             />
           ) : null}
@@ -207,7 +207,7 @@ export function TraceCVInstrument() {
                     aria-hidden
                     className={
                       b.status === 'risk'
-                        ? 'text-[var(--ember)]'
+                        ? 'text-[var(--accent)]'
                         : b.status === 'unread'
                           ? 'text-[var(--mute)]'
                           : 'text-[var(--bone-dim)]'

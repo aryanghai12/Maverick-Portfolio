@@ -2,13 +2,25 @@
  * Build-time statistics fetch.
  *
  * The site's thesis is verification over assertion, so no number it displays is
- * allowed to be typed by hand. Everything measurable is pulled from a public API
- * here, written to data/stats.json, and imported statically by the page. If this
- * script fails, the build fails: shipping a stale number on a site about proof is
- * worse than shipping nothing.
+ * allowed to be typed by hand. Everything measurable is pulled from the public
+ * GitHub API here, written to data/stats.json, and imported statically by the
+ * page.
  *
- * Runs unauthenticated by default (60 REST req/hr, 10 search req/min — we use far
- * less than that). Set GITHUB_TOKEN to raise the ceiling on CI.
+ * Failure policy, in order:
+ *
+ *   1. Retry. Most failures are transient: a secondary rate limit, a 502, a
+ *      dropped socket. Each request gets up to MAX_ATTEMPTS tries with backoff,
+ *      and honours Retry-After and x-ratelimit-reset when GitHub sends them.
+ *   2. Fall back to the committed data/stats.json, loudly. Those figures really
+ *      did come from the API, and the page prints the date they were measured,
+ *      so a snapshot a few days old is dated rather than dishonest.
+ *   3. Only if there is no snapshot at all does the build fail. At that point
+ *      there is nothing honest left to render.
+ *
+ * Unauthenticated this gets 60 REST requests an hour and 10 search requests a
+ * minute, counted per IP, which is why shared CI runners exhaust it. Set
+ * GITHUB_TOKEN for 5,000 an hour counted per token. The token needs no scopes:
+ * every endpoint used here is public. See docs/github-api.md.
  */
 
 import { writeFile, mkdir, readFile } from 'node:fs/promises';
@@ -57,30 +69,179 @@ const PROJECTS = [
   },
 ] as const;
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Read GITHUB_TOKEN out of .env.local or .env when it is not already in the
+ * environment. Running this through tsx does not load dotenv files by itself,
+ * and "it works in CI but not on my machine" is a bad first experience for
+ * anyone who clones this.
+ */
+async function loadTokenFromEnvFile() {
+  if (process.env.GITHUB_TOKEN) return;
+  for (const file of ['.env.local', '.env']) {
+    const text = await readFile(join(ROOT, file), 'utf8').catch(() => null);
+    if (!text) continue;
+    for (const line of text.split('\n')) {
+      const m = /^\s*(?:export\s+)?GITHUB_TOKEN\s*=\s*(.*)\s*$/.exec(line);
+      if (!m) continue;
+      const value = m[1].trim().replace(/^['"]|['"]$/g, '');
+      if (value) {
+        process.env.GITHUB_TOKEN = value;
+        console.log(`· using GITHUB_TOKEN from ${file}`);
+        return;
+      }
+    }
+  }
+}
+
 const headers: Record<string, string> = {
   Accept: 'application/vnd.github+json',
+  'X-GitHub-Api-Version': '2022-11-28',
   'User-Agent': `${USER}-portfolio-build`,
 };
-if (process.env.GITHUB_TOKEN) {
-  headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+
+/** How many times a single request may be attempted before giving up. */
+const MAX_ATTEMPTS = 4;
+
+/**
+ * The longest this script will sit and wait for a rate limit window to reopen.
+ *
+ * A primary rate limit can be up to an hour away. Blocking a deploy for an hour
+ * is worse than shipping the committed snapshot, which is honest and dated, so
+ * anything past this threshold gives up immediately instead of waiting.
+ */
+const MAX_RESET_WAIT_MS = 75_000;
+
+type FailureKind = 'rate-limit' | 'auth' | 'not-found' | 'server' | 'network' | 'other';
+
+class GitHubError extends Error {
+  constructor(
+    message: string,
+    readonly kind: FailureKind,
+    readonly status = 0,
+  ) {
+    super(message);
+    this.name = 'GitHubError';
+  }
+}
+
+/** 401 and 404 will fail identically on every retry, so they fail once. */
+const RETRYABLE: FailureKind[] = ['rate-limit', 'server', 'network'];
+
+function classify(status: number, remaining: number, retryAfter: number): FailureKind {
+  if (status === 401) return 'auth';
+  if (status === 404 || status === 422) return 'not-found';
+  // A primary limit reports remaining 0; a secondary limit sends Retry-After.
+  if ((status === 403 || status === 429) && (remaining === 0 || Number.isFinite(retryAfter))) {
+    return 'rate-limit';
+  }
+  if (status >= 500) return 'server';
+  return 'other';
 }
 
 async function gh<T>(path: string): Promise<T> {
   const url = path.startsWith('http') ? path : `https://api.github.com${path}`;
-  const res = await fetch(url, { headers });
-  if (!res.ok) {
+
+  let last: GitHubError | null = null;
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    let res: Response;
+    try {
+      res = await fetch(url, { headers });
+    } catch (cause) {
+      last = new GitHubError(
+        `network error for ${url}: ${(cause as Error).message}`,
+        'network',
+      );
+      if (attempt === MAX_ATTEMPTS) break;
+      await sleep(600 * 2 ** (attempt - 1));
+      continue;
+    }
+
+    if (res.ok) return res.json() as Promise<T>;
+
+    const remaining = Number(res.headers.get('x-ratelimit-remaining'));
+    const reset = Number(res.headers.get('x-ratelimit-reset'));
+    const retryAfter = Number(res.headers.get('retry-after'));
+    const kind = classify(res.status, remaining, retryAfter);
     const body = await res.text().catch(() => '');
-    throw new Error(
-      `GitHub ${res.status} ${res.statusText} for ${url}\n` +
-        `rate-limit-remaining: ${res.headers.get('x-ratelimit-remaining') ?? 'n/a'}\n` +
-        body.slice(0, 400),
+
+    /* Only report the budget when it means something. A 401 also comes back
+       with remaining 0 and reset 0, and printing "resets 1970-01-01" next to a
+       bad-credentials error sends people hunting for a rate limit that is not
+       there. */
+    const budget =
+      kind === 'rate-limit' && Number.isFinite(remaining)
+        ? `\n  rate limit: ${remaining} remaining` +
+          (reset > 1_600_000_000 ? `, resets ${new Date(reset * 1000).toISOString()}` : '')
+        : '';
+
+    last = new GitHubError(
+      `GitHub ${res.status} ${res.statusText} for ${url}` +
+        budget +
+        `\n  ${body.slice(0, 300).replace(/\s+/g, ' ').trim()}`,
+      kind,
+      res.status,
     );
+
+    if (!RETRYABLE.includes(kind) || attempt === MAX_ATTEMPTS) break;
+
+    /* Wait exactly as long as GitHub asked, when it says. Retry-After comes
+       with a secondary limit, x-ratelimit-reset with a primary one, and
+       guessing at either is how you get banned for longer. */
+    let wait = 600 * 2 ** (attempt - 1);
+    if (Number.isFinite(retryAfter)) wait = retryAfter * 1000 + 500;
+    else if (kind === 'rate-limit' && Number.isFinite(reset)) {
+      wait = reset * 1000 - Date.now() + 1000;
+    }
+
+    if (wait > MAX_RESET_WAIT_MS) {
+      last = new GitHubError(
+        `${last.message}\n  The window reopens in ${Math.round(wait / 60_000)} min, ` +
+          `which is too long to hold a build open.`,
+        kind,
+        res.status,
+      );
+      break;
+    }
+
+    console.warn(
+      `  ↻ ${kind} on attempt ${attempt}/${MAX_ATTEMPTS}, retrying in ${Math.round(wait / 1000)}s`,
+    );
+    await sleep(Math.max(wait, 0));
   }
-  return res.json() as Promise<T>;
+
+  throw last ?? new GitHubError(`unknown failure for ${url}`, 'other');
 }
 
-/** Search is rate-limited harder than the rest of the API; give it room. */
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+/**
+ * Report the budget before spending it. /rate_limit is the one endpoint that
+ * does not itself count against the limit, so this is free information and it
+ * turns "the build failed" into "the build failed because there were 0 search
+ * requests left and the window reopens at 14:05".
+ */
+async function reportBudget() {
+  type Limit = { limit: number; remaining: number; reset: number };
+  const data = await gh<{ resources: { core: Limit; search: Limit } }>('/rate_limit').catch(
+    () => null,
+  );
+  if (!data) return;
+
+  const { core, search } = data.resources;
+  const at = (r: Limit) => new Date(r.reset * 1000).toISOString().slice(11, 16);
+  console.log(
+    `· budget  core ${core.remaining}/${core.limit} (resets ${at(core)} UTC)` +
+      `  search ${search.remaining}/${search.limit} (resets ${at(search)} UTC)`,
+  );
+
+  if (search.remaining === 0 || core.remaining < 12) {
+    console.warn(
+      '  ⚠ Not much budget left. This run will probably fall back to the\n' +
+        '    committed snapshot. See docs/github-api.md.',
+    );
+  }
+}
 
 type SearchItem = {
   title: string;
@@ -100,6 +261,21 @@ type RepoInfo = {
 };
 
 async function main() {
+  await loadTokenFromEnvFile();
+
+  const authed = Boolean(process.env.GITHUB_TOKEN);
+  if (authed) {
+    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  } else {
+    console.warn(
+      '· no GITHUB_TOKEN set, running unauthenticated\n' +
+        '  60 REST and 10 search requests per hour per IP. Fine locally, and the\n' +
+        '  usual reason a CI build falls back to the snapshot. See docs/github-api.md.',
+    );
+  }
+
+  await reportBudget();
+
   console.log('· fetching profile');
   const user = await gh<{
     name: string;
@@ -179,7 +355,7 @@ async function main() {
 
   const stats = {
     generatedAt: new Date().toISOString(),
-    source: 'GitHub REST API, unauthenticated public endpoints',
+    source: `GitHub REST API, public endpoints, ${authed ? 'authenticated' : 'unauthenticated'}`,
     user: {
       login: user.login,
       name: user.name,
@@ -229,8 +405,24 @@ async function main() {
   );
 }
 
+const ADVICE: Record<FailureKind, string> = {
+  'rate-limit':
+    'Rate limited. Set GITHUB_TOKEN (no scopes needed) to go from 60 requests\n' +
+    '  an hour per IP to 5,000 an hour per token. See docs/github-api.md.',
+  auth: 'GITHUB_TOKEN was rejected. It is expired, revoked, or mistyped.',
+  'not-found':
+    'A repository or user in scripts/fetch-stats.ts does not exist, or was\n' +
+    '  renamed or made private. Check USER and PROJECTS at the top of the file.',
+  server: 'GitHub is having a bad day. Retries are exhausted; try again shortly.',
+  network: 'The network was unreachable from this machine.',
+  other: 'Unexpected response. The full body is printed above.',
+};
+
 main().catch(async (err) => {
   console.error('\n✕ stats fetch failed:\n', err.message ?? err);
+
+  const kind: FailureKind = err instanceof GitHubError ? err.kind : 'other';
+  console.error(`\n  ${ADVICE[kind]}`);
 
   /* Fall back to the committed snapshot, loudly.
    *
@@ -238,7 +430,7 @@ main().catch(async (err) => {
    * that every number must be fetched within the last second. A committed
    * stats.json holds figures that really came from the GitHub API, and the page
    * prints the date they were measured on, so a snapshot a few days old is
-   * dated — not dishonest.
+   * dated, not dishonest.
    *
    * This matters in practice because Vercel builds from shared IPs and the
    * unauthenticated GitHub search API is rate-limited per IP: without this,
@@ -265,7 +457,7 @@ main().catch(async (err) => {
     console.error(
       `\n  ⚠ Falling back to the committed snapshot from ${snapshot.generatedAt ?? 'an unknown date'}` +
         (Number.isFinite(age) ? ` (${age} day${age === 1 ? '' : 's'} old).` : '.') +
-        '\n  The page shows that date, so the figures stay honest — but set' +
+        '\n  The page shows that date, so the figures stay honest, but set' +
         '\n  GITHUB_TOKEN in your deploy environment to keep them current.\n',
     );
   } catch {

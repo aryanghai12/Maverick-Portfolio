@@ -9,7 +9,7 @@ const fmtStars = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : Strin
  * Printed rather than hidden. Every number here comes from the GitHub API at
  * build time, and saying when turns a snapshot into a dated measurement instead
  * of an implied claim about this exact second. It is also the honest answer to
- * "how do you know" — the same answer the projects themselves give. */
+ * "how do you know", and it is the same answer the projects themselves give. */
 const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'short',
@@ -20,9 +20,9 @@ const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
 /**
  * The section that does the most work on the whole site.
  *
- * Thirteen merged pull requests into a CNCF project is rarer than any project
- * card, and it is the one claim here that a stranger can verify in ten seconds —
- * every row links to the real pull request. The argument of the site is proof
+ * A double-digit run of merged pull requests into a CNCF project is rarer than
+ * any project card, and it is the one claim here that a stranger can verify in
+ * ten seconds: every row links to the real pull request. The argument of the site is proof
  * over assertion, so this section demonstrates it rather than stating it.
  *
  * Every number is read from data/stats.json, written at build time from the
@@ -39,24 +39,25 @@ export function Upstream() {
         <div className="grid [&>*]:min-w-0 gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)] lg:gap-16">
           <div>
             <h2 className="t-h2 max-w-[16ch] text-[var(--bone)]" data-rv>
-              <Kinetic text="code that shipped somewhere else" />
+              <Kinetic text="Code that shipped somewhere else" />
             </h2>
 
-            <div className="mt-10 flex items-baseline gap-5" data-rv>
-              <span className="u-mono text-[clamp(3.5rem,2rem+7vw,6.5rem)] leading-[0.85] font-bold tracking-[-0.06em] text-[var(--ember)]">
+            <div className="mt-10 flex flex-wrap items-end gap-x-6 gap-y-3" data-rv>
+              <span className="u-mono text-[clamp(3.2rem,2rem+5.6vw,5.4rem)] leading-[0.8] font-medium tracking-[-0.05em] text-[var(--bone)]">
                 {merged.external}
               </span>
-              {/* 0.2em tracking eats horizontal room fast; at 12ch this label
-                  broke to one word per line. Widened and un-tracked. */}
-              <span className="t-label max-w-[22ch] !text-[0.66rem] !leading-[1.7] !tracking-[0.08em]">
-                merged pull requests into {merged.externalRepoCount} repositories I don’t own
-              </span>
+              {/* Set as a sentence, not as a tracked uppercase label. Beside a
+                  numeral this size, 0.2em tracking broke the caption to one
+                  word per line and made the pair look cramped. */}
+              <p className="mb-1 max-w-[24ch] text-[0.98rem] leading-[1.5] text-[var(--bone-dim)]">
+                merged pull requests into {merged.externalRepoCount} repositories I do not own
+              </p>
             </div>
 
             <p className="t-body mt-8" data-rv>
               Merged in repositories where the standards were not mine to set. Every row
-              below links to the real pull request — this is the one section of the site
-              that a stranger can check without taking my word for anything.
+              below links to the real pull request. This is the one section of the site
+              you can check in ten seconds without taking my word for anything.
             </p>
 
             {/* Repository table */}
@@ -74,7 +75,7 @@ export function Upstream() {
                     rel="noreferrer noopener"
                     className="group flex items-center gap-4 py-4 transition-[padding-left] duration-300 [transition-timing-function:var(--ease)] hover:pl-3"
                   >
-                    <span className="u-mono w-8 shrink-0 text-[0.95rem] font-bold text-[var(--ember)]">
+                    <span className="u-mono w-8 shrink-0 text-[0.95rem] font-bold text-[var(--accent)]">
                       {r.merged}
                     </span>
                     <span className="min-w-0 flex-1">
@@ -87,7 +88,7 @@ export function Upstream() {
                     </span>
                     <span
                       aria-hidden
-                      className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--ember)]"
+                      className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--accent)]"
                     >
                       ↗
                     </span>
@@ -110,6 +111,7 @@ export function Upstream() {
               <ul
                 className="scroll-wall m-0 max-h-[540px] list-none overflow-y-auto p-0"
                 tabIndex={0}
+                data-lenis-prevent
                 aria-label="Merged pull requests, newest first"
               >
                 {upstreamPRs.map((pr) => (
@@ -123,7 +125,7 @@ export function Upstream() {
                       <div className="flex items-start gap-3">
                         <span
                           aria-hidden
-                          className="mt-[5px] text-[0.6rem] text-[var(--mute)] transition-colors duration-300 group-hover:text-[var(--ember)]"
+                          className="mt-[5px] text-[0.6rem] text-[var(--mute)] transition-colors duration-300 group-hover:text-[var(--accent)]"
                         >
                           ◈
                         </span>
@@ -156,12 +158,12 @@ export function Upstream() {
                 href={stats.gitlab.profileUrl}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="border-b border-[var(--edge)] text-[var(--bone-dim)] transition-colors hover:border-[var(--ember)] hover:text-[var(--ember)]"
+                className="ul-draw text-[var(--bone)] transition-colors hover:text-[var(--accent)]"
               >
                 GitLab
               </a>
               , where the OWASP BLT work lives. No count is shown there because GitLab
-              publishes no per-author merge total, and I’m not going to estimate one.
+              publishes no per-author merge total, and I am not going to estimate one.
             </p>
 
             <p className="t-label mt-3 !text-[0.56rem] !leading-[1.7]">

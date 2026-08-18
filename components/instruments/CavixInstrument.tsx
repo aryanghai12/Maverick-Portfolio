@@ -4,7 +4,7 @@ import { useStagedReveal } from '@/lib/useStagedReveal';
 
 /**
  * Cavix, shown as the thing it actually produces: a review comment assembling
- * itself. Not a screenshot — a reconstruction, using the real output vocabulary
+ * itself. Not a screenshot but a reconstruction, using the real output vocabulary
  * from the project's own README (geometric severity marks, no emoji anywhere,
  * the sandbox transcript with real exit codes).
  *
@@ -42,7 +42,7 @@ export function CavixInstrument() {
       <div
         className={`flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 transition-opacity duration-500 sm:px-5 ${at(0)}`}
       >
-        <span aria-hidden className="u-mono text-[0.7rem] text-[var(--ember)]">
+        <span aria-hidden className="u-mono text-[0.7rem] text-[var(--accent)]">
           ◈
         </span>
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
@@ -65,7 +65,7 @@ export function CavixInstrument() {
             >
               <span
                 aria-hidden
-                className={mark === '▲' ? 'text-[var(--ember)]' : 'text-[var(--mute)]'}
+                className={mark === '▲' ? 'text-[var(--accent)]' : 'text-[var(--mute)]'}
               >
                 {mark}
               </span>
@@ -77,7 +77,7 @@ export function CavixInstrument() {
 
         {/* The finding */}
         <div
-          className={`mt-5 border-l-2 border-[var(--del)] bg-[rgba(180,84,74,0.06)] py-3 pl-4 transition-opacity duration-500 ${at(1 + scope.length)}`}
+          className={`mt-5 border-l-2 border-[var(--del)] bg-[rgba(255,255,255,0.035)] py-3 pl-4 transition-opacity duration-500 ${at(1 + scope.length)}`}
         >
           <div className="flex items-start gap-2">
             <span aria-hidden className="text-[var(--del)]">
@@ -99,7 +99,7 @@ export function CavixInstrument() {
           </div>
         </div>
 
-        {/* Sandbox transcript — the payload of the whole instrument.
+        {/* Sandbox transcript, the payload of the whole instrument.
             .code-surface sets its own font-size, so the size has to be restated
             here or these lines render larger than the panel and overflow. */}
         <div className="code-surface mt-5 px-3 py-3 text-[clamp(0.58rem,0.5rem+0.28vw,0.7rem)] sm:px-4">
@@ -116,7 +116,7 @@ export function CavixInstrument() {
                     2 + scope.length + i,
                   )}`}
                 >
-                  <span className="text-[var(--ember)]">{tag}</span>
+                  <span className="text-[var(--accent)]">{tag}</span>
                   <span className="text-[var(--bone-dim)]">{cmd}</span>
                   <span
                     className={passed ? 'text-[var(--add)]' : 'text-[var(--del)]'}

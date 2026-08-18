@@ -9,7 +9,7 @@ import { useEffect } from 'react';
  * a delay for each one.
  *
  * Nothing here creates content. The elements and their text are already in the
- * HTML — this only changes whether they are visible, which is what keeps the
+ * HTML. This only changes whether they are visible, which is what keeps the
  * page intact for crawlers, for screen readers, and with JS disabled.
  */
 export function Reveals() {
