@@ -1,9 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { connect, identity, links } from '@/lib/content';
+import { connect, identity, links, sections } from '@/lib/content';
 import { SectionHead } from './SectionHead';
-import { Kinetic } from './Kinetic';
+
+const meta = sections.find((s) => s.id === 'contact')!;
 
 /**
  * The section that has to convert, so it is the most alive thing on the page and
@@ -109,17 +110,18 @@ export function Connect() {
   }, [history]);
 
   return (
-    <section id="connect" data-cam="connect" className="section pb-28">
+    <section id="contact" data-stage="orbit" className="section pb-28">
       <div className="shell">
-        <SectionHead index="04" label="contact" />
+        <SectionHead
+          num={meta.num}
+          jp={meta.jp}
+          label="contact"
+          heading={connect.heading}
+        />
 
-        <div className="grid [&>*]:min-w-0 gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16 [&>*]:min-w-0">
           <div>
-            <h2 className="t-h2 max-w-[14ch] text-[var(--bone)]" data-rv>
-              <Kinetic text={connect.heading} />
-            </h2>
-
-            <p className="t-statement mt-8" data-rv>
+            <p className="t-statement" data-rv>
               {connect.lede}
             </p>
 
@@ -195,15 +197,20 @@ export function Connect() {
           </div>
 
           {/* Working console */}
-          <div data-rv="scale">
-            <div className="glass overflow-hidden">
-              <div className="flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
+          <div
+            data-rv="scale"
+            data-depth
+            className="depth"
+            style={{ '--dir': -1 } as React.CSSProperties}
+          >
+            <div className="glass spot overflow-hidden" data-spot>
+              <div className="relative z-[3] flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
                 <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
                 <span className="t-label !text-[0.6rem]">contact · interactive</span>
                 <span className="t-label ml-auto !text-[0.58rem]">type or click</span>
               </div>
 
-              <div className="px-4 py-5 sm:px-5">
+              <div className="relative z-[3] px-4 py-5 sm:px-5">
                 {/* Chips: everything the console can do, one click away. */}
                 <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
                   {commands.map((c) => (
@@ -211,7 +218,7 @@ export function Connect() {
                       <button
                         type="button"
                         onClick={() => exec(c.name)}
-                        className="u-mono rounded border border-[var(--edge)] bg-[var(--panel-0)] px-2.5 py-1.5 text-[0.7rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                        className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.03)] px-3 py-1.5 text-[0.7rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                       >
                         {c.name}
                       </button>
@@ -297,7 +304,12 @@ export function Connect() {
         </div>
 
         <footer className="mt-24 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--hair-soft)] pt-8">
-          <span className="t-label !text-[0.58rem]">aryan ghai · {new Date().getFullYear()}</span>
+          <span className="t-label !text-[0.58rem]">
+            aryan ghai · {new Date().getFullYear()}
+          </span>
+          <span aria-hidden className="t-jp !text-[0.6rem]">
+            検証は主張に勝る
+          </span>
           <span className="t-label !text-[0.58rem]">
             built with next.js, three.js and no stock assets
           </span>

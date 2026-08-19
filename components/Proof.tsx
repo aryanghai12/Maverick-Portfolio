@@ -1,7 +1,9 @@
 import stats from '@/data/stats.json';
-import { CNCF_ORGS, prHighlights, ruleGroup } from '@/lib/content';
+import { CNCF_ORGS, prHighlights, ruleGroup, sections } from '@/lib/content';
 import { SectionHead } from './SectionHead';
-import { Kinetic } from './Kinetic';
+import { CountUp } from './ui/CountUp';
+
+const meta = sections.find((s) => s.id === 'proof')!;
 
 const fmtStars = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
@@ -12,11 +14,10 @@ const ORG_NAMES: Record<string, string> = {
   openyurtio: 'OpenYurt',
 };
 
-/* The date the figures on this page were actually measured.
- *
- * Printed rather than hidden. Every number here comes from the GitHub API at
- * build time, and saying when turns a snapshot into a dated measurement instead
- * of an implied claim about this exact second. */
+/* The date the figures on this page were actually measured. Printed rather than
+   hidden: every number here comes from the GitHub API at build time, and saying
+   when turns a snapshot into a dated measurement instead of an implied claim
+   about this exact second. */
 const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
   day: 'numeric',
   month: 'short',
@@ -27,17 +28,17 @@ const measured = new Date(stats.generatedAt).toLocaleDateString('en-GB', {
 /**
  * The proof.
  *
- * This is the one section a stranger can verify in ten seconds, so it is now
- * the first thing after the hero and the only section that breaks the column
- * every other section lives in.
+ * The one section a stranger can verify in ten seconds, so it is the first
+ * thing after the hero and the only section that breaks the column every other
+ * section lives in.
  *
  * The figures lead with trueUpstream rather than external. The difference is a
- * student team project, counted separately below: two pull requests titled
- * "User" and "location sharing" on a classmate's app are real, but folding them
- * into the headline dilutes twenty three merges into repositories with
- * maintainers, and the larger number is the weaker claim.
+ * student team project, counted separately below: two pull requests on a
+ * classmate's app are real, but folding them into the headline dilutes twenty
+ * three merges into repositories with maintainers, and the larger number is the
+ * weaker claim.
  */
-export function Upstream() {
+export function Proof() {
   const { merged, upstreamRepos, upstreamPRs } = stats;
 
   const team = upstreamRepos.filter((r) => r.kind === 'team');
@@ -65,53 +66,69 @@ export function Upstream() {
   );
 
   return (
-    <section id="upstream" data-cam="upstream" className="relative pt-4 pb-20 sm:pb-28">
+    <section id="proof" data-stage="column" className="relative pt-10 pb-20 sm:pb-28">
       <div className="shell">
-        <SectionHead index="01" label="proof" />
+        <SectionHead
+          num={meta.num}
+          jp={meta.jp}
+          label="proof"
+          heading="Merged into code I do not own"
+          lede={`${merged.trueUpstream} pull requests merged into ${merged.trueUpstreamRepoCount} repositories owned by other people${
+            cncf.length > 0
+              ? `, including ${cncf.join(' and ')}${cncf.length > 1 ? ', both CNCF projects' : ', a CNCF project'}`
+              : ''
+          }. Reviewed by maintainers whose standards were not mine to set. Every row below links to the pull request itself.`}
+        />
       </div>
 
       {/* The band. The only element on the site that leaves the column. */}
-      <div className="band py-12 sm:py-16">
+      <div className="band py-14 sm:py-20">
         <div className="shell-wide">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-14">
-            <span className="figure-xl shrink-0" data-rv>
-              {merged.trueUpstream}
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:gap-16">
+            <span className="figure-xl t-grad shrink-0" data-rv>
+              <CountUp to={merged.trueUpstream} duration={1400} />
             </span>
 
-            <div className="max-w-[46ch] pb-2">
-              <h2 className="t-h2 text-[var(--bone)]" data-rv>
-                <Kinetic text="Merged into code I do not own" stagger={16} />
-              </h2>
-              <p className="t-body mt-5" data-rv>
-                {merged.trueUpstream} pull requests merged into{' '}
-                {merged.trueUpstreamRepoCount} repositories owned by other people,
-                {cncf.length > 0 ? (
-                  <>
-                    {' '}
-                    including {cncf.join(' and ')}
-                    {cncf.length > 1 ? ', both CNCF projects' : ', a CNCF project'}
-                  </>
-                ) : null}
-                . Reviewed by maintainers whose standards were not mine to set. Every
-                row below links to the pull request itself.
+            <div className="max-w-[42ch] pb-3">
+              <p className="t-statement" data-rv>
+                Every one of them was reviewed by somebody who had no reason to be
+                generous about it.
+              </p>
+              <p className="t-label mt-5 !text-[0.58rem] !leading-[1.7]" data-rv>
+                counted from the github api · measured {measured}
               </p>
             </div>
           </div>
 
-          {/* Repository strip, full width. */}
-          <ul className="mt-12 grid list-none gap-px border border-[var(--hair-soft)] bg-[var(--hair-soft)] p-0 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Repository strip, full width, swinging out of the depth of the page
+              as it arrives. */}
+          <ul className="mt-14 grid list-none gap-3 p-0 sm:mt-18 sm:grid-cols-2 lg:grid-cols-3">
             {real.map((r, i) => (
-              <li key={r.fullName} data-rv style={{ transitionDelay: `${i * 45}ms` }}>
+              <li
+                key={r.fullName}
+                data-rv="scale"
+                data-depth
+                className="depth"
+                style={
+                  {
+                    transitionDelay: `${i * 55}ms`,
+                    // Alternating sign, so the strip fans open as it arrives
+                    // rather than sliding sideways as one block.
+                    '--dir': i % 2 ? -1 : 1,
+                  } as React.CSSProperties
+                }
+              >
                 <a
                   href={r.prsUrl}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="group flex h-full items-baseline gap-5 bg-[var(--void)] px-5 py-6 transition-colors duration-300 hover:bg-[var(--panel-0)] sm:px-6 sm:py-7"
+                  data-spot
+                  className="glass spot group flex h-full items-baseline gap-5 px-5 py-6 transition-transform duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-[3px] sm:px-6 sm:py-7"
                 >
-                  <span className="u-mono w-10 shrink-0 text-[1.6rem] leading-none font-medium tracking-[-0.04em] text-[var(--bone)]">
+                  <span className="u-mono relative z-[3] w-10 shrink-0 text-[1.7rem] leading-none font-medium tracking-[-0.04em] text-[var(--bone)]">
                     {r.merged}
                   </span>
-                  <span className="min-w-0 flex-1">
+                  <span className="relative z-[3] min-w-0 flex-1">
                     <span className="u-mono block truncate text-[0.86rem] text-[var(--bone-dim)] transition-colors duration-300 group-hover:text-[var(--bone)]">
                       {r.fullName}
                     </span>
@@ -122,7 +139,7 @@ export function Upstream() {
                   </span>
                   <span
                     aria-hidden
-                    className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--bone)]"
+                    className="relative z-[3] text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--accent)]"
                   >
                     ↗
                   </span>
@@ -134,9 +151,9 @@ export function Upstream() {
       </div>
 
       <div className="shell-wide mt-16 sm:mt-24">
-        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 [&>*]:min-w-0">
           {/* Hardest first. Sorting newest first buried these under ten rule
-              PRs whose titles differ by three words. */}
+              pull requests whose titles differ by three words. */}
           <div>
             <h3 className="t-label !text-[0.62rem] !text-[var(--bone-dim)]" data-rv>
               the ones that were hard
@@ -162,7 +179,7 @@ export function Upstream() {
                       <span className="u-mono text-[0.68rem] text-[var(--mute)]">
                         {h.pr!.repo}
                       </span>
-                      <span className="u-mono text-[0.68rem] text-[var(--bone-dim)] transition-colors group-hover:text-[var(--bone)]">
+                      <span className="u-mono text-[0.68rem] text-[var(--accent)] opacity-80 transition-opacity group-hover:opacity-100">
                         #{h.number}
                       </span>
                       <span className="u-mono ml-auto text-[0.64rem] text-[var(--mute)]">
@@ -177,13 +194,13 @@ export function Upstream() {
 
           <div>
             {/* The rules, stated once as the thing they collectively are. */}
-            <div className="pane p-6 sm:p-7" data-rv>
-              <h3 className="t-h3 text-[var(--bone)]">
+            <div className="glass spot p-6 sm:p-7" data-rv data-spot>
+              <h3 className="t-h3 relative z-[3] text-[var(--bone)]">
                 {ruleGroup.title.replace('Ten', String(rules.length))}
               </h3>
-              <p className="t-body mt-4 !text-[0.95rem]">{ruleGroup.body}</p>
+              <p className="t-body relative z-[3] mt-4 !text-[0.95rem]">{ruleGroup.body}</p>
 
-              <ul className="mt-6 grid list-none gap-x-6 gap-y-1.5 p-0 sm:grid-cols-2">
+              <ul className="relative z-[3] mt-6 grid list-none gap-x-6 gap-y-1.5 p-0 sm:grid-cols-2 [&>*]:min-w-0">
                 {rules.map((pr) => (
                   <li key={pr.number}>
                     <a
@@ -231,7 +248,10 @@ export function Upstream() {
 
             {/* Counted, labelled, and kept out of the headline. */}
             {team.length > 0 ? (
-              <p className="t-label mt-7 !normal-case !tracking-[0.02em] !text-[0.66rem] !leading-[1.65]" data-rv>
+              <p
+                className="t-label mt-7 !text-[0.66rem] !leading-[1.65] !normal-case !tracking-[0.02em]"
+                data-rv
+              >
                 Not counted above: {merged.external - merged.trueUpstream} further merges
                 into{' '}
                 <a
@@ -246,10 +266,6 @@ export function Upstream() {
                 but not the same claim, so it does not get to inflate the number.
               </p>
             ) : null}
-
-            <p className="t-label mt-6 !text-[0.56rem] !leading-[1.7]" data-rv>
-              every figure counted from the github api · measured {measured}
-            </p>
           </div>
         </div>
       </div>

@@ -43,10 +43,12 @@ export function CommandPalette() {
   const items: Item[] = useMemo(
     () => [
       { id: 'hero', label: 'Top', hint: 'section 00', group: 'go', run: () => go('hero') },
-      { id: 'upstream', label: 'Proof', hint: 'section 01', group: 'go', run: () => go('upstream') },
-      { id: 'work', label: 'Work', hint: 'section 02', group: 'go', run: () => go('work') },
-      { id: 'about', label: 'Who', hint: 'section 03', group: 'go', run: () => go('about') },
-      { id: 'connect', label: 'Contact', hint: 'section 04', group: 'go', run: () => go('connect') },
+      { id: 'proof', label: 'Proof', hint: '壹 · section 01', group: 'go', run: () => go('proof') },
+      { id: 'work', label: 'Work', hint: '弐 · section 02', group: 'go', run: () => go('work') },
+      { id: 'about', label: 'Who', hint: '参 · section 03', group: 'go', run: () => go('about') },
+      { id: 'toolkit', label: 'Toolkit', hint: '肆 · section 04', group: 'go', run: () => go('toolkit') },
+      { id: 'hope', label: 'Hope', hint: '伍 · section 05', group: 'go', run: () => go('hope') },
+      { id: 'contact', label: 'Contact', hint: '陸 · section 06', group: 'go', run: () => go('contact') },
       ...projects.map((p) => ({
         id: `p-${p.id}`,
         label: p.name,
@@ -101,7 +103,7 @@ export function CommandPalette() {
    * Cmd+K shortcut keeps working the whole time. Only the affordance leaves. */
   const [triggerHidden, setTriggerHidden] = useState(false);
   useEffect(() => {
-    const el = document.getElementById('connect');
+    const el = document.getElementById('contact');
     if (!el) return;
     const io = new IntersectionObserver(
       ([e]) => setTriggerHidden(e.isIntersecting),

@@ -57,11 +57,11 @@ export function CavixInstrument() {
         </div>
 
         {/* Scope table */}
-        <dl className="mt-3 grid grid-cols-[1rem_auto_1fr] gap-x-3 gap-y-[6px] sm:gap-x-4">
+        <dl className="mt-3 grid grid-cols-[1rem_auto_minmax(0,1fr)] gap-x-3 gap-y-[6px] sm:gap-x-4">
           {scope.map(([mark, signal, reading], i) => (
             <div
               key={signal}
-              className={`col-span-3 grid grid-cols-subgrid transition-opacity duration-500 ${at(1 + i)}`}
+              className={`col-span-3 grid min-w-0 grid-cols-subgrid transition-opacity duration-500 ${at(1 + i)}`}
             >
               <span
                 aria-hidden
@@ -69,7 +69,7 @@ export function CavixInstrument() {
               >
                 {mark}
               </span>
-              <dt className="text-[var(--bone-dim)]">{signal}</dt>
+              <dt className="truncate text-[var(--bone-dim)]">{signal}</dt>
               <dd className="m-0 truncate text-[var(--mute)]">{reading}</dd>
             </div>
           ))}

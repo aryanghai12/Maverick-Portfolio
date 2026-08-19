@@ -1,61 +1,68 @@
 @import 'tailwindcss';
 
 /* ============================================================ 0 · tokens
-   Monochrome. There is no hue anywhere on this site: every surface, rule,
-   label and highlight is a step on one neutral ramp from near black to pure
-   white. Colour is the cheapest way to make a page look decorated and the
-   fastest way to make it look generic, so the whole design is carried by
-   contrast, weight and space instead.
 
-   White is the accent. It is spent the way an accent colour would be: the
-   active nav item, the live indicator, the figure that matters, the rule under
-   a hovered link. Everything else lives in the greys.                        */
+   Deep space, and one spectrum across it.
+
+   The ground is a blue-black rather than a neutral one, so the field behind the
+   page and the page itself belong to the same world. Everything that carries
+   emphasis is placed on a single gradient that runs blue, through violet, to
+   red: the same three colours the particle field is built from. Nothing else on
+   the site is allowed to introduce a hue.
+
+   Text is exempt. Every reading surface is a near-white on a near-black, at
+   contrast ratios well past AA, because a portfolio that cannot be read is a
+   screensaver.                                                              */
 
 @theme {
-  --color-void: #0e0e11;
-  --color-panel-0: #151519;
-  --color-panel-1: #1c1c21;
-  --color-panel-2: #24242a;
-  --color-edge: #32323a;
+  --color-void: #05060b;
+  --color-panel-0: #0a0c14;
+  --color-panel-1: #10121c;
+  --color-panel-2: #171a27;
+  --color-edge: #262b3c;
 
-  --color-bone: #f4f4f6;
-  --color-bone-dim: #b2b2ba;
-  --color-mute: #7c7c86;
+  --color-bone: #f3f5fc;
+  --color-bone-dim: #b7bdd2;
+  --color-mute: #7c8299;
 
-  --color-accent: #ffffff;
+  --color-accent: #7d99ff;
   --color-accent-hi: #ffffff;
+  --color-hot: #ff4266;
+  --color-violet: #a855f7;
 
-  --color-add: #e8e8ec;
-  --color-del: #74747e;
+  --color-add: #e8ebf6;
+  --color-del: #74798a;
 
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-outfit), var(--font-geist), ui-sans-serif, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, 'Times New Roman', serif;
 }
 
 :root {
-  /* The ground is lifted well off pure black. A #06080a page reads as a void
-     with text floating on it; a real dark interface sits around #0e-#14 so
-     that panels above it have somewhere to go. */
-  --void: #0e0e11;
-  --panel-0: #151519;
-  --panel-1: #1c1c21;
-  --panel-2: #24242a;
-  --edge: #32323a;
+  --void: #05060b;
+  --panel-0: #0a0c14;
+  --panel-1: #10121c;
+  --panel-2: #171a27;
+  --edge: #262b3c;
   /* One step brighter than --edge, for lines that carry data rather than
      merely divide two surfaces. */
-  --edge-hi: #45454f;
+  --edge-hi: #363d54;
 
-  --bone: #f4f4f6;
-  --bone-dim: #b2b2ba;
-  --mute: #7c7c86;
+  --bone: #f3f5fc;
+  --bone-dim: #b7bdd2;
+  --mute: #7c8299;
 
-  --accent: #ffffff;
+  /* The spectrum. Three stops, used in this order everywhere. */
+  --cool: #2f6bff;
+  --accent: #7d99ff;
+  --violet: #a855f7;
+  --hot: #ff4266;
   --accent-hi: #ffffff;
+  --spectrum: linear-gradient(90deg, var(--cool) 0%, var(--violet) 52%, var(--hot) 100%);
 
-  /* Two states, no hue available. Pass is bright, fail is dim. These are the
-     only two tokens allowed on a code surface and nowhere else. */
-  --add: #e8e8ec;
-  --del: #74747e;
+  --add: #e8ebf6;
+  --del: #74798a;
 
   /* Feel lives in the easing curve, not the effect. */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -63,15 +70,19 @@
   --ease-io: cubic-bezier(0.65, 0, 0.35, 1);
 
   --pad: clamp(20px, 4vw, 68px);
-  --rail: 1px;
   --maxw: 1240px;
-  --nav-h: 62px;
+  --nav-h: 66px;
 
   /* Depth in dark UI comes from light, not shadow: a surface is elevated by
      being lighter and carrying a hairline at 8-16% white along its top edge.
      That hairline is the highest-leverage detail on the page. */
   --hair: rgba(255, 255, 255, 0.14);
-  --hair-soft: rgba(255, 255, 255, 0.075);
+  --hair-soft: rgba(255, 255, 255, 0.07);
+
+  /* The halo that keeps prose readable over a live particle field. It is a
+     shadow rather than a background box, so the field stays visible between the
+     letters instead of being scrimmed into a grey slab. */
+  --halo: 0 1px 20px rgba(3, 4, 8, 0.96), 0 0 44px rgba(3, 4, 8, 0.72);
 
   color-scheme: dark;
 }
@@ -81,8 +92,7 @@
    Everything below lives inside @layer base on purpose. Unlayered CSS beats
    *every* layered rule in the cascade, including Tailwind's utilities, so an
    unlayered `button { padding: 0 }` silently defeats `px-3` on every button on
-   the site, with no warning and no specificity conflict to notice. Layering the
-   reset puts it back underneath the utilities where a reset belongs. */
+   the site. Layering the reset puts it back underneath the utilities. */
 
 @layer base {
   *,
@@ -138,11 +148,10 @@
   }
 
   ::selection {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(125, 153, 255, 0.28);
     color: #ffffff;
   }
 
-  /* Visible focus on every interactive surface, always. */
   :focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 3px;
@@ -150,21 +159,18 @@
   }
 }
 
-/* Sections 2 to 6 sit in @layer components so Tailwind utilities, which are
-   in a later layer, override them by default rather than by !important. */
 @layer components {
 
 /* ======================================================== 2 · type scale
 
-   Geist for everything a person reads, Geist Mono for everything a machine
-   produced: labels, counts, timestamps, tags, paths and terminal output.
+   Three voices, and each one has exactly one job.
 
-   The previous build set every heading in monospace at display size. Mono
-   gives every glyph the same advance width, which is the point when you are
-   aligning code and a defect when you are setting a headline: narrow letters
-   float in a pocket of air, wide ones get squeezed, and a long name develops
-   visible holes. Mono is now capped well below display size and confined to
-   the job it is actually good at. */
+   Outfit sets anything at display size: geometric, wide apertures, and light
+   enough at 300 that a six-word headline reads as architecture rather than as
+   shouting. Geist sets everything a person actually reads at paragraph size.
+   Geist Mono sets everything a machine produced: counts, dates, repository
+   paths, terminal output. The serif appears exactly once, under the quote, and
+   its whole purpose is to sound like a different person talking.             */
 
 .u-mono {
   font-family: var(--font-mono);
@@ -172,31 +178,29 @@
   font-feature-settings: 'zero' 1;
 }
 
-/* Display. Used for the opening statement and nothing else. Sentence case,
-   because a name in 90px lowercase is a template, not a decision. */
 .t-display {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: clamp(2.1rem, 1.25rem + 3.6vw, 4.35rem);
-  line-height: 1.08;
-  letter-spacing: -0.038em;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2.4rem, 1.1rem + 5.4vw, 5.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.032em;
   text-wrap: balance;
 }
 
 .t-h2 {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: clamp(1.62rem, 1.15rem + 2vw, 2.72rem);
-  line-height: 1.14;
-  letter-spacing: -0.032em;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(1.8rem, 1.15rem + 2.6vw, 3.3rem);
+  line-height: 1.1;
+  letter-spacing: -0.028em;
 }
 
 .t-h3 {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: clamp(1.08rem, 0.95rem + 0.62vw, 1.38rem);
-  line-height: 1.28;
-  letter-spacing: -0.022em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.12rem, 0.98rem + 0.66vw, 1.44rem);
+  line-height: 1.26;
+  letter-spacing: -0.018em;
 }
 
 /* Section labels, gutter numerals, metadata: the machine's quiet voice. */
@@ -217,43 +221,76 @@
   color: var(--bone-dim);
 }
 
-/* A dark halo rather than a drop shadow. Invisible against a flat surface, but
-   over the hall it gives every glyph a hairline of separation so prose never
-   has to fight a bar drifting behind it. This is what lets the background stay
-   visible instead of being scrimmed into nothing. */
+/* Japanese secondary labels. Set a size down and a shade back, so they read as
+   a second voice rather than as competition for the English. */
+.t-jp {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  color: var(--mute);
+}
+
+/* Every reading surface over the field carries the halo. This is the single
+   rule that lets the animation stay bright instead of being dimmed to make
+   room for the words. */
 .t-body,
 .t-lede,
 .t-display,
 .t-h2,
 .t-h3,
-.t-statement {
-  text-shadow: 0 1px 16px rgba(8, 8, 10, 0.94);
+.t-statement,
+.t-quote {
+  text-shadow: var(--halo);
 }
 
 .t-body {
-  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.09rem);
-  line-height: 1.72;
+  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.08rem);
+  line-height: 1.74;
   color: var(--bone-dim);
   max-width: 64ch;
 }
 
 .t-lede {
-  font-size: clamp(1.08rem, 1rem + 0.55vw, 1.36rem);
-  line-height: 1.55;
-  letter-spacing: -0.018em;
+  font-size: clamp(1.05rem, 0.98rem + 0.55vw, 1.34rem);
+  line-height: 1.58;
+  letter-spacing: -0.016em;
   color: var(--bone);
-  max-width: 46ch;
+  max-width: 48ch;
 }
 
-/* The pull quote that closes a section. Sans, not serif: a lone italic serif
-   dropped into an otherwise grotesque page is the oldest tell there is. */
 .t-statement {
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: clamp(1.12rem, 1rem + 0.75vw, 1.6rem);
-  line-height: 1.46;
-  letter-spacing: -0.024em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.1rem, 1rem + 0.72vw, 1.55rem);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
   color: var(--bone);
+}
+
+/* The quote, and nothing else on the site. */
+.t-quote {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(1.6rem, 0.9rem + 3.4vw, 3.6rem);
+  line-height: 1.24;
+  letter-spacing: -0.012em;
+  color: var(--bone);
+}
+
+/* Text painted with the spectrum. Reserved for figures and one or two words
+   inside a heading: a whole paragraph in gradient is unreadable and every site
+   that has tried it proves the point. */
+.t-grad {
+  /* Its own ramp, lighter than --spectrum. A gradient that starts at the field's
+     deep blue reads as grey once it is cut into 200-weight letterforms, because
+     a letter stem is a few pixels wide and has no area to carry a dark hue. */
+  background: linear-gradient(100deg, #7ea0ff 0%, #b981ff 46%, #ff5b7a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
 }
 
 /* ========================================================== 3 · layout */
@@ -267,17 +304,11 @@
 
 .section {
   position: relative;
-  padding-block: clamp(76px, 9vh, 118px);
+  padding-block: clamp(88px, 11vh, 140px);
 }
 
-/* Every section on this site lived inside .shell, at the same width, with the
-   same left edge. Six sections of identical measure is even texture, and even
-   texture becomes wallpaper by the third screen. There is now exactly one
-   place that breaks the column, and it is the strongest evidence on the page.
-
-   Deliberately not 100vw: the page must never scroll sideways, and 100vw does
-   not account for a classic scrollbar. A wider max-width does the same visual
-   work with none of the risk. */
+/* Deliberately not 100vw: the page must never scroll sideways, and 100vw does
+   not account for a classic scrollbar. */
 .shell-wide {
   width: 100%;
   max-width: 1680px;
@@ -290,34 +321,33 @@
 .band {
   position: relative;
   border-block: 1px solid var(--hair-soft);
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.028) 0%,
-      rgba(255, 255, 255, 0.008) 100%
-    );
+  background: linear-gradient(
+    180deg,
+    rgba(125, 153, 255, 0.05) 0%,
+    rgba(255, 66, 102, 0.03) 100%
+  );
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 
-/* The count. This is the largest thing on the site by a wide margin, on
-   purpose: it is the one number a stranger cannot get anywhere else. */
+/* The count. The largest thing on the site by a wide margin, on purpose: it is
+   the one number a stranger cannot get anywhere else. */
 .figure-xl {
-  font-family: var(--font-mono);
+  font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
+  font-weight: 200;
   font-size: clamp(5.5rem, 3rem + 15vw, 15rem);
-  line-height: 0.78;
-  letter-spacing: -0.06em;
+  line-height: 0.8;
+  letter-spacing: -0.055em;
   color: var(--bone);
 }
 
-/* Instrument chrome, three variants.
-
-   All three project panels used to wear .glass with a mono label top left and
-   a status top right, so a K-Means scatter plot and a sandbox execution log
-   read as one repeated widget. They now differ in shape, rim and label. */
+/* Instrument chrome, three variants. A K-Means scatter plot and a sandbox
+   execution log should not read as one repeated widget, so they differ in
+   shape, rim and label. */
 .inst-terminal {
   position: relative;
-  background: rgba(13, 13, 16, 0.88);
+  background: rgba(8, 10, 16, 0.9);
   border: 1px solid var(--edge);
   border-radius: 10px;
   box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.05) inset;
@@ -325,7 +355,7 @@
 
 .inst-document {
   position: relative;
-  background: rgba(24, 24, 29, 0.7);
+  background: rgba(16, 18, 28, 0.74);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-radius: 4px;
@@ -340,8 +370,8 @@
   position: relative;
   background: radial-gradient(
     120% 90% at 50% 0%,
-    rgba(38, 38, 45, 0.6) 0%,
-    rgba(16, 16, 20, 0.78) 70%
+    rgba(40, 44, 66, 0.62) 0%,
+    rgba(10, 12, 20, 0.8) 70%
   );
   border: 1px solid var(--hair-soft);
   border-radius: 20px;
@@ -350,24 +380,24 @@
 
 /* ========================================================= 4 · surfaces */
 
-/* Glass. The rim is a gradient, bright at the top-left and fading to nothing
-   at the bottom-right, drawn with mask-composite so it reads as a lit edge
-   rather than a border. A flat 1px rgba(255,255,255,.1) is the tutorial
-   version and looks identical to every other glass site on the internet. */
+/* Glass. The rim is a gradient, bright at the top-left and fading to nothing at
+   the bottom-right, drawn with mask-composite so it reads as a lit edge rather
+   than a border. A flat 1px rgba(255,255,255,.1) is the tutorial version and
+   looks identical to every other glass site on the internet. */
 .glass {
   position: relative;
   background: linear-gradient(
     158deg,
-    rgba(46, 46, 54, 0.62) 0%,
-    rgba(24, 24, 29, 0.72) 55%,
-    rgba(17, 17, 21, 0.82) 100%
+    rgba(38, 42, 62, 0.58) 0%,
+    rgba(16, 18, 28, 0.66) 55%,
+    rgba(10, 12, 20, 0.78) 100%
   );
-  backdrop-filter: blur(22px) saturate(0.9);
-  -webkit-backdrop-filter: blur(22px) saturate(0.9);
-  border-radius: 16px;
+  backdrop-filter: blur(26px) saturate(1.15);
+  -webkit-backdrop-filter: blur(26px) saturate(1.15);
+  border-radius: 18px;
   box-shadow:
     0 1px 0 0 rgba(255, 255, 255, 0.1) inset,
-    0 28px 64px -30px rgba(0, 0, 0, 0.95),
+    0 28px 70px -32px rgba(0, 0, 0, 0.96),
     0 2px 14px -8px rgba(0, 0, 0, 0.7);
 }
 
@@ -379,10 +409,10 @@
   padding: 1px;
   background: linear-gradient(
     150deg,
-    rgba(255, 255, 255, 0.42) 0%,
-    rgba(255, 255, 255, 0.09) 38%,
-    rgba(255, 255, 255, 0.03) 66%,
-    rgba(255, 255, 255, 0.16) 100%
+    rgba(255, 255, 255, 0.44) 0%,
+    rgba(125, 153, 255, 0.16) 34%,
+    rgba(255, 255, 255, 0.03) 64%,
+    rgba(255, 66, 102, 0.22) 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -396,13 +426,13 @@
   z-index: 1;
 }
 
-/* A lighter pane for content that sits inside the reading column, where full
-   glass would be too much furniture. */
+/* A lighter pane for content inside the reading column, where full glass would
+   be too much furniture. */
 .pane {
   position: relative;
-  background: rgba(21, 21, 25, 0.62);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  background: rgba(10, 12, 20, 0.62);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--hair-soft);
   border-radius: 14px;
   box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.06) inset;
@@ -412,17 +442,38 @@
     transform 0.4s var(--ease-out);
 }
 
-/* Cards that respond. The lift is 2px and the rim brightens: enough to feel
-   alive under the pointer, not enough to bounce. */
 .pane-hover:hover {
   border-color: var(--hair);
-  background: rgba(28, 28, 33, 0.72);
+  background: rgba(18, 21, 32, 0.74);
   transform: translateY(-2px);
 }
 
-/* A code surface should look like code, not like a screenshot of code. */
+/* A pointer-tracked spotlight, painted on the rim rather than on the fill, so
+   the card lights up at its edge the way a real pane of glass would. */
+.spot {
+  position: relative;
+  isolation: isolate;
+}
+
+.spot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: var(--spot, 0);
+  transition: opacity 0.45s var(--ease);
+  background: radial-gradient(
+    420px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(125, 153, 255, 0.16),
+    rgba(168, 85, 247, 0.08) 38%,
+    transparent 68%
+  );
+  z-index: 2;
+}
+
 .code-surface {
-  background: rgba(18, 18, 22, 0.8);
+  background: rgba(8, 10, 17, 0.84);
   border: 1px solid var(--hair-soft);
   border-radius: 12px;
   font-family: var(--font-mono);
@@ -436,6 +487,18 @@
   border-top: 1px solid var(--hair-soft);
 }
 
+/* A rule painted with the spectrum, used once per section head. */
+.rule-grad {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(125, 153, 255, 0.5) 0%,
+    rgba(168, 85, 247, 0.28) 40%,
+    rgba(255, 66, 102, 0.16) 72%,
+    transparent 100%
+  );
+}
+
 /* Grain: feTurbulence as a data URI. Six lines, no network request, infinite
    resolution. A downloaded grain PNG costs 400 KB and tiles visibly. */
 .grain::after {
@@ -444,15 +507,15 @@
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.028;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
 /* ============================================================== 5 · nav
 
-   A real navigation bar, centred, floating, glass. The previous build hid
-   navigation in a column of 10px tick marks on the right edge that appeared
-   only above 1024px and told you nothing until you hovered one. */
+   A real navigation bar: floating, centred, glass, and bilingual. The English
+   is the label and the Japanese is a second reading of the same word, set
+   smaller and dimmer so it adds rhythm without competing. */
 
 .nav-bar {
   position: fixed;
@@ -462,21 +525,20 @@
   z-index: 55;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   padding: 5px;
   border-radius: 999px;
-  background: rgba(20, 20, 24, 0.72);
-  backdrop-filter: blur(18px) saturate(1.1);
-  -webkit-backdrop-filter: blur(18px) saturate(1.1);
+  background: rgba(10, 12, 20, 0.66);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
   border: 1px solid var(--hair-soft);
   box-shadow:
     0 1px 0 0 rgba(255, 255, 255, 0.07) inset,
-    0 16px 40px -20px rgba(0, 0, 0, 0.9);
+    0 18px 46px -22px rgba(0, 0, 0, 0.95);
 
-  /* Six words do not fit on a 375px screen. Rather than dropping items, or
-     collapsing into a hamburger that hides the whole structure of the site
-     behind a tap, the bar scrolls sideways and keeps every destination
-     reachable. The rail is hidden because the pill already shows position. */
+  /* Six destinations do not fit on a 375px screen. Rather than dropping items,
+     or hiding the whole structure of the site behind a hamburger, the bar
+     scrolls sideways and keeps every destination reachable. */
   max-width: calc(100vw - 20px);
   overflow-x: auto;
   scrollbar-width: none;
@@ -488,8 +550,7 @@
 }
 
 /* The fade is applied only when the bar genuinely overflows, and only on the
-   side that has more to show. A permanent edge fade would dim a destination
-   that is already fully visible. */
+   side that has more to show. */
 .nav-bar[data-of='end'] {
   mask-image: linear-gradient(to right, #000 82%, transparent 100%);
 }
@@ -499,39 +560,16 @@
 }
 
 .nav-bar[data-of='both'] {
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 14%,
-    #000 86%,
-    transparent 100%
-  );
-}
-
-@media (max-width: 560px) {
-  .nav-bar {
-    top: 10px;
-    gap: 2px;
-    padding: 4px;
-  }
-
-  .nav-link {
-    padding: 6px 10px;
-    font-size: 0.75rem;
-  }
-
-  .nav-pill {
-    top: 4px;
-    bottom: 4px;
-  }
+  mask-image: linear-gradient(to right, transparent 0, #000 14%, #000 86%, transparent 100%);
 }
 
 .nav-link {
   position: relative;
   display: inline-flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 6px;
   border-radius: 999px;
-  padding: 7px 13px;
+  padding: 8px 14px;
   font-family: var(--font-sans);
   font-size: 0.79rem;
   font-weight: 500;
@@ -543,52 +581,127 @@
     background-color 0.32s var(--ease);
 }
 
-.nav-link:hover {
-  color: var(--bone);
-  background: rgba(255, 255, 255, 0.055);
+.nav-link .jp {
+  font-size: 0.63rem;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  transition: color 0.32s var(--ease);
 }
 
-/* The active pill is a shared element that slides between items rather than
-   six pills cross-fading. One element, one transform, no layout thrash. */
-.nav-pill {
-  position: absolute;
-  top: 5px;
-  bottom: 5px;
-  left: 0;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--hair-soft);
-  pointer-events: none;
-  transition:
-    transform 0.44s var(--ease-out),
-    width 0.44s var(--ease-out),
-    opacity 0.3s var(--ease);
-  will-change: transform, width;
+.nav-link:hover {
+  color: var(--bone);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .nav-link[data-active='1'] {
   color: #ffffff;
 }
 
+.nav-link[data-active='1'] .jp {
+  color: var(--accent);
+}
+
+/* The active pill is one shared element that slides between items rather than
+   six pills cross-fading: one transform per change instead of six repaints. */
+.nav-pill {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  left: 0;
+  border-radius: 999px;
+  background: linear-gradient(
+    120deg,
+    rgba(125, 153, 255, 0.2) 0%,
+    rgba(168, 85, 247, 0.14) 55%,
+    rgba(255, 66, 102, 0.16) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+  transition:
+    transform 0.46s var(--ease-out),
+    width 0.46s var(--ease-out),
+    opacity 0.3s var(--ease);
+  will-change: transform, width;
+}
+
+@media (max-width: 640px) {
+  .nav-bar {
+    top: 10px;
+    padding: 4px;
+  }
+
+  .nav-link {
+    padding: 7px 11px;
+    font-size: 0.75rem;
+  }
+
+  .nav-link .jp {
+    display: none;
+  }
+
+  .nav-pill {
+    top: 4px;
+    bottom: 4px;
+  }
+}
+
+/* The one action that is always reachable, parked opposite the bar. */
+.nav-cta {
+  position: fixed;
+  top: 14px;
+  right: 14px;
+  z-index: 56;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  padding: 9px 15px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--bone);
+  background: rgba(10, 12, 20, 0.66);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  border: 1px solid var(--hair-soft);
+  box-shadow: 0 18px 46px -22px rgba(0, 0, 0, 0.95);
+  transition:
+    border-color 0.35s var(--ease),
+    color 0.35s var(--ease),
+    transform 0.35s var(--ease-out);
+}
+
+.nav-cta:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.24);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .nav-cta {
+    display: none;
+  }
+}
+
 /* ========================================================== 6 · reveals
+
    Text is in the DOM at first paint and only its visibility is animated.
    Content built by JS is invisible to crawlers and to screen readers. */
 
 [data-rv] {
   opacity: 0;
-  transform: translate3d(0, 16px, 0);
+  transform: translate3d(0, 18px, 0);
   transition:
-    opacity 0.68s var(--ease-out),
-    transform 0.68s var(--ease-out);
+    opacity 0.72s var(--ease-out),
+    transform 0.72s var(--ease-out);
   will-change: opacity, transform;
 }
 
 [data-rv='left'] {
-  transform: translate3d(-16px, 0, 0);
+  transform: translate3d(-18px, 0, 0);
 }
 
 [data-rv='scale'] {
-  transform: scale(0.982) translate3d(0, 10px, 0);
+  transform: scale(0.978) translate3d(0, 12px, 0);
 }
 
 .rv-in {
@@ -596,18 +709,18 @@
   transform: none !important;
 }
 
-/* Kinetic text: words rise and resolve out of blur. The parent keeps the real
-   string as aria-label; the spans are hidden from assistive tech so a screen
-   reader gets a sentence rather than a stream of letters. */
+/* Kinetic text: words rise and resolve out of blur, left to right. The parent
+   keeps the real string as aria-label; the spans are hidden from assistive tech
+   so a screen reader gets a sentence rather than a stream of letters. */
 .kinetic span {
   display: inline-block;
   opacity: 0;
-  transform: translateY(0.24em);
-  filter: blur(4px);
+  transform: translateY(0.3em);
+  filter: blur(10px);
   transition:
-    opacity 0.5s var(--ease-out),
-    transform 0.58s var(--ease-out),
-    filter 0.5s var(--ease-out);
+    opacity 0.72s var(--ease-out),
+    transform 0.86s var(--ease-out),
+    filter 0.72s var(--ease-out);
   will-change: opacity, transform, filter;
 }
 
@@ -617,12 +730,18 @@
   filter: none;
 }
 
+/* The trailing half of a headline, held one shade back so the first half lands
+   first. Straight out of the reference: the sentence resolves in two beats. */
+.kinetic .dim {
+  color: var(--bone-dim);
+}
+
 /* ========================================================= 7 · behaviours */
 
 /* Tilt. Perspective lives on the wrapper so the child rotates in a real frustum
-   rather than being sheared. Rotation is capped in the component at 6/4 deg. */
+   rather than being sheared. Rotation is capped in the component. */
 .tilt {
-  perspective: 1100px;
+  perspective: 1200px;
 }
 
 .tilt-inner {
@@ -633,23 +752,35 @@
   will-change: transform;
 }
 
-/* Specular glint, tracked to the pointer. Sits above the panel and ignores
-   input so it never intercepts a click meant for a link inside. */
 .tilt-inner::after {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 16px;
+  border-radius: 18px;
   pointer-events: none;
   opacity: calc(var(--glint, 0) * 0.34);
   transition: opacity 0.45s var(--ease);
   background: radial-gradient(
     400px circle at var(--mx, 50%) var(--my, 50%),
     rgba(255, 255, 255, 0.12),
-    rgba(255, 255, 255, 0.04) 40%,
+    rgba(125, 153, 255, 0.06) 40%,
     transparent 66%
   );
   z-index: 2;
+}
+
+/* A card that swings out of the depth of the page as it scrolls into frame.
+   --p is written by ScrollDepth, runs -1 to 1, and is 0 when the card is
+   centred. The rotation is small; the point is parallax, not a carousel. */
+.depth {
+  transform:
+    perspective(1400px)
+    rotateY(calc(var(--p, 0) * var(--dir, 1) * 13deg))
+    rotateX(calc(var(--p, 0) * -4deg))
+    translateZ(calc(var(--p, 0) * var(--p, 0) * -110px))
+    translateX(calc(var(--p, 0) * var(--dir, 1) * 26px));
+  transform-style: preserve-3d;
+  will-change: transform;
 }
 
 /* A link that draws its own underline on hover, left to right. */
@@ -693,18 +824,18 @@
 /* The one perpetual loop on the page, and it carries information: available. */
 .led {
   animation: led 2.6s var(--ease-io) infinite;
-  box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 0 0 rgba(125, 153, 255, 0.5);
 }
 
 @keyframes led {
   0%,
   100% {
     opacity: 1;
-    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
+    box-shadow: 0 0 0 0 rgba(125, 153, 255, 0.45);
   }
   50% {
     opacity: 0.5;
-    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0);
+    box-shadow: 0 0 0 5px rgba(125, 153, 255, 0);
   }
 }
 
@@ -727,12 +858,8 @@
 }
 
 /* Any pane that scrolls inside the page keeps its own scroll and gets a thin
-   rail, because a full-width system scrollbar cuts a bright line through a
-   dark panel.
-
-   These panes also carry data-lenis-prevent in the markup. Smooth scrolling
-   listens on the window, so without it a wheel gesture over a nested list
-   scrolled the entire page instead of the list under the pointer. */
+   rail, because a full-width system scrollbar cuts a bright line through a dark
+   panel. These panes also carry data-lenis-prevent in the markup. */
 .scroll-wall {
   scrollbar-width: thin;
   scrollbar-color: var(--edge-hi) transparent;
@@ -749,17 +876,14 @@
 }
 
 .scroll-wall::-webkit-scrollbar-thumb:hover {
-  background: #56565f;
+  background: #4a5270;
 }
 
 .scroll-wall::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* The Index fades up out of the flat ground rather than popping in when its
-   chunk lands. The page is already readable by this point; this is the machine
-   arriving behind it. */
-@keyframes index-in {
+@keyframes cosmos-in {
   from {
     opacity: 0;
   }
@@ -780,8 +904,8 @@
 }
 
 /* ------------------------------------------------------------- cursor
-   The native cursor is only hidden once the custom one is actually running,
-   so a browser that never reaches the effect is never left without a pointer. */
+   The native cursor is only hidden once the custom one is actually running, so
+   a browser that never reaches the effect is never left without a pointer. */
 
 .has-cursor,
 .has-cursor a,
@@ -814,7 +938,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(125, 153, 255, 0.5);
   transition:
     opacity 0.25s var(--ease),
     width 0.28s var(--ease-out),
@@ -823,42 +947,65 @@
 }
 
 /* The one place width/height are animated rather than transform. It runs on a
-   30px fixed-position element with no siblings and no layout to invalidate, so
-   the usual objection does not apply, and scaling a bordered ring by transform
-   would scale the border with it, which is the thing that reads as cheap. */
+   30px fixed-position element with no siblings and no layout to invalidate, and
+   scaling a bordered ring by transform would scale the border with it, which is
+   the thing that reads as cheap. */
 .cursor-ring[data-hot='1'] {
   width: 46px;
   height: 46px;
   border-color: #ffffff;
 }
 
-/* A scrim that is darkest in the middle, which is the opposite of the usual
-   vignette and is the whole point: the content column runs down the centre, so
-   that is exactly where the geometry has to give way. The hall stays bright at
-   the edges of the frame, where there is nothing to read. */
-.index-canvas::after {
+/* A scrim that is darkest down the middle, which is the opposite of the usual
+   vignette and is the whole point: the reading column runs down the centre, so
+   that is exactly where the field has to give way. The edges of the frame,
+   where there is nothing to read, stay at full brightness. */
+.cosmos::after {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
   background:
     radial-gradient(
-      62% 92% at 44% 50%,
-      rgba(14, 14, 17, 0.94) 0%,
-      rgba(14, 14, 17, 0.88) 44%,
-      rgba(14, 14, 17, 0.38) 78%,
-      rgba(14, 14, 17, 0) 100%
+      58% 88% at 50% 50%,
+      rgba(5, 6, 11, 0.88) 0%,
+      rgba(5, 6, 11, 0.72) 46%,
+      rgba(5, 6, 11, 0.24) 76%,
+      rgba(5, 6, 11, 0) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(14, 14, 17, 0.7) 0%,
-      transparent 22%,
-      transparent 78%,
-      rgba(14, 14, 17, 0.7) 100%
+      rgba(5, 6, 11, 0.72) 0%,
+      transparent 20%,
+      transparent 80%,
+      rgba(5, 6, 11, 0.72) 100%
     );
 }
+
+/* The hero is the one place the field is allowed to be the loudest thing on
+   screen, so the centre scrim lifts while the hero is in frame. */
+.cosmos[data-open='1']::after {
+  background:
+    radial-gradient(
+      54% 84% at 50% 50%,
+      rgba(5, 6, 11, 0.62) 0%,
+      rgba(5, 6, 11, 0.44) 48%,
+      rgba(5, 6, 11, 0.12) 78%,
+      rgba(5, 6, 11, 0) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(5, 6, 11, 0.6) 0%,
+      transparent 24%,
+      transparent 78%,
+      rgba(5, 6, 11, 0.66) 100%
+    );
 }
 
+.cosmos::after {
+  transition: background 0.9s var(--ease);
+}
+}
 
 /* ===================================================== 8 · reduced motion
    The site must be complete, legible and good-looking with zero motion.
@@ -885,8 +1032,8 @@
     filter: none !important;
   }
 
-  /* Freeze the machine: no tilt, no glint, no pulsing, no scroll cue. */
-  .tilt-inner {
+  .tilt-inner,
+  .depth {
     transform: none !important;
   }
 
@@ -900,8 +1047,6 @@
     animation: none !important;
   }
 
-  /* The custom cursor never mounts under reduced motion, but if the class is
-     ever left behind the native pointer must come back. */
   .has-cursor,
   .has-cursor a,
   .has-cursor button {

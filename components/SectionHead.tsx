@@ -1,27 +1,52 @@
+import { BlurWords } from './ui/BlurWords';
+
 /**
- * The section header: an index numeral, a machine-voice label, and a rule that
- * runs to the edge of the shell.
+ * The section head: a formal kanji numeral, the Japanese reading, the English
+ * label, and a rule painted with the spectrum.
+ *
+ * The numeral is the quiet index running down the page. It carries no meaning a
+ * visitor has to decode, which is the point: it gives every section a distinct
+ * shape at a glance, the way a chapter number does, before a single word of the
+ * heading has been read.
  */
 export function SectionHead({
-  index,
+  num,
+  jp,
   label,
-  id,
+  heading,
+  lede,
 }: {
-  index: string;
+  num: string;
+  jp: string;
   label: string;
-  id?: string;
+  heading: string;
+  lede?: string;
 }) {
   return (
-    <div className="mb-12 flex items-center gap-4 sm:mb-16" data-rv>
-      <span
-        aria-hidden
-        className="h-[6px] w-[6px] shrink-0 rounded-full bg-[var(--bone)]"
-      />
-      <span className="t-label shrink-0 !text-[var(--bone-dim)]" id={id}>
-        {index}
-      </span>
-      <span className="t-label shrink-0">{label}</span>
-      <span aria-hidden className="h-px min-w-6 flex-1 bg-[var(--edge)]" />
-    </div>
+    <header className="mb-12 sm:mb-16">
+      <div className="flex items-center gap-4" data-rv>
+        <span
+          aria-hidden
+          className="u-mono text-[1.3rem] leading-none text-[var(--accent)] opacity-80"
+        >
+          {num}
+        </span>
+        <span aria-hidden className="t-jp">
+          {jp}
+        </span>
+        <span className="t-label shrink-0">{label}</span>
+        <span aria-hidden className="rule-grad min-w-6 flex-1" />
+      </div>
+
+      <h2 className="t-h2 mt-7 max-w-[22ch] text-[var(--bone)]">
+        <BlurWords text={heading} />
+      </h2>
+
+      {lede ? (
+        <p className="t-body mt-5 !max-w-[58ch]" data-rv>
+          {lede}
+        </p>
+      ) : null}
+    </header>
   );
 }

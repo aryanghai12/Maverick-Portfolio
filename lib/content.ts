@@ -313,3 +313,54 @@ export const connect = {
     'text rather than hidden behind anything. Everything I have built or ' +
     'contributed to is linked here and open to inspection, which is the point.',
 } as const;
+
+/* --------------------------------------------------------------- chrome
+
+   Section identity, in one table.
+
+   Every section carries three names: an English label, a Japanese reading of
+   the same word, and a formal kanji numeral. The pattern is borrowed from
+   devsuryansh.in, which uses it to give a monochrome page rhythm that no amount
+   of rules and spacing can buy. It earns its place here for the same reason:
+   the numerals are a second, quieter index running down the page, and the
+   Japanese gives every section head a shape before it is read.
+
+   The order of this array is the order of the page, and both the navigation and
+   the particle field read their stage count from it. Adding a section here and
+   nowhere else is a supported thing to do. */
+export const sections = [
+  { id: 'hero', en: 'Home', jp: '表紙', num: '' },
+  { id: 'proof', en: 'Proof', jp: '証明', num: '壹' },
+  { id: 'work', en: 'Work', jp: '作品', num: '弐' },
+  { id: 'about', en: 'About', jp: '私について', num: '参' },
+  { id: 'toolkit', en: 'Toolkit', jp: '技術', num: '肆' },
+  { id: 'hope', en: 'Hope', jp: '希望', num: '伍' },
+  { id: 'contact', en: 'Contact', jp: '連絡', num: '陸' },
+] as const;
+
+/* The one section on this site that is not an argument, not a claim, and not
+   defending anything.
+ *
+ * Andy Dufresne writes it in a letter to Red near the end of the film, and it
+ * is the line the whole story turns on. It sits between the work and the
+ * contact section on purpose: everything above it is evidence, everything below
+ * it is an ask, and this is the pause between the two. */
+export const hope = {
+  quote:
+    'Hope is a good thing, maybe the best of things, and no good thing ever dies.',
+  attribution: 'Andy Dufresne',
+  source: 'The Shawshank Redemption, 1994',
+  gloss:
+    'Every tool on this page exists because something did not work and could ' +
+    'have. That is the whole job: refusing to accept that the failing thing has ' +
+    'to keep failing.',
+} as const;
+
+/* The heading over the skills graph, kept with the content rather than in the
+   component that renders it. */
+export const toolkit = {
+  heading: 'What I reach for',
+  lede:
+    'Grouped by where it sits in the stack rather than by how confident I am ' +
+    'about it, and the two things I would call basic say so.',
+} as const;

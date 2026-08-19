@@ -1,20 +1,19 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist, Geist_Mono, Instrument_Serif, Outfit } from 'next/font/google';
 import './globals.css';
 
 /**
- * Two families, one superfamily, a clear division of labour between them.
+ * Four families, and every one of them has a job nothing else can do.
  *
- * Geist for anything a person wrote and a person reads. Geist Mono for
- * anything a machine produced: counts, timestamps, repository paths, tags,
- * terminal output. Both are variable, so weight is a continuous control rather
- * than four separate downloads, and both ship self-hosted with no request to
- * Google at runtime.
+ * Outfit sets display: a geometric sans with wide apertures that stays elegant
+ * at 300 weight and 5rem, which is the size the opening statement needs to be.
+ * Geist sets everything read at paragraph size. Geist Mono sets everything a
+ * machine produced: counts, dates, repository paths, terminal output. Instrument
+ * Serif appears exactly once, under the quote, because a quotation from someone
+ * else should not be in the same voice as the rest of the page.
  *
- * The previous build set every heading in monospace at display size. That is
- * the wrong tool: monospace exists to make every glyph the same width so code
- * lines up, and the same property turns a headline into a row of letters with
- * gaps between them.
+ * All four are variable or single-weight, self-hosted by next/font, and make no
+ * request to Google at runtime.
  */
 const geist = Geist({
   subsets: ['latin'],
@@ -25,6 +24,21 @@ const geist = Geist({
 const geistMono = Geist_Mono({
   subsets: ['latin'],
   variable: '--font-geist-mono',
+  display: 'swap',
+});
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  display: 'swap',
+});
+
+// Not a variable font: the weight has to be named or the build fails.
+const instrument = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-instrument',
   display: 'swap',
 });
 
@@ -89,7 +103,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0e0e11',
+  themeColor: '#05060b',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -97,7 +111,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+    <html
+      lang="en"
+      className={`${geist.variable} ${geistMono.variable} ${outfit.variable} ${instrument.variable}`}
+    >
       <body className="grain">{children}</body>
     </html>
   );

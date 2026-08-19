@@ -62,10 +62,17 @@ const legend: { status: Status; label: string }[] = [
   { status: 'unread', label: 'not read' },
 ];
 
+/* The three states carry the site's own two hues rather than two shades of
+   white. The copy for this project says the x-ray colours each line by whether
+   it was read cleanly, read with risk, or missed, so the panel should actually
+   do that: blue for read, red for at risk, and nothing but an outline for the
+   lines the parser never saw. */
 const styleFor = (status: Status, lit: boolean) => {
-  if (!lit) return { background: 'var(--panel-2)', borderColor: 'transparent' };
-  if (status === 'clean') return { background: 'rgba(255,255,255,0.20)', borderColor: 'transparent' };
-  if (status === 'risk') return { background: 'rgba(255,255,255,0.30)', borderColor: 'var(--accent)' };
+  if (!lit) return { background: 'rgba(255,255,255,0.045)', borderColor: 'transparent' };
+  if (status === 'clean')
+    return { background: 'rgba(125,153,255,0.34)', borderColor: 'transparent' };
+  if (status === 'risk')
+    return { background: 'rgba(255,66,102,0.28)', borderColor: 'var(--hot)' };
   return { background: 'transparent', borderColor: 'var(--mute)' };
 };
 
@@ -155,7 +162,7 @@ export function TraceCVInstrument() {
           {/* Column split marker, revealed once the scan reaches it. */}
           <span
             aria-hidden
-            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--accent)] transition-opacity duration-700"
+            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--hot)] transition-opacity duration-700"
             style={{ left: '35.5%', opacity: progress > 32 ? 0.42 : 0 }}
           />
 
@@ -207,7 +214,7 @@ export function TraceCVInstrument() {
                     aria-hidden
                     className={
                       b.status === 'risk'
-                        ? 'text-[var(--accent)]'
+                        ? 'text-[var(--hot)]'
                         : b.status === 'unread'
                           ? 'text-[var(--mute)]'
                           : 'text-[var(--bone-dim)]'
