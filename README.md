@@ -137,7 +137,7 @@ both more convincing and fully checkable.
 | Styling | Tailwind CSS v4, with design tokens in `app/globals.css` |
 | 3D | three.js via react-three-fiber |
 | Scrolling | Lenis |
-| Type | Outfit, Geist, Geist Mono and Instrument Serif, self-hosted through `next/font` |
+| Type | Space Grotesk, Geist, Geist Mono and Instrument Serif, self-hosted through `next/font` |
 | Hosting | Any static host. Vercel Hobby is enough. |
 
 No UI kit, no component library, no stock assets, no icon font.

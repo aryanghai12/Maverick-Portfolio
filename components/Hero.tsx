@@ -21,17 +21,12 @@ import { CountUp } from './ui/CountUp';
  * hand, and the build fails rather than shipping a stale one.
  */
 const gauges = [
-  { value: stats.merged.trueUpstream, label: 'merged upstream', jp: '取込済', count: true },
-  {
-    value: stats.merged.trueUpstreamRepoCount,
-    label: 'repos I do not own',
-    jp: '他者の資産',
-    count: true,
-  },
-  { value: stats.user.publicRepos, label: 'public repos', jp: '公開', count: true },
+  { value: stats.merged.trueUpstream, label: 'merged upstream', count: true },
+  { value: stats.merged.trueUpstreamRepoCount, label: 'repos I do not own', count: true },
+  { value: stats.user.publicRepos, label: 'public repos', count: true },
   // A year is not a quantity: counting up to it, or grouping it as 2,023, both
   // read as a bug rather than as a flourish.
-  { value: stats.user.contributingSince, label: 'contributing since', jp: '開始年', count: false },
+  { value: stats.user.contributingSince, label: 'contributing since', count: false },
 ];
 
 export function Hero() {
@@ -46,11 +41,11 @@ export function Hero() {
             availability rather than a greeting, because availability is the
             fact a recruiter is scanning for. */}
         <div
-          className="glass inline-flex items-center gap-2.5 rounded-full px-4 py-2"
+          className="glass inline-flex items-center gap-2.5 rounded-full px-5 py-2.5"
           data-rv
         >
-          <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
-          <span className="t-label !text-[0.62rem] !text-[var(--bone-dim)]">
+          <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
+          <span className="t-label !text-[0.78rem] !text-[var(--bone)]">
             {identity.status}
           </span>
         </div>
@@ -61,7 +56,7 @@ export function Hero() {
           <BlurWords text={thesis.headline} stagger={78} dimFrom={5} />
         </h1>
 
-        <p className="t-lede mt-8 !max-w-[56ch] !text-[var(--bone-dim)]" data-rv>
+        <p className="t-lede mt-8 !max-w-[58ch] !text-[var(--bone-dim)]" data-rv>
           {thesis.support}
         </p>
 
@@ -71,19 +66,19 @@ export function Hero() {
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3" data-rv>
           <a
             href={links.email}
-            className="group inline-flex items-center gap-3 rounded-full border border-[var(--hair)] bg-[rgba(255,255,255,0.06)] py-2 pr-2 pl-5 text-[0.86rem] font-medium tracking-[-0.01em] text-[var(--bone)] backdrop-blur-xl transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--accent)] hover:bg-[rgba(125,153,255,0.14)] hover:text-white"
+            className="group inline-flex items-center gap-3 rounded-full border border-[var(--hair)] bg-[rgba(255,255,255,0.08)] py-2.5 pr-2.5 pl-6 text-[0.95rem] font-medium tracking-[-0.01em] text-[var(--bone)] backdrop-blur-xl transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--accent)] hover:bg-[rgba(125,153,255,0.18)] hover:text-white"
           >
             {identity.email}
             <span
               aria-hidden
-              className="grid h-7 w-7 place-items-center rounded-full border border-[var(--hair)] text-[0.7rem] transition-transform duration-300 group-hover:translate-x-[2px] group-hover:border-[var(--accent)]"
+              className="grid h-8 w-8 place-items-center rounded-full border border-[var(--hair)] text-[0.85rem] transition-transform duration-300 group-hover:translate-x-[2px] group-hover:border-[var(--accent)]"
             >
               ↗
             </span>
           </a>
           <a
             href="#proof"
-            className="group inline-flex items-center gap-2.5 rounded-full border border-[var(--edge)] px-5 py-2.5 text-[0.86rem] font-medium tracking-[-0.01em] text-[var(--bone-dim)] transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--bone)] hover:text-[var(--bone)]"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.03)] px-6 py-3 text-[0.95rem] font-medium tracking-[-0.01em] text-[var(--bone-dim)] backdrop-blur-xl transition-all duration-300 [transition-timing-function:var(--ease)] hover:border-[var(--bone)] hover:text-[var(--bone)]"
           >
             See the proof
             <span
@@ -95,7 +90,7 @@ export function Hero() {
           </a>
         </div>
 
-        <p className="t-label mt-6 !text-[0.6rem]" data-rv>
+        <p className="t-label mt-7 !text-[0.78rem] !text-[var(--bone-dim)]" data-rv>
           {identity.role} · {identity.location} · {identity.availability}
         </p>
       </div>
@@ -103,22 +98,17 @@ export function Hero() {
       {/* The evidence, stated as four measured figures. Wide of the reading
           column, hairlined, and the only grid in the hero. */}
       <div className="shell mt-16 sm:mt-24">
-        <dl className="grid grid-cols-2 gap-px border-t border-[var(--hair-soft)] sm:grid-cols-4">
-          {gauges.map((g, i) => (
+        <dl className="panel grid grid-cols-2 gap-px px-2 py-2 sm:grid-cols-4" data-rv="scale">
+          {gauges.map((g) => (
             <div
               key={g.label}
-              className="border-b border-[var(--hair-soft)] py-5 pr-4 sm:border-b-0 sm:py-7 [&:not(:first-child)]:sm:border-l [&:not(:first-child)]:sm:border-[var(--hair-soft)] [&:not(:first-child)]:sm:pl-7"
-              data-rv
-              style={{ transitionDelay: `${i * 80}ms` }}
+              className="px-5 py-6 sm:px-6 sm:py-7 [&:not(:first-child)]:sm:border-l [&:not(:first-child)]:sm:border-[var(--hair-soft)]"
             >
-              <dd className="u-mono text-[clamp(2rem,1.3rem+2.2vw,2.9rem)] leading-none font-medium tracking-[-0.05em] text-[var(--bone)]">
+              <dd className="u-mono text-[clamp(2.2rem,1.4rem+2.4vw,3.2rem)] leading-none font-medium tracking-[-0.05em] text-[var(--bone)]">
                 {g.count ? <CountUp to={g.value} /> : g.value}
               </dd>
-              <dt className="mt-3 flex flex-wrap items-baseline gap-x-2">
-                <span className="t-label !text-[0.6rem] !leading-[1.5]">{g.label}</span>
-                <span aria-hidden className="t-jp !text-[0.6rem]">
-                  {g.jp}
-                </span>
+              <dt className="t-label mt-4 !text-[0.76rem] !leading-[1.5] !text-[var(--bone-dim)]">
+                {g.label}
               </dt>
             </div>
           ))}
@@ -131,7 +121,7 @@ export function Hero() {
         className="shell pointer-events-none mt-12 flex items-center gap-3 sm:mt-16"
       >
         <span className="cue-tick h-6 w-px bg-gradient-to-b from-transparent to-[var(--accent)]" />
-        <span className="t-label !text-[0.58rem]">scroll</span>
+        <span className="t-label !text-[0.74rem] !text-[var(--bone-dim)]">scroll</span>
       </div>
     </section>
   );

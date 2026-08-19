@@ -16,7 +16,6 @@ const log = [
     sub: `${experience.role} · ${experience.mode}`,
     body: experience.body,
     stack: experience.stack,
-    jp: '実務',
   },
   {
     stamp: education.period,
@@ -24,7 +23,6 @@ const log = [
     sub: education.degree,
     body: education.detail,
     stack: null,
-    jp: '学歴',
   },
 ];
 
@@ -33,29 +31,21 @@ export function About() {
     <section id="about" data-stage="terrain" className="section">
       <div className="shell">
         <SectionHead
-          num={meta.num}
-          jp={meta.jp}
+          hex={meta.hex}
+          cmd={meta.cmd}
           label="who"
           heading={about.heading}
         />
 
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-16 [&>*]:min-w-0">
-          <div>
+          <div className="panel px-6 py-8 sm:px-9 sm:py-10" data-rv>
             {about.paragraphs.map((p, i) => (
-              <p
-                key={i}
-                className="t-body mb-6 last:mb-0"
-                data-rv
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
+              <p key={i} className="t-body mb-6 !max-w-none last:mb-0">
                 {p}
               </p>
             ))}
 
-            <p
-              className="t-statement mt-10 border-l-2 border-[var(--accent)] pl-5"
-              data-rv
-            >
+            <p className="t-statement mt-10 border-l-2 border-[var(--accent)] pl-5">
               {about.aside}
             </p>
           </div>
@@ -67,25 +57,19 @@ export function About() {
         </div>
 
         {/* The log */}
-        <ol className="mt-20 list-none space-y-px p-0 sm:mt-24">
-          {log.map((row) => (
+        <ol className="mt-20 list-none space-y-4 p-0 sm:mt-24">
+          {log.map((row, i) => (
             <li
               key={row.title}
-              className="group relative border-t border-[var(--hair-soft)] pt-7 pb-8 transition-[padding] duration-300 [transition-timing-function:var(--ease)] hover:pl-3"
-              data-rv
+              className="panel spot depth px-6 py-8 sm:px-9 sm:py-10"
+              data-rv="scale"
+              data-spot
+              data-depth
+              style={{ '--dir': i % 2 ? -1 : 1 } as React.CSSProperties}
             >
-              {/* A tick lights in the gutter on hover, painted with the accent
-                  rather than the neutral, so the row answers the pointer. */}
-              <span
-                aria-hidden
-                className="absolute top-[30px] left-0 h-[7px] w-[7px] rounded-[1px] bg-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-              />
               <div className="grid gap-4 sm:grid-cols-[13rem_1fr] sm:gap-8">
                 <div>
-                  <div className="t-data !text-[var(--mute)]">{row.stamp}</div>
-                  <div aria-hidden className="t-jp mt-1">
-                    {row.jp}
-                  </div>
+                  <div className="t-data !text-[var(--bone-dim)]">{row.stamp}</div>
                 </div>
                 <div>
                   <h3 className="t-h3 text-[var(--bone)]">{row.title}</h3>
@@ -98,7 +82,7 @@ export function About() {
                       {row.stack.map((s) => (
                         <li
                           key={s}
-                          className="u-mono rounded-full border border-[var(--edge)] px-3 py-1 text-[0.68rem] tracking-[-0.01em] text-[var(--bone-dim)]"
+                          className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-[0.8rem] tracking-[-0.01em] text-[var(--bone-dim)]"
                         >
                           {s}
                         </li>

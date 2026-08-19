@@ -286,7 +286,12 @@ export function buildAttributes(count: number) {
   return { seed, scale };
 }
 
-/** Camera and mood per stage. The camera moves very little; the field moves. */
+/** Camera and mood per stage. The camera moves very little; the field moves.
+ *
+ * Every z here is further back than the composition strictly needs. The field
+ * is furniture: it should read as something happening in the room the page is
+ * in, not as something the page is printed on. A form that fills the frame
+ * competes with the writing in front of it, and the writing has to win. */
 export const STAGE_CAMERA: {
   z: number;
   y: number;
@@ -294,11 +299,11 @@ export const STAGE_CAMERA: {
   spread: number;
   opacity: number;
 }[] = [
-  { z: 30, y: 0, spin: 0.04, spread: 13, opacity: 0.85 },    // sphere
-  { z: 20, y: 0, spin: 0.12, spread: 8, opacity: 0.95 },     // column
-  { z: 24, y: 0, spin: 0.09, spread: 6, opacity: 1 },        // helix
-  { z: 21, y: 2.6, spin: 0.014, spread: 30, opacity: 0.9 },  // terrain
-  { z: 16, y: 14, spin: 0.075, spread: 18, opacity: 0.92 },  // vortex
-  { z: 34, y: 0, spin: 0.03, spread: 24, opacity: 0.62 },    // nebula
-  { z: 26, y: 3.0, spin: 0.05, spread: 20, opacity: 1 },     // orbit
+  { z: 37, y: 0, spin: 0.04, spread: 13, opacity: 1 },       // sphere
+  { z: 30, y: 0, spin: 0.12, spread: 8, opacity: 1 },       // column
+  { z: 34, y: 0, spin: 0.09, spread: 6, opacity: 1 },       // helix
+  { z: 30, y: 3.4, spin: 0.014, spread: 30, opacity: 0.95 }, // terrain
+  { z: 24, y: 19, spin: 0.075, spread: 18, opacity: 1 },     // vortex
+  { z: 44, y: 0, spin: 0.03, spread: 24, opacity: 0.75 },    // nebula
+  { z: 36, y: 4.2, spin: 0.05, spread: 20, opacity: 1 },     // orbit
 ];

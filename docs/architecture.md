@@ -117,23 +117,30 @@ Tokens live at the top of `app/globals.css`:
 | `--void` | `#05060b` | page ground |
 | `--panel-0/1/2` | `#0a0c14` → `#171a27` | elevation steps |
 | `--edge`, `--edge-hi` | `#262b3c`, `#363d54` | dividers, data-carrying lines |
-| `--bone` | `#f3f5fc` | primary text |
-| `--bone-dim` | `#b7bdd2` | secondary text |
-| `--mute` | `#7c8299` | labels and metadata |
+| `--bone` | `#ffffff` | primary text |
+| `--bone-dim` | `#dbe1f5` | secondary text |
+| `--mute` | `#a3abc9` | labels and metadata |
 | `--cool`, `--violet`, `--hot` | `#2f6bff`, `#a855f7`, `#ff4266` | the spectrum |
 | `--accent` | `#7d99ff` | the accent, one step lighter than `--cool` |
-| `--hair`, `--hair-soft` | white at 14% / 7% | the lit top edge on panels |
+| `--hair`, `--hair-soft` | white at 16% / 8.5% | the lit top edge on panels |
 | `--halo` | two dark shadows | what keeps prose legible over the field |
 
 Depth in a dark interface comes from light, not shadow. A surface is elevated by
 being lighter and carrying a hairline of white along its top edge. That hairline
 is the highest-leverage detail on the page.
 
+**Everything a visitor is expected to read sits on a panel.** `.panel` is a 93%
+opaque glass surface, and it exists because prose over a live particle field is
+prose competing with a live particle field, and the prose loses. The field then
+gets to stay bright, because it is no longer the thing standing between a
+sentence and the person reading it — it shows between panels and around them
+rather than through them.
+
 **Type.** Four families, each with a job nothing else can do.
 
 | Family | Job |
 |---|---|
-| Outfit | display, at 200–300 weight, wherever type is set large |
+| Space Grotesk | display, at 600 weight and -0.035em, wherever type is set large |
 | Geist | everything read at paragraph size |
 | Geist Mono | everything a machine produced: counts, dates, paths, terminal output |
 | Instrument Serif | the quote, and nothing else on the site |
@@ -141,17 +148,26 @@ is the highest-leverage detail on the page.
 All four are self-hosted through `next/font`, so there is no request to Google
 at runtime and no layout shift.
 
+Display type is set heavy and tight rather than light and airy. Confidence at
+that size comes from weight and tension; a 300-weight headline reads as elegant
+and says nothing. And nothing anywhere on the site is set below 0.72rem — small
+type is not the same thing as restraint.
+
 Monospace is deliberately capped well below display size. Mono gives every glyph
 the same advance width, which is the point when you are aligning code and a
 defect when you are setting a headline: narrow letters float in a pocket of air
 and a long heading develops visible holes.
 
-**Bilingual chrome.** Every section carries three names: an English label, a
-Japanese reading of the same word, and a formal kanji numeral. The pattern is
-borrowed from devsuryansh.in. The numerals are a second, quieter index running
-down the page, and they give each section a distinct shape at a glance, before a
-word of the heading has been read. All of it is `aria-hidden`: assistive
-technology hears each destination once, in one language.
+**Addressed chrome.** Every section carries three names: an English label, a hex
+index, and the command you would type if you wanted the same information from a
+machine instead of from a page — `0x01 · proof · $ git log --merged --not-mine`.
+
+An earlier build ran a Japanese reading and a kanji numeral down the page
+instead. It looked good and it was borrowed wholesale from another portfolio,
+which is the one thing a portfolio cannot afford to be caught doing. This scheme
+says something true about the person it belongs to: the page is addressed the
+way memory is, and every section announces itself as a command. All of it is
+`aria-hidden` — assistive technology hears each destination once, as a word.
 
 **Motion.** Feel lives in the easing curve, not the effect. Three curves, in
 `--ease`, `--ease-out` and `--ease-io`, and nothing animates for longer than
@@ -169,7 +185,7 @@ WebGL, and nothing in the scene knows what a section says.
 
 | Stage | Section | Form |
 |---|---|---|
-| 0 | hero | a meridian lattice, larger than the frame |
+| 0 | hero | a meridian lattice, held behind the statement |
 | 1 | proof | the shell collapses into a falling column |
 | 2 | work | a double helix with rungs |
 | 3 | about | a landscape, sunk below the reading column |
@@ -203,10 +219,14 @@ Design constraints, all of them load-bearing:
   its opacity stuck at zero.
 - **Geometry is seeded and deterministic**, so the composition is identical on
   every load and on every machine.
-- **Nothing is drawn where the text lives.** A scrim that is darkest down the
-  middle holds the centre of frame clear, which is the opposite of a normal
-  vignette and is the entire point. It lifts while the hero is in frame, where
-  the field is allowed to be the loudest thing on screen.
+- **Nothing is drawn where the text lives.** The panels do most of that work; a
+  scrim that is darkest down the middle covers the few things not on one, which
+  is the opposite of a normal vignette and is deliberate. It lifts while the
+  hero is in frame, where the field is allowed to be the loudest thing on
+  screen.
+- **Every camera is further back than the composition needs.** The field is
+  furniture. A form that fills the frame competes with the writing in front of
+  it, and the writing has to win.
 
 ## 5. Instruments, not screenshots
 

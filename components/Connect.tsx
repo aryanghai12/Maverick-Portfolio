@@ -113,19 +113,19 @@ export function Connect() {
     <section id="contact" data-stage="orbit" className="section pb-28">
       <div className="shell">
         <SectionHead
-          num={meta.num}
-          jp={meta.jp}
+          hex={meta.hex}
+          cmd={meta.cmd}
           label="contact"
           heading={connect.heading}
         />
 
         <div className="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1fr)] lg:gap-16 [&>*]:min-w-0">
-          <div>
-            <p className="t-statement" data-rv>
+          <div className="panel px-6 py-8 sm:px-9 sm:py-10" data-rv>
+            <p className="t-statement">
               {connect.lede}
             </p>
 
-            <p className="t-body mt-6" data-rv>
+            <p className="t-body mt-6 !max-w-none">
               {connect.body}
             </p>
 
@@ -136,42 +136,42 @@ export function Connect() {
                 single conversion event on the site, and it meant the address
                 was absent entirely with JavaScript disabled, on a page whose
                 README claims it works without it. */}
-            <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3" data-rv>
+            <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3">
               <a
                 href={links.email}
-                className="ul-draw u-mono text-[clamp(1rem,0.9rem+0.7vw,1.4rem)] tracking-[-0.02em] text-[var(--bone)] transition-colors hover:text-white"
+                className="ul-draw u-mono text-[clamp(1.1rem,0.95rem+0.8vw,1.55rem)] tracking-[-0.02em] text-[var(--bone)] transition-colors hover:text-[var(--accent)]"
               >
                 {identity.email}
               </a>
               <button
                 type="button"
                 onClick={() => copy(identity.email, 'email')}
-                className="u-mono shrink-0 rounded-full border border-[var(--edge)] px-3 py-1.5 text-[0.66rem] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--bone)] hover:text-[var(--bone)]"
+                className="u-mono shrink-0 rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.04)] px-3.5 py-1.5 text-[0.8rem] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--bone)] hover:text-[var(--bone)]"
               >
                 {copied === 'email' ? 'copied' : 'copy'}
               </button>
             </div>
 
             {/* Status */}
-            <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2" data-rv>
+            <div className="mt-10 flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="flex items-center gap-2.5">
                 <span aria-hidden className="led h-[7px] w-[7px] rounded-full bg-[var(--accent)]" />
-                <span className="t-label !text-[0.6rem] !text-[var(--accent)]">available</span>
+                <span className="t-label !text-[0.75rem] !text-[var(--accent)]">available</span>
               </span>
               <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
-              <span className="t-label !text-[0.6rem]">{identity.location}</span>
+              <span className="t-label !text-[0.75rem]">{identity.location}</span>
               <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
-              <span className="t-label !text-[0.6rem]">
+              <span className="t-label !text-[0.75rem]">
                 {now ? `${now} ${identity.tzLabel}` : identity.tzLabel}
               </span>
             </div>
 
             {/* Remotes */}
-            <div className="code-surface mt-10 px-4 py-4 sm:px-5" data-rv>
-              <div className="t-label mb-3 !text-[0.54rem]">git remote -v</div>
+            <div className="code-surface mt-10 px-4 py-4 sm:px-5">
+              <div className="t-label mb-3 !text-[0.74rem]">$ git remote -v</div>
               <ul className="m-0 list-none space-y-1.5 p-0">
                 {remotes.map((r) => (
-                  <li key={r.name} className="flex items-center gap-3 text-[0.72rem]">
+                  <li key={r.name} className="flex items-center gap-3 text-[0.82rem]">
                     <span className="w-14 shrink-0 text-[var(--accent)]">{r.name}</span>
                     <a
                       href={r.href}
@@ -203,11 +203,11 @@ export function Connect() {
             className="depth"
             style={{ '--dir': -1 } as React.CSSProperties}
           >
-            <div className="glass spot overflow-hidden" data-spot>
+            <div className="panel spot overflow-hidden" data-spot>
               <div className="relative z-[3] flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3 sm:px-5">
                 <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
-                <span className="t-label !text-[0.6rem]">contact · interactive</span>
-                <span className="t-label ml-auto !text-[0.58rem]">type or click</span>
+                <span className="t-label !text-[0.75rem]">contact · interactive</span>
+                <span className="t-label ml-auto !text-[0.74rem]">type or click</span>
               </div>
 
               <div className="relative z-[3] px-4 py-5 sm:px-5">
@@ -218,7 +218,7 @@ export function Connect() {
                       <button
                         type="button"
                         onClick={() => exec(c.name)}
-                        className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.03)] px-3 py-1.5 text-[0.7rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--accent)] hover:text-[var(--accent)]"
+                        className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.05)] px-3.5 py-1.5 text-[0.82rem] text-[var(--bone-dim)] transition-all duration-300 hover:-translate-y-[2px] hover:border-[var(--accent)] hover:text-[var(--accent)]"
                       >
                         {c.name}
                       </button>
@@ -228,7 +228,7 @@ export function Connect() {
 
                 <div
                   ref={logRef}
-                  className="scroll-wall mt-4 max-h-[220px] min-h-[132px] overflow-y-auto font-[family-name:var(--font-mono)] text-[0.72rem] leading-[1.75]"
+                  className="scroll-wall mt-4 max-h-[240px] min-h-[140px] overflow-y-auto font-[family-name:var(--font-mono)] text-[0.82rem] leading-[1.8]"
                   data-lenis-prevent
                   role="log"
                   aria-live="polite"
@@ -263,7 +263,7 @@ export function Connect() {
                   }}
                   className="mt-3 flex items-center gap-2 border-t border-[var(--hair-soft)] pt-3"
                 >
-                  <span aria-hidden className="u-mono text-[0.72rem] text-[var(--accent)]">
+                  <span aria-hidden className="u-mono text-[0.82rem] text-[var(--accent)]">
                     ~ %
                   </span>
                   <input
@@ -273,7 +273,7 @@ export function Connect() {
                     autoComplete="off"
                     aria-label="Console input. Type help for the list of commands."
                     placeholder="help"
-                    className="u-mono min-w-0 flex-1 bg-transparent text-[0.72rem] text-[var(--bone)] outline-none placeholder:text-[var(--mute)]"
+                    className="u-mono min-w-0 flex-1 bg-transparent text-[0.82rem] text-[var(--bone)] outline-none placeholder:text-[var(--mute)]"
                   />
                 </form>
               </div>
@@ -293,7 +293,7 @@ export function Connect() {
                     href={href}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="t-label ul-draw !text-[0.6rem] transition-colors hover:!text-[var(--accent)]"
+                    className="t-label ul-draw !text-[0.75rem] transition-colors hover:!text-[var(--accent)]"
                   >
                     {label} ↗
                   </a>
@@ -304,18 +304,18 @@ export function Connect() {
         </div>
 
         <footer className="mt-24 flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-[var(--hair-soft)] pt-8">
-          <span className="t-label !text-[0.58rem]">
+          <span className="t-label !text-[0.74rem]">
             aryan ghai · {new Date().getFullYear()}
           </span>
-          <span aria-hidden className="t-jp !text-[0.6rem]">
-            検証は主張に勝る
+          <span aria-hidden className="t-cmd !text-[0.78rem]">
+            <span className="text-[var(--mute)]">$ </span>echo &quot;verification over assertion&quot;
           </span>
-          <span className="t-label !text-[0.58rem]">
+          <span className="t-label !text-[0.74rem]">
             built with next.js, three.js and no stock assets
           </span>
           <a
             href="#hero"
-            className="t-label ul-draw ml-auto !text-[0.58rem] transition-colors hover:!text-[var(--accent)]"
+            className="t-label ul-draw ml-auto !text-[0.74rem] transition-colors hover:!text-[var(--accent)]"
           >
             back to top ↑
           </a>

@@ -230,7 +230,7 @@ export function RepoPulseInstrument() {
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           K-Means · PCA projection
         </span>
-        <span className="t-label ml-auto !text-[0.56rem]">
+        <span className="t-label ml-auto !text-[0.73rem]">
           {frame < 0 ? 'unassigned' : converged ? 'converged' : `iteration ${frame + 1}`}
         </span>
       </div>
@@ -298,10 +298,10 @@ export function RepoPulseInstrument() {
             })}
           </svg>
 
-          <span className="t-label absolute bottom-1.5 left-1/2 -translate-x-1/2 !text-[0.5rem]">
+          <span className="t-label absolute bottom-1.5 left-1/2 -translate-x-1/2 !text-[0.72rem]">
             PC1 · time to merge
           </span>
-          <span className="t-label absolute top-1/2 left-1 -translate-y-1/2 -rotate-90 !text-[0.5rem]">
+          <span className="t-label absolute top-1/2 left-1 -translate-y-1/2 -rotate-90 !text-[0.72rem]">
             PC2 · friction
           </span>
         </div>
@@ -317,7 +317,7 @@ export function RepoPulseInstrument() {
                 <Mark cx={5} cy={5} shape={p.shape} color={p.color} r={3.2} />
               </svg>
               <span
-                className="t-label !text-[0.56rem]"
+                className="t-label !text-[0.73rem]"
                 style={p.key === 'hole' ? { color: 'var(--accent)' } : undefined}
               >
                 {p.label}
@@ -327,12 +327,12 @@ export function RepoPulseInstrument() {
         </ul>
 
         <div className="code-surface mt-4 px-3 py-3 sm:px-4">
-          <div className="t-label mb-2 !text-[0.54rem]">objective</div>
+          <div className="t-label mb-2 !text-[0.72rem]">objective</div>
           <p className="m-0 text-[0.74rem] text-[var(--bone-dim)]">
             argmin <span className="text-[var(--accent)]">Σ</span> ‖x − μ
             <sub>i</sub>‖²
           </p>
-          <p className="mt-2 mb-0 text-[0.66rem] leading-[1.6] text-[var(--mute)]">
+          <p className="mt-2 mb-0 text-[0.78rem] leading-[1.6] text-[var(--mute)]">
             k validated by elbow and silhouette · nstart = 50 · log1p then z-score
           </p>
         </div>

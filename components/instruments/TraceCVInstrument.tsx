@@ -128,7 +128,7 @@ export function TraceCVInstrument() {
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           Parse X-ray
         </span>
-        <span className="t-label ml-auto !text-[0.56rem]">in-browser · nothing uploaded</span>
+        <span className="t-label ml-auto !text-[0.73rem]">in-browser · nothing uploaded</span>
       </div>
 
       <div className="p-4 sm:p-5">
@@ -192,7 +192,7 @@ export function TraceCVInstrument() {
                   className="h-[9px] w-[9px] shrink-0 rounded-[2px] border border-dashed"
                   style={{ background: s.background, borderColor: s.borderColor }}
                 />
-                <span className="t-label !text-[0.56rem]">{l.label}</span>
+                <span className="t-label !text-[0.73rem]">{l.label}</span>
               </li>
             );
           })}
@@ -200,15 +200,15 @@ export function TraceCVInstrument() {
 
         {/* Trace log */}
         <div className="code-surface mt-4 min-h-[92px] px-3 py-3 sm:px-4">
-          <div className="t-label mb-2 !text-[0.54rem]">trace</div>
+          <div className="t-label mb-2 !text-[0.72rem]">trace</div>
           {traced.length === 0 ? (
-            <p className="m-0 text-[0.68rem] text-[var(--mute)]">awaiting scan…</p>
+            <p className="m-0 text-[0.78rem] text-[var(--mute)]">awaiting scan…</p>
           ) : (
             <ul className="m-0 list-none space-y-[3px] p-0">
               {traced.map((b) => (
                 <li
                   key={b.trace}
-                  className="flex items-baseline gap-2 text-[0.68rem] leading-[1.6]"
+                  className="flex items-baseline gap-2 text-[0.78rem] leading-[1.6]"
                 >
                   <span
                     aria-hidden

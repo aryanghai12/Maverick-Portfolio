@@ -322,7 +322,7 @@ export function CosmosScene({ reduced }: { reduced: boolean }) {
        fill a 16:10 desktop viewport runs off both sides of it and stops reading
        as an object at all. The whole rig steps back rather than each form being
        authored twice. */
-    const fit = size.width < 700 ? 1.5 : size.width < 1100 ? 1.16 : 1;
+    const fit = size.width < 700 ? 1.45 : size.width < 1100 ? 1.14 : 1;
     const z = (a.z + (b.z - a.z) * e) * fit + (1 - intro) * 26;
     const y = a.y + (b.y - a.y) * e;
     camera.position.set(r.px * 0.7, y + r.py * -0.4, z);

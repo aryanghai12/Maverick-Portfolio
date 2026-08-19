@@ -21,9 +21,9 @@
   --color-panel-2: #171a27;
   --color-edge: #262b3c;
 
-  --color-bone: #f3f5fc;
-  --color-bone-dim: #b7bdd2;
-  --color-mute: #7c8299;
+  --color-bone: #ffffff;
+  --color-bone-dim: #dbe1f5;
+  --color-mute: #a3abc9;
 
   --color-accent: #7d99ff;
   --color-accent-hi: #ffffff;
@@ -35,7 +35,7 @@
 
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-outfit), var(--font-geist), ui-sans-serif, sans-serif;
+  --font-display: var(--font-grotesk), var(--font-geist), ui-sans-serif, sans-serif;
   --font-serif: var(--font-instrument), Georgia, 'Times New Roman', serif;
 }
 
@@ -49,9 +49,13 @@
      merely divide two surfaces. */
   --edge-hi: #363d54;
 
-  --bone: #f3f5fc;
-  --bone-dim: #b7bdd2;
-  --mute: #7c8299;
+  /* Text is the point of the page, so it is spent brightly. Every one of these
+     clears 7:1 against the ground, and the dim step is deliberately close to
+     white rather than a mid grey: a paragraph a visitor has to lean into is a
+     paragraph they skip, and this site is asking to be read. */
+  --bone: #ffffff;
+  --bone-dim: #dbe1f5;
+  --mute: #a3abc9;
 
   /* The spectrum. Three stops, used in this order everywhere. */
   --cool: #2f6bff;
@@ -76,13 +80,13 @@
   /* Depth in dark UI comes from light, not shadow: a surface is elevated by
      being lighter and carrying a hairline at 8-16% white along its top edge.
      That hairline is the highest-leverage detail on the page. */
-  --hair: rgba(255, 255, 255, 0.14);
-  --hair-soft: rgba(255, 255, 255, 0.07);
+  --hair: rgba(255, 255, 255, 0.16);
+  --hair-soft: rgba(255, 255, 255, 0.085);
 
   /* The halo that keeps prose readable over a live particle field. It is a
      shadow rather than a background box, so the field stays visible between the
      letters instead of being scrimmed into a grey slab. */
-  --halo: 0 1px 20px rgba(3, 4, 8, 0.96), 0 0 44px rgba(3, 4, 8, 0.72);
+  --halo: 0 1px 22px rgba(3, 4, 8, 0.98), 0 0 50px rgba(3, 4, 8, 0.86);
 
   color-scheme: dark;
 }
@@ -112,8 +116,8 @@
     background: var(--void);
     color: var(--bone);
     font-family: var(--font-sans);
-    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.04rem);
-    line-height: 1.65;
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.12rem);
+    line-height: 1.68;
     letter-spacing: -0.008em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -165,12 +169,18 @@
 
    Three voices, and each one has exactly one job.
 
-   Outfit sets anything at display size: geometric, wide apertures, and light
-   enough at 300 that a six-word headline reads as architecture rather than as
-   shouting. Geist sets everything a person actually reads at paragraph size.
+   Space Grotesk sets anything at display size. It is set heavy and tight, at
+   600 and -0.035em, because confidence at that size comes from weight and
+   tension rather than from air: a 300-weight headline reads as elegant and says
+   nothing. Geist sets everything a person actually reads at paragraph size.
    Geist Mono sets everything a machine produced: counts, dates, repository
-   paths, terminal output. The serif appears exactly once, under the quote, and
-   its whole purpose is to sound like a different person talking.             */
+   paths, terminal output, and the command line under every section head. The
+   serif appears exactly once, under the quote.
+
+   Nothing on this site is set below 0.72rem. Every size here was raised from
+   the last build, where labels ran down to 0.56rem and a visitor had to lean
+   toward the screen to read a caption. Small type is not the same thing as
+   restraint.                                                                */
 
 .u-mono {
   font-family: var(--font-mono);
@@ -180,55 +190,56 @@
 
 .t-display {
   font-family: var(--font-display);
-  font-weight: 300;
-  font-size: clamp(2.4rem, 1.1rem + 5.4vw, 5.6rem);
-  line-height: 1.04;
-  letter-spacing: -0.032em;
+  font-weight: 600;
+  font-size: clamp(2.5rem, 1.2rem + 5.2vw, 5.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
 .t-h2 {
   font-family: var(--font-display);
-  font-weight: 300;
-  font-size: clamp(1.8rem, 1.15rem + 2.6vw, 3.3rem);
-  line-height: 1.1;
-  letter-spacing: -0.028em;
+  font-weight: 600;
+  font-size: clamp(1.95rem, 1.25rem + 2.6vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
 }
 
 .t-h3 {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.12rem, 0.98rem + 0.66vw, 1.44rem);
-  line-height: 1.26;
-  letter-spacing: -0.018em;
+  font-weight: 600;
+  font-size: clamp(1.2rem, 1.04rem + 0.7vw, 1.55rem);
+  line-height: 1.24;
+  letter-spacing: -0.022em;
 }
 
-/* Section labels, gutter numerals, metadata: the machine's quiet voice. */
+/* Section labels, gutter numerals, metadata: the machine's quiet voice, but
+   still loud enough to read at arm's length. */
 .t-label {
   font-family: var(--font-mono);
   font-weight: 500;
-  font-size: 0.67rem;
-  letter-spacing: 0.16em;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--mute);
 }
 
 .t-data {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.01em;
   color: var(--bone-dim);
 }
 
-/* Japanese secondary labels. Set a size down and a shade back, so they read as
-   a second voice rather than as competition for the English. */
-.t-jp {
-  font-family: var(--font-sans);
-  font-weight: 400;
-  font-size: 0.72rem;
-  letter-spacing: 0.09em;
-  color: var(--mute);
+/* The shell line that replaced the section numeral's second reading. It states
+   what the section would be if you asked the machine for it instead of reading
+   the heading. */
+.t-cmd {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: -0.01em;
+  color: var(--accent);
 }
 
 /* Every reading surface over the field carries the halo. This is the single
@@ -244,27 +255,38 @@
   text-shadow: var(--halo);
 }
 
+/* Text sitting on a panel does not need the halo: the panel already separates
+   it from the field, and a shadow on top of that only muddies the letterforms. */
+.panel .t-body,
+.panel .t-lede,
+.panel .t-h3,
+.panel .t-statement,
+.glass .t-body,
+.glass .t-h3 {
+  text-shadow: none;
+}
+
 .t-body {
-  font-size: clamp(1rem, 0.96rem + 0.24vw, 1.08rem);
+  font-size: clamp(1.05rem, 1rem + 0.3vw, 1.19rem);
   line-height: 1.74;
   color: var(--bone-dim);
-  max-width: 64ch;
+  max-width: 66ch;
 }
 
 .t-lede {
-  font-size: clamp(1.05rem, 0.98rem + 0.55vw, 1.34rem);
-  line-height: 1.58;
-  letter-spacing: -0.016em;
+  font-size: clamp(1.16rem, 1.06rem + 0.6vw, 1.48rem);
+  line-height: 1.55;
+  letter-spacing: -0.015em;
   color: var(--bone);
-  max-width: 48ch;
+  max-width: 50ch;
 }
 
 .t-statement {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-size: clamp(1.1rem, 1rem + 0.72vw, 1.55rem);
-  line-height: 1.45;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  font-size: clamp(1.2rem, 1.05rem + 0.8vw, 1.7rem);
+  line-height: 1.42;
+  letter-spacing: -0.022em;
   color: var(--bone);
 }
 
@@ -273,8 +295,8 @@
   font-family: var(--font-serif);
   font-weight: 400;
   font-style: italic;
-  font-size: clamp(1.6rem, 0.9rem + 3.4vw, 3.6rem);
-  line-height: 1.24;
+  font-size: clamp(1.7rem, 0.95rem + 3.4vw, 3.7rem);
+  line-height: 1.22;
   letter-spacing: -0.012em;
   color: var(--bone);
 }
@@ -284,9 +306,9 @@
    that has tried it proves the point. */
 .t-grad {
   /* Its own ramp, lighter than --spectrum. A gradient that starts at the field's
-     deep blue reads as grey once it is cut into 200-weight letterforms, because
-     a letter stem is a few pixels wide and has no area to carry a dark hue. */
-  background: linear-gradient(100deg, #7ea0ff 0%, #b981ff 46%, #ff5b7a 100%);
+     deep blue reads as grey once it is cut into letterforms, because a letter
+     stem is a few pixels wide and has no area to carry a dark hue. */
+  background: linear-gradient(100deg, #8fabff 0%, #c08cff 46%, #ff6f8b 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -335,10 +357,10 @@
 .figure-xl {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
-  font-weight: 200;
-  font-size: clamp(5.5rem, 3rem + 15vw, 15rem);
-  line-height: 0.8;
-  letter-spacing: -0.055em;
+  font-weight: 500;
+  font-size: clamp(5.5rem, 3rem + 14vw, 14rem);
+  line-height: 0.82;
+  letter-spacing: -0.05em;
   color: var(--bone);
 }
 
@@ -384,21 +406,28 @@
    the bottom-right, drawn with mask-composite so it reads as a lit edge rather
    than a border. A flat 1px rgba(255,255,255,.1) is the tutorial version and
    looks identical to every other glass site on the internet. */
+/* Glass, carrying real weight.
+   
+   The last build set these at 58-78% opacity and the field showed straight
+   through the text sitting on them. A glass panel with prose on it has one job
+   before it has any other: separate that prose from whatever is moving behind
+   it. So the fill is now 88-94%, the blur is deeper, and the field reads as a
+   glow at the panel's edges rather than as texture under its words. */
 .glass {
   position: relative;
   background: linear-gradient(
     158deg,
-    rgba(38, 42, 62, 0.58) 0%,
-    rgba(16, 18, 28, 0.66) 55%,
-    rgba(10, 12, 20, 0.78) 100%
+    rgba(28, 33, 52, 0.9) 0%,
+    rgba(14, 17, 27, 0.92) 55%,
+    rgba(9, 11, 19, 0.94) 100%
   );
-  backdrop-filter: blur(26px) saturate(1.15);
-  -webkit-backdrop-filter: blur(26px) saturate(1.15);
+  backdrop-filter: blur(30px) saturate(1.25);
+  -webkit-backdrop-filter: blur(30px) saturate(1.25);
   border-radius: 18px;
   box-shadow:
-    0 1px 0 0 rgba(255, 255, 255, 0.1) inset,
-    0 28px 70px -32px rgba(0, 0, 0, 0.96),
-    0 2px 14px -8px rgba(0, 0, 0, 0.7);
+    0 1px 0 0 rgba(255, 255, 255, 0.12) inset,
+    0 30px 76px -34px rgba(0, 0, 0, 0.98),
+    0 2px 14px -8px rgba(0, 0, 0, 0.75);
 }
 
 .glass::before {
@@ -426,11 +455,69 @@
   z-index: 1;
 }
 
+/* The reading surface.
+   
+   Bigger, quieter and more opaque than .glass, and it exists for one reason:
+   prose over a live particle field is prose competing with a live particle
+   field, and the prose loses. Anything on this site a visitor is expected to
+   actually read sits on one of these. Generous radius and generous padding, so
+   a page of them reads as panels floating in space rather than as a stack of
+   boxes. */
+.panel {
+  position: relative;
+  background: linear-gradient(
+    162deg,
+    rgba(24, 29, 47, 0.93) 0%,
+    rgba(12, 15, 25, 0.95) 60%,
+    rgba(8, 10, 17, 0.96) 100%
+  );
+  backdrop-filter: blur(34px) saturate(1.2);
+  -webkit-backdrop-filter: blur(34px) saturate(1.2);
+  border-radius: 22px;
+  box-shadow:
+    0 1px 0 0 rgba(255, 255, 255, 0.13) inset,
+    0 40px 90px -46px rgba(0, 0, 0, 1),
+    0 2px 18px -10px rgba(0, 0, 0, 0.8);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    150deg,
+    rgba(255, 255, 255, 0.34) 0%,
+    rgba(125, 153, 255, 0.14) 36%,
+    rgba(255, 255, 255, 0.03) 66%,
+    rgba(255, 66, 102, 0.18) 100%
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Everything inside a panel sits above its rim. Without this the rim's
+   pseudo-element paints over the first line of whatever it contains. */
+.panel > *,
+.glass > * {
+  position: relative;
+  z-index: 2;
+}
+
 /* A lighter pane for content inside the reading column, where full glass would
    be too much furniture. */
 .pane {
   position: relative;
-  background: rgba(10, 12, 20, 0.62);
+  background: rgba(10, 12, 20, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--hair-soft);
@@ -444,7 +531,7 @@
 
 .pane-hover:hover {
   border-color: var(--hair);
-  background: rgba(18, 21, 32, 0.74);
+  background: rgba(20, 24, 38, 0.92);
   transform: translateY(-2px);
 }
 
@@ -473,12 +560,12 @@
 }
 
 .code-surface {
-  background: rgba(8, 10, 17, 0.84);
+  background: rgba(6, 8, 14, 0.94);
   border: 1px solid var(--hair-soft);
   border-radius: 12px;
   font-family: var(--font-mono);
-  font-size: clamp(0.72rem, 0.66rem + 0.28vw, 0.84rem);
-  line-height: 1.75;
+  font-size: clamp(0.78rem, 0.72rem + 0.28vw, 0.88rem);
+  line-height: 1.78;
   overflow-x: auto;
   overscroll-behavior-x: contain;
 }
@@ -513,9 +600,10 @@
 
 /* ============================================================== 5 · nav
 
-   A real navigation bar: floating, centred, glass, and bilingual. The English
-   is the label and the Japanese is a second reading of the same word, set
-   smaller and dimmer so it adds rhythm without competing. */
+   A real navigation bar: floating, centred, glass. Each destination carries its
+   own hex index beside the label, which is the site's whole numbering scheme in
+   miniature: the page is addressed the way memory is. Below 640px the indices
+   drop rather than wrapping, so the bar stays one line. */
 
 .nav-bar {
   position: fixed;
@@ -571,7 +659,7 @@
   border-radius: 999px;
   padding: 8px 14px;
   font-family: var(--font-sans);
-  font-size: 0.79rem;
+  font-size: 0.86rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: var(--bone-dim);
@@ -581,9 +669,10 @@
     background-color 0.32s var(--ease);
 }
 
-.nav-link .jp {
-  font-size: 0.63rem;
-  letter-spacing: 0.06em;
+.nav-link .idx {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
   color: var(--mute);
   transition: color 0.32s var(--ease);
 }
@@ -597,7 +686,7 @@
   color: #ffffff;
 }
 
-.nav-link[data-active='1'] .jp {
+.nav-link[data-active='1'] .idx {
   color: var(--accent);
 }
 
@@ -632,10 +721,10 @@
 
   .nav-link {
     padding: 7px 11px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
-  .nav-link .jp {
+  .nav-link .idx {
     display: none;
   }
 
@@ -655,8 +744,8 @@
   align-items: center;
   gap: 8px;
   border-radius: 999px;
-  padding: 9px 15px;
-  font-size: 0.78rem;
+  padding: 10px 16px;
+  font-size: 0.82rem;
   font-weight: 500;
   color: var(--bone);
   background: rgba(10, 12, 20, 0.66);
@@ -967,18 +1056,18 @@
   pointer-events: none;
   background:
     radial-gradient(
-      58% 88% at 50% 50%,
-      rgba(5, 6, 11, 0.88) 0%,
-      rgba(5, 6, 11, 0.72) 46%,
-      rgba(5, 6, 11, 0.24) 76%,
+      62% 90% at 50% 50%,
+      rgba(5, 6, 11, 0.8) 0%,
+      rgba(5, 6, 11, 0.62) 44%,
+      rgba(5, 6, 11, 0.2) 74%,
       rgba(5, 6, 11, 0) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(5, 6, 11, 0.72) 0%,
-      transparent 20%,
-      transparent 80%,
-      rgba(5, 6, 11, 0.72) 100%
+      rgba(5, 6, 11, 0.8) 0%,
+      transparent 18%,
+      transparent 82%,
+      rgba(5, 6, 11, 0.8) 100%
     );
 }
 
@@ -988,17 +1077,17 @@
   background:
     radial-gradient(
       54% 84% at 50% 50%,
-      rgba(5, 6, 11, 0.62) 0%,
-      rgba(5, 6, 11, 0.44) 48%,
+      rgba(5, 6, 11, 0.66) 0%,
+      rgba(5, 6, 11, 0.46) 46%,
       rgba(5, 6, 11, 0.12) 78%,
       rgba(5, 6, 11, 0) 100%
     ),
     linear-gradient(
       to bottom,
-      rgba(5, 6, 11, 0.6) 0%,
-      transparent 24%,
-      transparent 78%,
-      rgba(5, 6, 11, 0.66) 100%
+      rgba(5, 6, 11, 0.66) 0%,
+      transparent 22%,
+      transparent 80%,
+      rgba(5, 6, 11, 0.72) 100%
     );
 }
 

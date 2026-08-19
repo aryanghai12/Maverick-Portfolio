@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono, Instrument_Serif, Outfit } from 'next/font/google';
+import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 
 /**
@@ -27,9 +27,9 @@ const geistMono = Geist_Mono({
   display: 'swap',
 });
 
-const outfit = Outfit({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-grotesk',
   display: 'swap',
 });
 
@@ -113,7 +113,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${outfit.variable} ${instrument.variable}`}
+      className={`${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${instrument.variable}`}
     >
       <body className="grain">{children}</body>
     </html>

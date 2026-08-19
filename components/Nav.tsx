@@ -10,11 +10,11 @@ const ITEMS = sections.filter((s) => s.id !== 'hope');
 /**
  * The navigation bar.
  *
- * Bilingual, because a portfolio bar with six English words in it is a shape
- * every visitor has already seen. The English is the label and the Japanese is
- * a second reading of the same word, set smaller and dimmer: it gives the bar
- * rhythm and gives the site a signature without asking anyone to read it. Below
- * 640px the Japanese is dropped rather than wrapped, so the bar stays one line.
+ * Each destination carries its own hex index beside the label, which is the
+ * site's numbering scheme in miniature: the page is addressed the way memory
+ * is. It gives the bar rhythm and gives the site a signature without asking
+ * anyone to decode anything. Below 640px the indices drop rather than wrapping,
+ * so the bar stays one line.
  *
  * The active state is a single pill that slides between items rather than six
  * pills cross-fading, which is one transform per change instead of six repaints
@@ -180,10 +180,10 @@ export function Nav() {
             aria-current={active === i ? 'true' : undefined}
           >
             {s.en}
-            {/* Decorative second reading. Hidden from assistive tech so the
-                link is announced once, in one language. */}
-            <span className="jp" aria-hidden="true">
-              {s.jp}
+            {/* Decorative. Hidden from assistive tech so each destination is
+                announced once, as a word rather than as a word and an address. */}
+            <span className="idx" aria-hidden="true">
+              {s.hex}
             </span>
           </a>
         ))}

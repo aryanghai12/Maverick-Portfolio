@@ -16,8 +16,9 @@ const instruments = {
   repopulse: RepoPulseInstrument,
 } as const;
 
-/* The kanji index runs inside the section too, one numeral per project. */
-const NUMERALS = ['壱', '弐', '参'];
+/* The index runs inside the section too, one address per project, on the same
+   scheme the page itself is numbered with. */
+const MARKS = ['0x02.a', '0x02.b', '0x02.c'];
 
 const repoFor = (id: string) => stats.projects.find((p) => p.id === id);
 
@@ -38,8 +39,8 @@ export function Work() {
     <section id="work" data-stage="helix" className="section">
       <div className="shell">
         <SectionHead
-          num={meta.num}
-          jp={meta.jp}
+          hex={meta.hex}
+          cmd={meta.cmd}
           label="work"
           heading="What I build"
           lede="Three systems, each one built around the same refusal: do not assert, execute. Each carries a working reduction of the real thing rather than a screenshot of it."
@@ -56,20 +57,18 @@ export function Work() {
             return (
               <article key={p.id} className="relative" aria-labelledby={`proj-${p.id}`}>
                 <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)] lg:items-start lg:gap-16 [&>*]:min-w-0">
-                  {/* Copy column */}
-                  <div className={flip ? 'lg:order-2' : undefined}>
-                    <div className="flex items-center gap-4" data-rv>
-                      <span
-                        aria-hidden
-                        className="u-mono text-[1.15rem] leading-none text-[var(--accent)] opacity-80"
-                      >
-                        {NUMERALS[pi] ?? p.index}
-                      </span>
-                      <span className="u-mono text-[0.74rem] font-bold tracking-[0.14em] text-[var(--bone-dim)]">
-                        {p.index}
+                  {/* Copy column. One surface: this is the densest writing on
+                      the site and it is not going to fight a helix for it. */}
+                  <div
+                    className={`panel px-6 py-8 sm:px-9 sm:py-10 ${flip ? 'lg:order-2' : ''}`}
+                    data-rv
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="u-mono text-[0.88rem] font-medium tracking-[0.04em] text-[var(--accent)]">
+                        {MARKS[pi] ?? p.index}
                       </span>
                       <span aria-hidden className="h-3 w-px bg-[var(--edge)]" />
-                      <span className="t-label !text-[0.6rem]">{p.period}</span>
+                      <span className="t-label !text-[0.76rem]">{p.period}</span>
                     </div>
 
                     <h3
@@ -107,31 +106,28 @@ export function Work() {
                       ))}
                     </ul>
 
-                    <ul className="mt-8 flex list-none flex-wrap gap-2 p-0" data-rv>
+                    <ul className="mt-8 flex list-none flex-wrap gap-2 p-0">
                       {p.stack.map((s) => (
                         <li
                           key={s}
-                          className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.03)] px-3 py-1 text-[0.68rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--bone)]"
+                          className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.05)] px-3 py-1.5 text-[0.8rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--bone)]"
                         >
                           {s}
                         </li>
                       ))}
                     </ul>
 
-                    <p
-                      className="t-statement mt-9 border-l-2 border-[var(--accent)] pl-5 !text-[clamp(1rem,0.92rem+0.4vw,1.2rem)]"
-                      data-rv
-                    >
+                    <p className="t-statement mt-9 border-l-2 border-[var(--accent)] pl-5 !text-[clamp(1.08rem,1rem+0.45vw,1.3rem)]">
                       {p.endcap}
                     </p>
 
                     {repo ? (
-                      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3" data-rv>
+                      <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
                         <a
                           href={repo.url}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="group u-mono inline-flex items-center gap-2 text-[0.78rem] text-[var(--bone)] transition-colors duration-300 hover:text-[var(--accent)]"
+                          className="group u-mono inline-flex items-center gap-2 text-[0.88rem] text-[var(--bone)] transition-colors duration-300 hover:text-[var(--accent)]"
                         >
                           <span className="ul-draw">source</span>
                           <span
@@ -149,7 +145,7 @@ export function Work() {
                             href={repo.homepage}
                             target="_blank"
                             rel="noreferrer noopener"
-                            className="group u-mono inline-flex items-center gap-2 text-[0.78rem] text-[var(--bone-dim)] transition-colors duration-300 hover:text-[var(--accent)]"
+                            className="group u-mono inline-flex items-center gap-2 text-[0.88rem] text-[var(--bone-dim)] transition-colors duration-300 hover:text-[var(--accent)]"
                           >
                             <span className="ul-draw">live</span>
                             <span
@@ -177,15 +173,15 @@ export function Work() {
                   >
                     <Tilt>
                       <div className="glass spot overflow-hidden" data-spot>
-                        <div className="relative z-[3] flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3">
+                        <div className="relative z-[3] flex items-center gap-3 border-b border-[var(--hair-soft)] px-5 py-3.5">
                           <span
                             aria-hidden
                             className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]"
                           />
-                          <span className="t-label !text-[0.56rem]">
+                          <span className="t-label !text-[0.74rem] !text-[var(--bone-dim)]">
                             {p.name} · live reduction
                           </span>
-                          <span className="u-mono ml-auto text-[0.56rem] text-[var(--mute)]">
+                          <span className="u-mono ml-auto text-[0.74rem] text-[var(--mute)]">
                             {p.index}
                           </span>
                         </div>
@@ -208,9 +204,9 @@ export function Work() {
         {/* Kept off the headline slots so three projects stay three projects. */}
         <div className="mt-24 border-t border-[var(--hair-soft)] pt-12" data-rv>
           <div className="flex items-center gap-3">
-            <span className="t-label">also built</span>
-            <span aria-hidden className="t-jp">
-              その他
+            <span className="t-label !text-[var(--bone)]">also built</span>
+            <span aria-hidden className="t-cmd">
+              <span className="text-[var(--mute)]">$ </span>ls ./side
             </span>
           </div>
           <ul className="mt-6 grid list-none gap-3 p-0 sm:grid-cols-2">
@@ -226,10 +222,10 @@ export function Work() {
                   target="_blank"
                   rel="noreferrer noopener"
                   data-spot
-                  className="glass spot group block h-full px-5 py-6 transition-transform duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-[3px] sm:px-6"
+                  className="panel spot group block h-full px-6 py-7 transition-transform duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-[3px] sm:px-7 sm:py-8"
                 >
                   <div className="relative z-[3] flex items-center gap-3">
-                    <h3 className="t-h3 !text-[1.05rem] text-[var(--bone)]">{a.name}</h3>
+                    <h3 className="t-h3 !text-[1.2rem] text-[var(--bone)]">{a.name}</h3>
                     <span
                       aria-hidden
                       className="text-[var(--mute)] transition-all duration-300 group-hover:translate-x-[3px] group-hover:text-[var(--accent)]"
@@ -237,10 +233,10 @@ export function Work() {
                       ↗
                     </span>
                   </div>
-                  <p className="relative z-[3] mt-2 text-[0.88rem] leading-[1.6] text-[var(--bone-dim)]">
+                  <p className="relative z-[3] mt-2.5 text-[0.98rem] leading-[1.62] text-[var(--bone-dim)]">
                     {a.what}
                   </p>
-                  <p className="t-label relative z-[3] mt-3 !text-[0.62rem]">{a.stack}</p>
+                  <p className="t-label relative z-[3] mt-3 !text-[0.76rem]">{a.stack}</p>
                 </a>
               </li>
             ))}

@@ -69,8 +69,8 @@ export function Proof() {
     <section id="proof" data-stage="column" className="relative pt-10 pb-20 sm:pb-28">
       <div className="shell">
         <SectionHead
-          num={meta.num}
-          jp={meta.jp}
+          hex={meta.hex}
+          cmd={meta.cmd}
           label="proof"
           heading="Merged into code I do not own"
           lede={`${merged.trueUpstream} pull requests merged into ${merged.trueUpstreamRepoCount} repositories owned by other people${
@@ -89,12 +89,12 @@ export function Proof() {
               <CountUp to={merged.trueUpstream} duration={1400} />
             </span>
 
-            <div className="max-w-[42ch] pb-3">
-              <p className="t-statement" data-rv>
+            <div className="panel max-w-[46ch] px-6 py-7 sm:px-8 sm:py-8" data-rv>
+              <p className="t-statement">
                 Every one of them was reviewed by somebody who had no reason to be
                 generous about it.
               </p>
-              <p className="t-label mt-5 !text-[0.58rem] !leading-[1.7]" data-rv>
+              <p className="t-label mt-5 !text-[0.74rem] !leading-[1.7]">
                 counted from the github api · measured {measured}
               </p>
             </div>
@@ -123,16 +123,16 @@ export function Proof() {
                   target="_blank"
                   rel="noreferrer noopener"
                   data-spot
-                  className="glass spot group flex h-full items-baseline gap-5 px-5 py-6 transition-transform duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-[3px] sm:px-6 sm:py-7"
+                  className="panel spot group flex h-full items-baseline gap-5 px-6 py-7 transition-transform duration-500 [transition-timing-function:var(--ease-out)] hover:-translate-y-[3px] sm:px-7 sm:py-8"
                 >
-                  <span className="u-mono relative z-[3] w-10 shrink-0 text-[1.7rem] leading-none font-medium tracking-[-0.04em] text-[var(--bone)]">
+                  <span className="u-mono relative z-[3] w-12 shrink-0 text-[2rem] leading-none font-medium tracking-[-0.045em] text-[var(--bone)]">
                     {r.merged}
                   </span>
                   <span className="relative z-[3] min-w-0 flex-1">
-                    <span className="u-mono block truncate text-[0.86rem] text-[var(--bone-dim)] transition-colors duration-300 group-hover:text-[var(--bone)]">
+                    <span className="u-mono block truncate text-[0.95rem] text-[var(--bone-dim)] transition-colors duration-300 group-hover:text-[var(--bone)]">
                       {r.fullName}
                     </span>
-                    <span className="t-label mt-2 block !text-[0.56rem]">
+                    <span className="t-label mt-2 block !text-[0.73rem]">
                       {fmtStars(r.stars)} stars
                       {CNCF_ORGS.has(r.org) ? ' · CNCF' : ''}
                     </span>
@@ -154,8 +154,8 @@ export function Proof() {
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-16 [&>*]:min-w-0">
           {/* Hardest first. Sorting newest first buried these under ten rule
               pull requests whose titles differ by three words. */}
-          <div>
-            <h3 className="t-label !text-[0.62rem] !text-[var(--bone-dim)]" data-rv>
+          <div className="panel px-6 py-8 sm:px-8 sm:py-9" data-rv>
+            <h3 className="t-label !text-[0.78rem] !text-[var(--bone)]">
               the ones that were hard
             </h3>
             <ul className="mt-7 list-none space-y-px p-0">
@@ -172,17 +172,17 @@ export function Proof() {
                     rel="noreferrer noopener"
                     className="group block py-5 transition-[padding-left] duration-300 [transition-timing-function:var(--ease)] hover:pl-3"
                   >
-                    <p className="m-0 text-[0.98rem] leading-[1.55] text-[var(--bone)]">
+                    <p className="m-0 text-[1.06rem] leading-[1.56] text-[var(--bone)]">
                       {h.gloss}
                     </p>
-                    <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                      <span className="u-mono text-[0.68rem] text-[var(--mute)]">
+                    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <span className="u-mono text-[0.8rem] text-[var(--mute)]">
                         {h.pr!.repo}
                       </span>
-                      <span className="u-mono text-[0.68rem] text-[var(--accent)] opacity-80 transition-opacity group-hover:opacity-100">
+                      <span className="u-mono text-[0.8rem] text-[var(--accent)]">
                         #{h.number}
                       </span>
-                      <span className="u-mono ml-auto text-[0.64rem] text-[var(--mute)]">
+                      <span className="u-mono ml-auto text-[0.78rem] text-[var(--mute)]">
                         {h.pr!.mergedAt}
                       </span>
                     </div>
@@ -194,7 +194,7 @@ export function Proof() {
 
           <div>
             {/* The rules, stated once as the thing they collectively are. */}
-            <div className="glass spot p-6 sm:p-7" data-rv data-spot>
+            <div className="panel spot px-6 py-8 sm:px-8 sm:py-9" data-rv data-spot>
               <h3 className="t-h3 relative z-[3] text-[var(--bone)]">
                 {ruleGroup.title.replace('Ten', String(rules.length))}
               </h3>
@@ -207,7 +207,7 @@ export function Proof() {
                       href={pr.url}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="u-mono block truncate text-[0.68rem] text-[var(--mute)] transition-colors hover:text-[var(--bone)]"
+                      className="u-mono block truncate text-[0.82rem] text-[var(--bone-dim)] transition-colors hover:text-[var(--accent)]"
                       title={pr.title}
                     >
                       {pr.title.replace('feat(rules): add ', '')}
@@ -218,9 +218,8 @@ export function Proof() {
             </div>
 
             {/* Everything else, compact. */}
-            <h3 className="t-label mt-12 !text-[0.62rem] !text-[var(--bone-dim)]" data-rv>
-              also merged
-            </h3>
+            <div className="panel mt-4 px-6 py-8 sm:px-8 sm:py-9" data-rv>
+            <h3 className="t-label !text-[0.78rem] !text-[var(--bone)]">also merged</h3>
             <ul className="mt-5 list-none space-y-px p-0">
               {rest.map((pr, i) => (
                 <li
@@ -235,10 +234,10 @@ export function Proof() {
                     rel="noreferrer noopener"
                     className="group flex items-baseline gap-3 py-3"
                   >
-                    <span className="u-mono min-w-0 flex-1 truncate text-[0.74rem] text-[var(--bone-dim)] transition-colors group-hover:text-[var(--bone)]">
+                    <span className="u-mono min-w-0 flex-1 truncate text-[0.84rem] text-[var(--bone-dim)] transition-colors group-hover:text-[var(--bone)]">
                       {pr.title}
                     </span>
-                    <span className="u-mono shrink-0 text-[0.64rem] text-[var(--mute)]">
+                    <span className="u-mono shrink-0 text-[0.78rem] text-[var(--mute)]">
                       {pr.repo.split('/')[1]} #{pr.number}
                     </span>
                   </a>
@@ -248,10 +247,7 @@ export function Proof() {
 
             {/* Counted, labelled, and kept out of the headline. */}
             {team.length > 0 ? (
-              <p
-                className="t-label mt-7 !text-[0.66rem] !leading-[1.65] !normal-case !tracking-[0.02em]"
-                data-rv
-              >
+              <p className="t-label mt-7 !text-[0.82rem] !leading-[1.7] !normal-case !tracking-[0.01em]">
                 Not counted above: {merged.external - merged.trueUpstream} further merges
                 into{' '}
                 <a
@@ -266,6 +262,7 @@ export function Proof() {
                 but not the same claim, so it does not get to inflate the number.
               </p>
             ) : null}
+            </div>
           </div>
         </div>
       </div>

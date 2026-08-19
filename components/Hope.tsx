@@ -23,13 +23,17 @@ export function Hope() {
       className="relative flex min-h-[86svh] items-center py-24"
     >
       <div className="shell">
-        <div className="mx-auto max-w-[30ch] text-center">
-          <div className="flex items-center justify-center gap-3" data-rv>
-            <span aria-hidden className="u-mono text-[1.1rem] text-[var(--accent)] opacity-70">
-              {meta.num}
+        <div
+          className="panel mx-auto max-w-[44rem] px-7 py-14 text-center sm:px-16 sm:py-16"
+          data-rv="scale"
+        >
+          <div className="flex items-center justify-center gap-3">
+            <span className="u-mono text-[0.86rem] font-medium tracking-[0.04em] text-[var(--accent)]">
+              {meta.hex}
             </span>
-            <span aria-hidden className="t-jp">
-              {meta.jp}
+            <span aria-hidden className="t-cmd">
+              <span className="text-[var(--mute)]">$ </span>
+              {meta.cmd}
             </span>
           </div>
 
@@ -44,18 +48,16 @@ export function Hope() {
               </span>
             </p>
 
-            <footer className="mt-9 flex flex-col items-center gap-1.5" data-rv>
-              <span aria-hidden className="rule-grad mb-4 h-px w-16" />
-              <cite className="t-label !text-[0.66rem] !not-italic !text-[var(--bone-dim)]">
+            <footer className="mt-10 flex flex-col items-center gap-2">
+              <span aria-hidden className="rule-grad mb-4 h-px w-20" />
+              <cite className="t-label !text-[0.8rem] !text-[var(--bone)] !not-italic">
                 {hope.attribution}
               </cite>
-              <span className="t-label !text-[0.58rem]">{hope.source}</span>
+              <span className="t-label !text-[0.74rem]">{hope.source}</span>
             </footer>
           </blockquote>
 
-          <p className="t-body mx-auto mt-14 !max-w-[52ch] text-center" data-rv>
-            {hope.gloss}
-          </p>
+          <p className="t-body mx-auto mt-12 !max-w-[46ch] text-center">{hope.gloss}</p>
         </div>
       </div>
     </section>

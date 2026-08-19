@@ -48,11 +48,11 @@ export function CavixInstrument() {
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           Cavix Review
         </span>
-        <span className="t-label ml-auto !text-[0.58rem] !text-[var(--add)]">success</span>
+        <span className="t-label ml-auto !text-[0.74rem] !text-[var(--add)]">success</span>
       </div>
 
-      <div className="px-4 py-5 font-[family-name:var(--font-mono)] text-[clamp(0.66rem,0.6rem+0.28vw,0.75rem)] leading-[1.7] sm:px-5">
-        <div className={`t-label !text-[0.56rem] transition-opacity duration-500 ${at(0)}`}>
+      <div className="px-4 py-5 font-[family-name:var(--font-mono)] text-[clamp(0.74rem,0.68rem+0.28vw,0.84rem)] leading-[1.7] sm:px-5">
+        <div className={`t-label !text-[0.73rem] transition-opacity duration-500 ${at(0)}`}>
           review scope &amp; effort
         </div>
 
@@ -91,7 +91,7 @@ export function CavixInstrument() {
             {['⬢ verified', 'critical', 'security'].map((chip) => (
               <span
                 key={chip}
-                className="rounded-[3px] border border-[var(--edge)] bg-[var(--panel-0)] px-1.5 py-[2px] text-[0.6rem] text-[var(--bone-dim)]"
+                className="rounded-[3px] border border-[var(--edge)] bg-[var(--panel-0)] px-1.5 py-[2px] text-[0.75rem] text-[var(--bone-dim)]"
               >
                 {chip}
               </span>
@@ -102,8 +102,8 @@ export function CavixInstrument() {
         {/* Sandbox transcript, the payload of the whole instrument.
             .code-surface sets its own font-size, so the size has to be restated
             here or these lines render larger than the panel and overflow. */}
-        <div className="code-surface mt-5 px-3 py-3 text-[clamp(0.58rem,0.5rem+0.28vw,0.7rem)] sm:px-4">
-          <div className="t-label mb-2 !text-[0.54rem]">sealed sandbox · no network egress</div>
+        <div className="code-surface mt-5 px-3 py-3 text-[clamp(0.7rem,0.64rem+0.28vw,0.78rem)] sm:px-4">
+          <div className="t-label mb-2 !text-[0.72rem]">sealed sandbox · no network egress</div>
           {/* A grid, not flex-wrap: the result column has to line up across all
               four rows, and a wrapped result reads as a different kind of line. */}
           <div className="grid grid-cols-[auto_1fr_auto] gap-x-2 whitespace-nowrap">

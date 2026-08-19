@@ -3,16 +3,6 @@ import { SectionHead } from './SectionHead';
 
 const meta = sections.find((s) => s.id === 'toolkit')!;
 
-/* A second reading for each group, so the column of headings has the same
-   bilingual rhythm as the navigation and the section heads. */
-const JP: Record<string, string> = {
-  languages: '言語',
-  'backend & systems': '基盤',
-  'infra & runtime': '実行環境',
-  'ai systems': '知能',
-  quality: '品質',
-};
-
 /**
  * The toolkit.
  *
@@ -26,8 +16,8 @@ export function Toolkit() {
     <section id="toolkit" data-stage="vortex" className="section">
       <div className="shell">
         <SectionHead
-          num={meta.num}
-          jp={meta.jp}
+          hex={meta.hex}
+          cmd={meta.cmd}
           label="toolkit"
           heading={toolkit.heading}
           lede={toolkit.lede}
@@ -47,14 +37,14 @@ export function Toolkit() {
                 } as React.CSSProperties
               }
             >
-              <div className="glass spot h-full px-5 py-6 sm:px-6 sm:py-7" data-spot>
+              <div className="panel spot h-full px-6 py-7 sm:px-7 sm:py-8" data-spot>
                 <div className="relative z-[3] flex items-baseline gap-3">
-                  <span className="u-mono text-[0.68rem] font-medium text-[var(--accent)]">
+                  <span className="u-mono text-[0.82rem] font-medium text-[var(--accent)]">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <h3 className="t-h3 !text-[1rem] text-[var(--bone)]">{group.group}</h3>
-                  <span aria-hidden className="t-jp ml-auto">
-                    {JP[group.group] ?? ''}
+                  <h3 className="t-h3 !text-[1.12rem] text-[var(--bone)]">{group.group}</h3>
+                  <span aria-hidden className="t-label ml-auto !text-[0.72rem]">
+                    {group.items.length}
                   </span>
                 </div>
 
@@ -62,11 +52,11 @@ export function Toolkit() {
                   {group.items.map((item) => (
                     <li
                       key={item}
-                      className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.02)] px-3 py-1 text-[0.7rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--bone)]"
+                      className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-[0.8rem] tracking-[-0.01em] text-[var(--bone-dim)] transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--bone)]"
                     >
                       {item}
                       {skillQualifiers[item] ? (
-                        <span className="ml-1.5 text-[0.6rem] text-[var(--mute)]">
+                        <span className="ml-1.5 text-[0.72rem] text-[var(--mute)]">
                           {skillQualifiers[item]}
                         </span>
                       ) : null}

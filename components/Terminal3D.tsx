@@ -80,8 +80,8 @@ export function Terminal3D() {
               which are a picture of somebody else's operating system. */}
           <div className="relative z-[3] flex items-center gap-3 border-b border-[var(--hair-soft)] px-4 py-3">
             <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
-            <span className="t-label !text-[0.56rem]">session · read only</span>
-            <span className="u-mono ml-auto text-[0.56rem] text-[var(--mute)]">
+            <span className="t-label !text-[0.73rem]">session · read only</span>
+            <span className="u-mono ml-auto text-[0.73rem] text-[var(--mute)]">
               {identity.tzLabel}
             </span>
           </div>

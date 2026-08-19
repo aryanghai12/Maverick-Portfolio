@@ -318,24 +318,28 @@ export const connect = {
 
    Section identity, in one table.
 
-   Every section carries three names: an English label, a Japanese reading of
-   the same word, and a formal kanji numeral. The pattern is borrowed from
-   devsuryansh.in, which uses it to give a monochrome page rhythm that no amount
-   of rules and spacing can buy. It earns its place here for the same reason:
-   the numerals are a second, quieter index running down the page, and the
-   Japanese gives every section head a shape before it is read.
+   Every section carries three names: an English label, a hex index, and the
+   command you would type if you wanted the same information from a machine
+   instead of from a page.
+
+   The previous build ran a Japanese reading and a formal kanji numeral down the
+   page. It looked good and it was borrowed wholesale from somebody else's site,
+   which is the one thing a portfolio cannot afford to be caught doing. This
+   scheme says something true about the person it belongs to instead: the site
+   is addressed the way memory is, and every section announces itself as a
+   command, because that is how its author would actually ask the question.
 
    The order of this array is the order of the page, and both the navigation and
    the particle field read their stage count from it. Adding a section here and
    nowhere else is a supported thing to do. */
 export const sections = [
-  { id: 'hero', en: 'Home', jp: '表紙', num: '' },
-  { id: 'proof', en: 'Proof', jp: '証明', num: '壹' },
-  { id: 'work', en: 'Work', jp: '作品', num: '弐' },
-  { id: 'about', en: 'About', jp: '私について', num: '参' },
-  { id: 'toolkit', en: 'Toolkit', jp: '技術', num: '肆' },
-  { id: 'hope', en: 'Hope', jp: '希望', num: '伍' },
-  { id: 'contact', en: 'Contact', jp: '連絡', num: '陸' },
+  { id: 'hero', en: 'Home', hex: '0x00', cmd: 'cd ~' },
+  { id: 'proof', en: 'Proof', hex: '0x01', cmd: 'git log --merged --not-mine' },
+  { id: 'work', en: 'Work', hex: '0x02', cmd: 'ls -la ./built' },
+  { id: 'about', en: 'About', hex: '0x03', cmd: 'whoami' },
+  { id: 'toolkit', en: 'Toolkit', hex: '0x04', cmd: 'env | sort' },
+  { id: 'hope', en: 'Hope', hex: '0x05', cmd: 'echo $WHY' },
+  { id: 'contact', en: 'Contact', hex: '0x06', cmd: 'mail -s "hello"' },
 ] as const;
 
 /* The one section on this site that is not an argument, not a claim, and not
