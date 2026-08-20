@@ -299,11 +299,19 @@ export const STAGE_CAMERA: {
   spread: number;
   opacity: number;
 }[] = [
+  /* The field runs at full strength again.
+   
+     Dimming it was the wrong fix twice over: it did not make the writing any
+     easier to read, and it took away the one thing on the page that is not
+     text. What makes prose legible over a live field is the translucent panel
+     it sits on, and that costs the field nothing — the panel blurs whatever is
+     behind it into a smooth wash and the points stay bright everywhere else.
+     Nebula stays lower because it is a drifting starfield by design. */
   { z: 37, y: 0, spin: 0.04, spread: 13, opacity: 1 },       // sphere
-  { z: 30, y: 0, spin: 0.12, spread: 8, opacity: 1 },       // column
-  { z: 34, y: 0, spin: 0.09, spread: 6, opacity: 1 },       // helix
+  { z: 30, y: 0, spin: 0.12, spread: 8, opacity: 1 },        // column
+  { z: 34, y: 0, spin: 0.09, spread: 6, opacity: 1 },        // helix
   { z: 30, y: 3.4, spin: 0.014, spread: 30, opacity: 0.95 }, // terrain
   { z: 24, y: 19, spin: 0.075, spread: 18, opacity: 1 },     // vortex
-  { z: 44, y: 0, spin: 0.03, spread: 24, opacity: 0.75 },    // nebula
+  { z: 44, y: 0, spin: 0.03, spread: 24, opacity: 0.78 },    // nebula
   { z: 36, y: 4.2, spin: 0.05, spread: 20, opacity: 1 },     // orbit
 ];

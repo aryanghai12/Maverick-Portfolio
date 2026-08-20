@@ -92,7 +92,7 @@ export function DependencyGraph() {
             <h3 className="t-h3 max-w-[22ch] text-[var(--bone)]" data-rv>
               Edges weighted by bytes actually on disk
             </h3>
-            <p className="t-body mt-6" data-rv>
+            <p className="t-body lede-halo mt-6" data-rv>
               Edge thickness is the number of bytes GitHub measured in each repository,
               so a thin edge stays thin. Dashed edges are runtimes the project genuinely
               depends on but which have no source of their own to weigh.

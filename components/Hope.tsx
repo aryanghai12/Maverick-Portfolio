@@ -10,10 +10,11 @@ const meta = sections.find((s) => s.id === 'hope')!;
  * and a page that runs straight from one into the other reads as a pitch. This
  * is the one section that is not defending anything.
  *
- * It is also the only place on the site set in a serif, and the only place a
- * quotation mark appears. Both are deliberate: a line borrowed from somebody
- * else should not arrive in the same voice as the rest of the page, and the
- * field behind it thins out to a drifting starfield for exactly this long.
+ * The site is set in one face, so the change of voice here is carried by size
+ * and by the quotation marks rather than by a different family: this is the
+ * largest run of type on the page after the opening statement, and the only
+ * place a quotation mark appears. The field behind it thins out to a drifting
+ * starfield for exactly this long.
  */
 export function Hope() {
   return (

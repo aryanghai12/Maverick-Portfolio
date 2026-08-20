@@ -1,44 +1,33 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from 'next/font/google';
+import { Inter_Tight, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 /**
- * Four families, and every one of them has a job nothing else can do.
+ * Two families, and the split is the obvious one for a site about writing code.
  *
- * Outfit sets display: a geometric sans with wide apertures that stays elegant
- * at 300 weight and 5rem, which is the size the opening statement needs to be.
- * Geist sets everything read at paragraph size. Geist Mono sets everything a
- * machine produced: counts, dates, repository paths, terminal output. Instrument
- * Serif appears exactly once, under the quote, because a quotation from someone
- * else should not be in the same voice as the rest of the page.
+ * JetBrains Mono is the voice of the site. It sets every heading, the opening
+ * statement, the navigation, every index, count, date, repository path, label
+ * and button. It was drawn for reading code for eight hours at a stretch, which
+ * means it is unusually legible at small sizes and has enough character at large
+ * ones to carry a headline — and a headline set in the same face as the terminal
+ * output below it says what this site is before a word of it is read.
  *
- * All four are variable or single-weight, self-hosted by next/font, and make no
- * request to Google at runtime.
+ * Inter Tight sets paragraphs and nothing else. Monospace is the wrong tool for
+ * a hundred-word paragraph: every letter claims the same width, so the word
+ * shapes a reader scans by stop existing. Prose stays in a proportional face so
+ * the writing is genuinely easy to read, which is the whole point.
+ *
+ * Both are self-hosted by next/font and make no request to Google at runtime.
  */
-const geist = Geist({
+const interTight = Inter_Tight({
   subsets: ['latin'],
-  variable: '--font-geist',
+  variable: '--ff-sans',
   display: 'swap',
 });
 
-const geistMono = Geist_Mono({
+const jetbrains = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-geist-mono',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-grotesk',
-  display: 'swap',
-});
-
-// Not a variable font: the weight has to be named or the build fails.
-const instrument = Instrument_Serif({
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  variable: '--font-instrument',
+  variable: '--ff-mono',
   display: 'swap',
 });
 
@@ -103,7 +92,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#05060b',
+  themeColor: '#070912',
   colorScheme: 'dark',
   width: 'device-width',
   initialScale: 1,
@@ -113,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${instrument.variable}`}
+      className={`${interTight.variable} ${jetbrains.variable}`}
     >
       <body className="grain">{children}</body>
     </html>

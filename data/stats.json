@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-18T17:30:13.380Z",
+  "generatedAt": "2026-08-20T10:10:57.020Z",
   "source": "GitHub REST API, public endpoints, unauthenticated",
   "user": {
     "login": "aryanghai12",
     "name": "Aryan Ghai",
-    "publicRepos": 27,
+    "publicRepos": 28,
     "contributingSince": 2023
   },
   "merged": {
@@ -21,7 +21,7 @@
       "repo": "kubescape",
       "fullName": "kubescape/kubescape",
       "merged": 15,
-      "stars": 11656,
+      "stars": 11668,
       "description": "Kubescape is an open-source Kubernetes security platform for your IDE, CI/CD pipelines, and clusters. It includes risk analysis, security, compliance, and misconfiguration scanning, saving Kubernetes users and administrators precious time, effort, and resources.",
       "url": "https://github.com/kubescape/kubescape",
       "kind": "upstream",
@@ -76,7 +76,7 @@
       "repo": "openyurt",
       "fullName": "openyurtio/openyurt",
       "merged": 1,
-      "stars": 1999,
+      "stars": 2000,
       "description": "OpenYurt - Extending your native Kubernetes to edge(project under CNCF)",
       "url": "https://github.com/openyurtio/openyurt",
       "kind": "upstream",
@@ -87,7 +87,7 @@
       "repo": "gumroad",
       "fullName": "antiwork/gumroad",
       "merged": 1,
-      "stars": 9595,
+      "stars": 9602,
       "description": "See what sticks",
       "url": "https://github.com/antiwork/gumroad",
       "kind": "upstream",

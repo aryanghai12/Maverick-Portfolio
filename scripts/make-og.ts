@@ -56,26 +56,28 @@ const figures = [
 
 function html() {
   return `<!doctype html><html><head><meta charset="utf-8">
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0}
-  body{width:1200px;height:630px;background:#0e0e11;color:#f4f4f6;
-       font-family:Geist,system-ui,sans-serif;padding:74px 78px;
+  body{width:1200px;height:630px;background:#070912;color:#e9edfb;
+       font-family:'Inter Tight',system-ui,sans-serif;padding:74px 78px;
        display:flex;flex-direction:column;justify-content:space-between;
        position:relative;overflow:hidden}
   .bars{position:absolute;inset:0;opacity:.5}
-  .bar{position:absolute;height:3px;background:#2a2a31;border-radius:2px}
-  .eyebrow{font-family:'Geist Mono',monospace;font-size:19px;letter-spacing:.16em;
-           text-transform:uppercase;position:relative}
-  .eyebrow span{color:#7c7c86;margin-left:14px}
-  h1{font-size:74px;line-height:1.06;letter-spacing:-.038em;font-weight:600;
-     max-width:19ch;position:relative}
+  .bar{position:absolute;height:3px;background:#252a3a;border-radius:2px}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:18px;letter-spacing:.14em;
+           text-transform:uppercase;position:relative;font-weight:500}
+  .eyebrow span{color:#b6bedb;margin-left:14px}
+  /* Set in the same mono the page is. A share preview that does not look like
+     the site it links to reads as someone else's template. */
+  h1{font-family:'JetBrains Mono',monospace;font-size:56px;line-height:1.22;
+     letter-spacing:-.05em;font-weight:700;max-width:26ch;position:relative}
   .row{display:flex;gap:56px;position:relative;
        border-top:1px solid rgba(255,255,255,.09);padding-top:26px}
-  .n{font-family:'Geist Mono',monospace;font-size:44px;font-weight:500;
-     letter-spacing:-.045em;line-height:1}
-  .l{font-family:'Geist Mono',monospace;font-size:14px;letter-spacing:.15em;
-     text-transform:uppercase;color:#7c7c86;margin-top:10px}
+  .n{font-family:'JetBrains Mono',monospace;font-size:44px;font-weight:700;
+     letter-spacing:-.06em;line-height:1}
+  .l{font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.14em;
+     text-transform:uppercase;color:#b6bedb;margin-top:10px}
 </style></head><body>
 <div class="bars" id="b"></div>
 <div class="eyebrow">Aryan Ghai <span>Backend &amp; Systems Engineer</span></div>
