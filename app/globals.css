@@ -338,6 +338,108 @@
   text-shadow: none;
 }
 
+/* The hero veil.
+ 
+   The hero had a glass panel and the panel was the problem: a hard rounded
+   rectangle in the middle of the landing page cuts the sphere in half and
+   announces itself as a component, which is exactly what a landing page should
+   not do. But the text still has to be the brightest thing in the frame.
+
+   So the separation is done with no edges at all. A dark bloom feathered to
+   nothing, plus a backdrop blur masked with the same falloff, so the field
+   directly behind the words is smoothed into a soft ground while the field
+   everywhere else stays sharp and bright. There is no line anywhere for the eye
+   to read as a box — the composition stays one continuous image, and the type
+   sits in the calm part of it.
+
+   Sized in percentages of the hero rather than fixed units, so it tracks the
+   block it is protecting at every width. */
+.hero-veil {
+  position: absolute;
+  inset: -10% -8% -14%;
+  pointer-events: none;
+  background: radial-gradient(
+    56% 50% at 50% 47%,
+    rgba(5, 7, 14, 0.9) 0%,
+    rgba(5, 7, 14, 0.78) 36%,
+    rgba(5, 7, 14, 0.5) 60%,
+    rgba(5, 7, 14, 0.18) 80%,
+    rgba(5, 7, 14, 0) 100%
+  );
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  /* The mask feathers the blur as well as the wash. Without it the blur ends on
+     a hard rectangle edge, which is the same box drawn a different way. */
+  -webkit-mask-image: radial-gradient(
+    56% 50% at 50% 47%,
+    #000 0%,
+    #000 46%,
+    rgba(0, 0, 0, 0.5) 70%,
+    transparent 94%
+  );
+  mask-image: radial-gradient(
+    56% 50% at 50% 47%,
+    #000 0%,
+    #000 46%,
+    rgba(0, 0, 0, 0.5) 70%,
+    transparent 94%
+  );
+}
+
+/* The same treatment behind the figures. Its own element rather than a taller
+   version of the one above, so the sphere stays visible in the gap between the
+   statement and the numbers instead of being covered by one ellipse spanning
+   the whole hero — which is the black scrim again, drawn per section. */
+.hero-veil-flat {
+  position: absolute;
+  inset: -55% -6%;
+  pointer-events: none;
+  background: radial-gradient(
+    52% 50% at 50% 50%,
+    rgba(5, 7, 14, 0.86) 0%,
+    rgba(5, 7, 14, 0.7) 40%,
+    rgba(5, 7, 14, 0.38) 64%,
+    rgba(5, 7, 14, 0.1) 84%,
+    rgba(5, 7, 14, 0) 100%
+  );
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-mask-image: radial-gradient(
+    52% 50% at 50% 50%,
+    #000 0%,
+    #000 48%,
+    rgba(0, 0, 0, 0.5) 72%,
+    transparent 95%
+  );
+  mask-image: radial-gradient(
+    52% 50% at 50% 50%,
+    #000 0%,
+    #000 48%,
+    rgba(0, 0, 0, 0.5) 72%,
+    transparent 95%
+  );
+}
+
+/* Display type in the hero sits on the veil rather than on a surface, so it
+   keeps a halo — tighter and darker than the old sitewide one, tuned to seat
+   the type without softening the stems. */
+.hero-type {
+  text-shadow:
+    0 2px 10px rgba(4, 5, 12, 0.96),
+    0 0 26px rgba(4, 5, 12, 0.8);
+}
+
+/* Small mono over a live field is the hardest case on the page: at 0.7rem the
+   strokes are barely a pixel wide, and a bright particle landing inside a
+   counter closes it. These lines get a denser, tighter shadow than the display
+   type does — enough to hold the glyph, not enough to soften it. */
+.hero-type-sm {
+  text-shadow:
+    0 1px 3px rgba(4, 5, 12, 1),
+    0 0 10px rgba(4, 5, 12, 0.98),
+    0 0 20px rgba(4, 5, 12, 0.85);
+}
+
 /* For the few reading-size lines that float free of a surface: a section lede
    sitting high in a section, a caption beside a diagram. Tight enough that it
    seats the text without softening it. */
