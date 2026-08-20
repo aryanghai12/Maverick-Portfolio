@@ -120,7 +120,11 @@ export function TraceCVInstrument() {
     };
   }, []);
 
-  const traced = blocks.filter((b) => b.trace && b.y + b.h <= progress);
+  /* Every block that earns a trace line, in document order. Computed once and
+     always rendered — see the trace log below for why. */
+  const traceable = blocks.filter((b) => b.trace);
+  const isTraced = (b: Block) => b.y + b.h <= progress;
+  const anyTraced = traceable.some(isTraced);
 
   return (
     <div ref={ref} className="inst-document overflow-hidden">
@@ -198,41 +202,59 @@ export function TraceCVInstrument() {
           })}
         </ul>
 
-        {/* Trace log */}
-        <div className="code-surface mt-4 min-h-[92px] px-3 py-3 sm:px-4">
+        {/* Trace log.
+        
+            Every line is in the DOM from first paint and only its opacity is
+            animated. Appending rows as the sweep passed them grew this box by
+            120px while the visitor was scrolling, and a section that changes
+            height mid-scroll breaks any jump aimed past it: the navigation
+            computes a destination, the page grows above it, and the click lands
+            short. Reserving the final height costs nothing and the sweep reads
+            exactly the same. */}
+        <div className="code-surface relative mt-4 px-3 py-3 sm:px-4">
           <div className="t-label mb-2 !text-[0.72rem]">trace</div>
-          {traced.length === 0 ? (
-            <p className="m-0 text-[0.78rem] text-[var(--mute)]">awaiting scan…</p>
-          ) : (
-            <ul className="m-0 list-none space-y-[3px] p-0">
-              {traced.map((b) => (
-                <li
-                  key={b.trace}
-                  className="flex items-baseline gap-2 text-[0.78rem] leading-[1.6]"
+
+          {/* Overlaid rather than in flow, so the placeholder does not occupy a
+              row that the first trace line then has to push out of the way. */}
+          <p
+            aria-hidden
+            className={`pointer-events-none absolute m-0 text-[0.78rem] leading-[1.6] text-[var(--mute)] transition-opacity duration-500 ${
+              anyTraced ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            awaiting scan…
+          </p>
+
+          <ul className="m-0 list-none space-y-[3px] p-0">
+            {traceable.map((b) => (
+              <li
+                key={b.trace}
+                className={`flex items-baseline gap-2 text-[0.78rem] leading-[1.6] transition-opacity duration-500 ${
+                  isTraced(b) ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <span
+                  aria-hidden
+                  className={
+                    b.status === 'risk'
+                      ? 'text-[var(--hot)]'
+                      : b.status === 'unread'
+                        ? 'text-[var(--mute)]'
+                        : 'text-[var(--bone-dim)]'
+                  }
                 >
-                  <span
-                    aria-hidden
-                    className={
-                      b.status === 'risk'
-                        ? 'text-[var(--hot)]'
-                        : b.status === 'unread'
-                          ? 'text-[var(--mute)]'
-                          : 'text-[var(--bone-dim)]'
-                    }
-                  >
-                    {b.status === 'clean' ? '✓' : b.status === 'risk' ? '▲' : '✕'}
-                  </span>
-                  <span
-                    className={
-                      b.status === 'clean' ? 'text-[var(--bone-dim)]' : 'text-[var(--bone)]'
-                    }
-                  >
-                    {b.trace}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+                  {b.status === 'clean' ? '✓' : b.status === 'risk' ? '▲' : '✕'}
+                </span>
+                <span
+                  className={
+                    b.status === 'clean' ? 'text-[var(--bone-dim)]' : 'text-[var(--bone)]'
+                  }
+                >
+                  {b.trace}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

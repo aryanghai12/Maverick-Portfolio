@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T10:34:31.379Z",
+  "generatedAt": "2026-08-20T11:09:38.928Z",
   "source": "GitHub REST API, public endpoints, unauthenticated",
   "user": {
     "login": "aryanghai12",
@@ -87,7 +87,7 @@
       "repo": "gumroad",
       "fullName": "antiwork/gumroad",
       "merged": 1,
-      "stars": 9602,
+      "stars": 9603,
       "description": "See what sticks",
       "url": "https://github.com/antiwork/gumroad",
       "kind": "upstream",
