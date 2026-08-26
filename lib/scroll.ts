@@ -13,24 +13,39 @@ import type Lenis from 'lenis';
 
 let instance: Lenis | null = null;
 
-/** Clears the fixed navigation bar so a section never lands under it. */
-const NAV_CLEARANCE = 88;
-
 export function registerLenis(l: Lenis | null) {
   instance = l;
 }
 
+/**
+ * Jump to a section.
+ *
+ * Clearance for the fixed navigation bar is expressed once, in CSS, as
+ * scroll-padding-top on <html>. Both paths below honour that same number and
+ * neither adds its own.
+ *
+ * That is not a stylistic preference, it is the bug this function used to have.
+ * It passed Lenis an explicit `offset: -88` on the assumption that Lenis knows
+ * nothing about scroll-padding. It does: since 1.3, scrollTo() with an element
+ * computes
+ *
+ *     target = rect.top + animatedScroll - scrollMarginTop - scrollPaddingTop
+ *
+ * and only then adds `offset`. So the clearance was being applied twice, 90px
+ * from the stylesheet and 88px from here, and every destination on the site
+ * landed 178px low — a screenful of the previous section still showing under
+ * the bar, which reads exactly like the navigation going to the wrong place.
+ */
 export function scrollToId(id: string) {
   const target = document.getElementById(id);
   if (!target) return;
 
   if (instance) {
-    instance.scrollTo(target, { offset: -NAV_CLEARANCE });
+    instance.scrollTo(target);
     return;
   }
 
   // No Lenis: either reduced motion, or the module never loaded. Both cases
-  // want a plain native jump, and scroll-padding-top on <html> handles the
-  // clearance for us.
+  // want a plain native jump, and scroll-padding-top handles the clearance.
   target.scrollIntoView({ block: 'start' });
 }

@@ -1,32 +1,29 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { identity, links, sections } from '@/lib/content';
 
-const SECTIONS = [
-  ['hero', 'Home'],
-  ['upstream', 'Proof'],
-  ['work', 'Work'],
-  ['about', 'About'],
-  ['connect', 'Contact'],
-] as const;
+/* Hope is a moment in the page, not a destination, so it is the one section
+   that does not appear in the bar. Everything else in the table does. */
+const ITEMS = sections.filter((s) => s.id !== 'hope');
 
 /**
  * The navigation bar.
  *
- * What was here before was a column of six tick marks on the right edge that
- * only appeared above 1024px and told you nothing about where they went until
- * you hovered one. That is decoration wearing navigation's clothes. This is a
- * real bar with real words in it, present at every width.
+ * Each destination carries its own hex index beside the label, which is the
+ * site's numbering scheme in miniature: the page is addressed the way memory
+ * is. It gives the bar rhythm and gives the site a signature without asking
+ * anyone to decode anything. Below 640px the indices drop rather than wrapping,
+ * so the bar stays one line.
  *
  * The active state is a single pill that slides between items rather than six
- * pills cross-fading, which is one transform per change instead of six
- * repaints, and reads as one object moving rather than a row blinking.
+ * pills cross-fading, which is one transform per change instead of six repaints
+ * and reads as one object moving rather than a row blinking.
  */
 export function Nav() {
   const [active, setActive] = useState(0);
   const [progress, setProgress] = useState(0);
   const [pill, setPill] = useState({ x: 0, w: 0, ready: false });
-
   const [overflow, setOverflow] = useState<'none' | 'start' | 'end' | 'both'>('none');
 
   const barRef = useRef<HTMLElement>(null);
@@ -39,14 +36,14 @@ export function Nav() {
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
-          const i = SECTIONS.findIndex(([id]) => id === e.target.id);
+          const i = ITEMS.findIndex((s) => s.id === e.target.id);
           if (i >= 0) setActive(i);
         }
       },
       { rootMargin: '-45% 0px -45% 0px' },
     );
-    SECTIONS.forEach(([id]) => {
-      const el = document.getElementById(id);
+    ITEMS.forEach((s) => {
+      const el = document.getElementById(s.id);
       if (el) io.observe(el);
     });
     return () => io.disconnect();
@@ -75,7 +72,7 @@ export function Nav() {
 
   /* Measure the active link and park the pill on it. Runs in a layout effect so
      the pill is never painted at a stale position, and re-runs on resize and
-     once the webfont has actually landed, because both change the widths. */
+     once the webfonts have actually landed, because both change the widths. */
   useLayoutEffect(() => {
     const place = () => {
       const el = linkRefs.current[active];
@@ -95,9 +92,9 @@ export function Nav() {
     };
   }, [active]);
 
-  /* On a narrow screen the six words do not fit and the bar scrolls sideways.
-     Fade whichever edge still has something behind it, so a destination that is
-     off screen announces itself instead of simply not existing. */
+  /* On a narrow screen the bar scrolls sideways. Fade whichever edge still has
+     something behind it, so a destination that is off screen announces itself
+     instead of simply not existing. */
   useEffect(() => {
     const bar = barRef.current;
     if (!bar) return;
@@ -123,11 +120,11 @@ export function Nav() {
   }, []);
 
   /* Keep the active item in view when the bar is scrolled sideways.
-     
-     The bar's own scrollLeft is set directly rather than calling
-     scrollIntoView, which is allowed to scroll every ancestor including the
-     document, and a stray document scroll here would be fighting Lenis for the
-     page position on every section change. */
+   *
+   * The bar's own scrollLeft is set directly rather than calling
+   * scrollIntoView, which is allowed to scroll every ancestor including the
+   * document, and a stray document scroll here would be fighting Lenis for the
+   * page position on every section change. */
   useEffect(() => {
     const bar = barRef.current;
     const el = linkRefs.current[active];
@@ -141,14 +138,18 @@ export function Nav() {
 
   return (
     <>
-      {/* Progress rail, hairline, pinned to the very top of the viewport. */}
+      {/* Progress rail, hairline, pinned to the very top of the viewport, and
+          painted with the same spectrum as the field behind the page. */}
       <div
         aria-hidden
-        className="pointer-events-none fixed top-0 left-0 z-[58] h-px w-full bg-[var(--edge)]/50"
+        className="pointer-events-none fixed top-0 left-0 z-[58] h-px w-full bg-[var(--edge)]/40"
       >
         <span
-          className="block h-full origin-left bg-[var(--accent)] will-change-transform"
-          style={{ transform: `scaleX(${progress})` }}
+          className="block h-full origin-left will-change-transform"
+          style={{
+            transform: `scaleX(${progress})`,
+            background: 'var(--spectrum)',
+          }}
         />
       </div>
 
@@ -167,21 +168,34 @@ export function Nav() {
             opacity: pill.ready ? 1 : 0,
           }}
         />
-        {SECTIONS.map(([id, label], i) => (
+        {ITEMS.map((s, i) => (
           <a
-            key={id}
+            key={s.id}
             ref={(el) => {
               linkRefs.current[i] = el;
             }}
-            href={`#${id}`}
+            href={`#${s.id}`}
             className="nav-link"
             data-active={active === i ? '1' : undefined}
             aria-current={active === i ? 'true' : undefined}
           >
-            {label}
+            {s.en}
+            {/* Decorative. Hidden from assistive tech so each destination is
+                announced once, as a word rather than as a word and an address. */}
+            <span className="idx" aria-hidden="true">
+              {s.hex}
+            </span>
           </a>
         ))}
       </nav>
+
+      {/* The one conversion event on the site, parked opposite the bar and
+          reachable from every scroll position. */}
+      <a className="nav-cta" href={links.email}>
+        <span aria-hidden className="led h-[6px] w-[6px] rounded-full bg-[var(--accent)]" />
+        {identity.status.replace('Open to software engineering', 'Open to SWE')}
+        <span aria-hidden>→</span>
+      </a>
     </>
   );
 }

@@ -92,7 +92,7 @@ export function DependencyGraph() {
             <h3 className="t-h3 max-w-[22ch] text-[var(--bone)]" data-rv>
               Edges weighted by bytes actually on disk
             </h3>
-            <p className="t-body mt-6" data-rv>
+            <p className="t-body lede-halo mt-6" data-rv>
               Edge thickness is the number of bytes GitHub measured in each repository,
               so a thin edge stays thin. Dashed edges are runtimes the project genuinely
               depends on but which have no source of their own to weigh.
@@ -102,7 +102,7 @@ export function DependencyGraph() {
                 <svg width="26" height="8" aria-hidden className="shrink-0">
                   <line x1="0" y1="4" x2="26" y2="4" stroke="var(--accent)" strokeWidth="2.4" />
                 </svg>
-                <span className="t-label !text-[0.58rem]">measured · bytes on disk</span>
+                <span className="t-label !text-[0.74rem]">measured · bytes on disk</span>
               </li>
               <li className="flex items-center gap-3">
                 <svg width="26" height="8" aria-hidden className="shrink-0">
@@ -116,11 +116,11 @@ export function DependencyGraph() {
                     strokeDasharray="3 3"
                   />
                 </svg>
-                <span className="t-label !text-[0.58rem]">declared · no bytes to weigh</span>
+                <span className="t-label !text-[0.74rem]">declared · no bytes to weigh</span>
               </li>
             </ul>
 
-            <p className="t-label mt-8 !normal-case !tracking-[0.02em] !text-[0.68rem] !leading-[1.65]" data-rv>
+            <p className="t-label mt-8 !normal-case !tracking-[0.02em] !text-[0.78rem] !leading-[1.65]" data-rv>
               RepoPulse is set to R by hand. GitHub reports it as 87% HTML because Shiny
               commits rendered output, which is technically sourced and materially false,
               so it does not get to be the badge.
@@ -264,7 +264,7 @@ export function DependencyGraph() {
                       .map((e) => (
                         <li
                           key={e.tech}
-                          className="u-mono rounded border px-2 py-1 text-[0.68rem]"
+                          className="u-mono rounded border px-2 py-1 text-[0.78rem]"
                           style={{
                             borderColor: e.measured ? 'var(--edge)' : 'var(--panel-2)',
                             color: e.measured ? 'var(--bone-dim)' : 'var(--mute)',

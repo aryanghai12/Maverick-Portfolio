@@ -62,10 +62,17 @@ const legend: { status: Status; label: string }[] = [
   { status: 'unread', label: 'not read' },
 ];
 
+/* The three states carry the site's own two hues rather than two shades of
+   white. The copy for this project says the x-ray colours each line by whether
+   it was read cleanly, read with risk, or missed, so the panel should actually
+   do that: blue for read, red for at risk, and nothing but an outline for the
+   lines the parser never saw. */
 const styleFor = (status: Status, lit: boolean) => {
-  if (!lit) return { background: 'var(--panel-2)', borderColor: 'transparent' };
-  if (status === 'clean') return { background: 'rgba(255,255,255,0.20)', borderColor: 'transparent' };
-  if (status === 'risk') return { background: 'rgba(255,255,255,0.30)', borderColor: 'var(--accent)' };
+  if (!lit) return { background: 'rgba(255,255,255,0.045)', borderColor: 'transparent' };
+  if (status === 'clean')
+    return { background: 'rgba(125,153,255,0.34)', borderColor: 'transparent' };
+  if (status === 'risk')
+    return { background: 'rgba(255,66,102,0.28)', borderColor: 'var(--hot)' };
   return { background: 'transparent', borderColor: 'var(--mute)' };
 };
 
@@ -113,7 +120,11 @@ export function TraceCVInstrument() {
     };
   }, []);
 
-  const traced = blocks.filter((b) => b.trace && b.y + b.h <= progress);
+  /* Every block that earns a trace line, in document order. Computed once and
+     always rendered — see the trace log below for why. */
+  const traceable = blocks.filter((b) => b.trace);
+  const isTraced = (b: Block) => b.y + b.h <= progress;
+  const anyTraced = traceable.some(isTraced);
 
   return (
     <div ref={ref} className="inst-document overflow-hidden">
@@ -121,7 +132,7 @@ export function TraceCVInstrument() {
         <span className="u-mono text-[0.72rem] font-bold tracking-[-0.02em] text-[var(--bone)]">
           Parse X-ray
         </span>
-        <span className="t-label ml-auto !text-[0.56rem]">in-browser · nothing uploaded</span>
+        <span className="t-label ml-auto !text-[0.73rem]">in-browser · nothing uploaded</span>
       </div>
 
       <div className="p-4 sm:p-5">
@@ -155,7 +166,7 @@ export function TraceCVInstrument() {
           {/* Column split marker, revealed once the scan reaches it. */}
           <span
             aria-hidden
-            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--accent)] transition-opacity duration-700"
+            className="absolute top-[28%] bottom-[22%] w-px bg-[var(--hot)] transition-opacity duration-700"
             style={{ left: '35.5%', opacity: progress > 32 ? 0.42 : 0 }}
           />
 
@@ -185,47 +196,65 @@ export function TraceCVInstrument() {
                   className="h-[9px] w-[9px] shrink-0 rounded-[2px] border border-dashed"
                   style={{ background: s.background, borderColor: s.borderColor }}
                 />
-                <span className="t-label !text-[0.56rem]">{l.label}</span>
+                <span className="t-label !text-[0.73rem]">{l.label}</span>
               </li>
             );
           })}
         </ul>
 
-        {/* Trace log */}
-        <div className="code-surface mt-4 min-h-[92px] px-3 py-3 sm:px-4">
-          <div className="t-label mb-2 !text-[0.54rem]">trace</div>
-          {traced.length === 0 ? (
-            <p className="m-0 text-[0.68rem] text-[var(--mute)]">awaiting scan…</p>
-          ) : (
-            <ul className="m-0 list-none space-y-[3px] p-0">
-              {traced.map((b) => (
-                <li
-                  key={b.trace}
-                  className="flex items-baseline gap-2 text-[0.68rem] leading-[1.6]"
+        {/* Trace log.
+        
+            Every line is in the DOM from first paint and only its opacity is
+            animated. Appending rows as the sweep passed them grew this box by
+            120px while the visitor was scrolling, and a section that changes
+            height mid-scroll breaks any jump aimed past it: the navigation
+            computes a destination, the page grows above it, and the click lands
+            short. Reserving the final height costs nothing and the sweep reads
+            exactly the same. */}
+        <div className="code-surface relative mt-4 px-3 py-3 sm:px-4">
+          <div className="t-label mb-2 !text-[0.72rem]">trace</div>
+
+          {/* Overlaid rather than in flow, so the placeholder does not occupy a
+              row that the first trace line then has to push out of the way. */}
+          <p
+            aria-hidden
+            className={`pointer-events-none absolute m-0 text-[0.78rem] leading-[1.6] text-[var(--mute)] transition-opacity duration-500 ${
+              anyTraced ? 'opacity-0' : 'opacity-100'
+            }`}
+          >
+            awaiting scan…
+          </p>
+
+          <ul className="m-0 list-none space-y-[3px] p-0">
+            {traceable.map((b) => (
+              <li
+                key={b.trace}
+                className={`flex items-baseline gap-2 text-[0.78rem] leading-[1.6] transition-opacity duration-500 ${
+                  isTraced(b) ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <span
+                  aria-hidden
+                  className={
+                    b.status === 'risk'
+                      ? 'text-[var(--hot)]'
+                      : b.status === 'unread'
+                        ? 'text-[var(--mute)]'
+                        : 'text-[var(--bone-dim)]'
+                  }
                 >
-                  <span
-                    aria-hidden
-                    className={
-                      b.status === 'risk'
-                        ? 'text-[var(--accent)]'
-                        : b.status === 'unread'
-                          ? 'text-[var(--mute)]'
-                          : 'text-[var(--bone-dim)]'
-                    }
-                  >
-                    {b.status === 'clean' ? '✓' : b.status === 'risk' ? '▲' : '✕'}
-                  </span>
-                  <span
-                    className={
-                      b.status === 'clean' ? 'text-[var(--bone-dim)]' : 'text-[var(--bone)]'
-                    }
-                  >
-                    {b.trace}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
+                  {b.status === 'clean' ? '✓' : b.status === 'risk' ? '▲' : '✕'}
+                </span>
+                <span
+                  className={
+                    b.status === 'clean' ? 'text-[var(--bone-dim)]' : 'text-[var(--bone)]'
+                  }
+                >
+                  {b.trace}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>

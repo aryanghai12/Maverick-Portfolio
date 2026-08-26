@@ -4,8 +4,8 @@
 
 **A portfolio built on one rule: no number on this site is typed by hand.**
 
-Single page. Scroll driven. Monochrome. A codebase rendered as architecture
-behind it, in WebGL.
+Single page. Scroll driven. Deep space and one spectrum across it. A particle
+field behind it in WebGL that morphs through seven forms as you read.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -39,9 +39,12 @@ Cavix panel assembles a real review comment. The TraceCV panel sweeps a scan lin
 down a document and colours it by parse quality. The RepoPulse panel genuinely
 runs Lloyd's algorithm in your browser.
 
-**The background is a codebase.** Roughly 5,200 instanced bars, each one a line
-of source whose length is the length of that line, stacked into file blocks
-lining a corridor the camera travels down as you scroll. Two draw calls.
+**The background is one object, turned over as you scroll.** Roughly 16,000
+particles in a single draw call, morphing through seven forms — a meridian
+lattice, a falling column, a double helix, a landscape, an accretion disc, a
+drifting starfield, a system of rings — one per section. The interpolation is
+scroll-linked rather than time-linked, so scrubbing back up the page runs it
+backwards exactly.
 
 ---
 
@@ -119,7 +122,7 @@ both more convincing and fully checkable.
 
 | Document | Read it for |
 |---|---|
-| **[Architecture](docs/architecture.md)** | File map, the design system, how the WebGL background works, scrolling, accessibility, performance |
+| **[Architecture](docs/architecture.md)** | File map, the design system, how the particle field works, scrolling, accessibility, performance |
 | **[GitHub API and rate limits](docs/github-api.md)** | What the limits are, what one build spends, what happens when you hit them, how to make it robust |
 | **[Deploying](docs/deploying.md)** | Vercel, Netlify, Cloudflare Pages, GitHub Pages, custom domains |
 
@@ -134,7 +137,7 @@ both more convincing and fully checkable.
 | Styling | Tailwind CSS v4, with design tokens in `app/globals.css` |
 | 3D | three.js via react-three-fiber |
 | Scrolling | Lenis |
-| Type | Geist and Geist Mono, self-hosted through `next/font` |
+| Type | Space Grotesk, Geist, Geist Mono and Instrument Serif, self-hosted through `next/font` |
 | Hosting | Any static host. Vercel Hobby is enough. |
 
 No UI kit, no component library, no stock assets, no icon font.
@@ -147,8 +150,9 @@ The site is complete without JavaScript, without WebGL, and without motion.
 
 - All content is in the DOM at first paint. Nothing is built by JS, so crawlers
   and screen readers get real text.
-- `prefers-reduced-motion` stops the camera, drops tilt and the custom cursor,
-  and jumps every staged reveal to its final state.
+- `prefers-reduced-motion` stops the field's clock and rotation, drops the depth
+  transforms, tilt and the custom cursor, and jumps every staged reveal and both
+  typed sequences to their final state.
 - WebGL is probed rather than assumed. If it is unavailable the page is exactly
   as legible as it was.
 - Focus is visible on every interactive surface. The command palette traps focus
@@ -173,7 +177,8 @@ Making it yours takes about ten minutes:
 | 4 | `app/layout.tsx` | `metadataBase`, title, description, keywords. |
 | 5 | `app/globals.css` | The token block at the top is the whole palette and type scale. |
 | 6 | `components/instruments/` | Three project demos. Replace with your own, or delete and simplify `Work.tsx`. |
-| 7 | `NEXT_PUBLIC_SITE_URL` | Set it, or Open Graph URLs resolve against the wrong host. Then `npm run og`. |
+| 7 | `components/cosmos/shapes.ts` | The seven forms the background morphs through, and the camera framing for each. |
+| 8 | `NEXT_PUBLIC_SITE_URL` | Set it, or Open Graph URLs resolve against the wrong host. Then `npm run og`. |
 
 The only thing I would ask, and it is a request rather than a licence term: swap
 out my name, my writing and my measurements before you publish it. A portfolio

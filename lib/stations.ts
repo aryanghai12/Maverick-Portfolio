@@ -1,14 +1,14 @@
 /**
  * Scroll position expressed as a fractional station index.
  *
- * Sections carry data-cam; each becomes an anchor at its own centre. Scrolling
+ * Sections carry data-stage; each becomes an anchor at its own centre. Scrolling
  * between section 2 and section 3 yields values from 2.0 to 3.0, so the camera
  * rig can simply lerp between two stations and never has to know anything about
  * pixels, section heights, or where the page ends.
  *
- * The pattern is lifted from how mengto.github.io/kage drives its camera, which
- * is the cleanest solution to this I have seen: measurement stays in one place
- * and every consumer downstream reads a single number.
+ * Measurement stays in one place and every consumer downstream reads a single
+ * number, which is what lets the particle field know nothing about sections and
+ * the sections know nothing about WebGL.
  */
 
 export type StationTable = {
@@ -16,7 +16,7 @@ export type StationTable = {
   count: number;
 };
 
-export function measureStations(selector = '[data-cam]'): StationTable {
+export function measureStations(selector = '[data-stage]'): StationTable {
   const els = Array.from(document.querySelectorAll<HTMLElement>(selector));
   const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
 

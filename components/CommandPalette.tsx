@@ -42,11 +42,13 @@ export function CommandPalette() {
 
   const items: Item[] = useMemo(
     () => [
-      { id: 'hero', label: 'Top', hint: 'section 00', group: 'go', run: () => go('hero') },
-      { id: 'upstream', label: 'Proof', hint: 'section 01', group: 'go', run: () => go('upstream') },
-      { id: 'work', label: 'Work', hint: 'section 02', group: 'go', run: () => go('work') },
-      { id: 'about', label: 'Who', hint: 'section 03', group: 'go', run: () => go('about') },
-      { id: 'connect', label: 'Contact', hint: 'section 04', group: 'go', run: () => go('connect') },
+      { id: 'hero', label: 'Top', hint: '0x00 · top', group: 'go', run: () => go('hero') },
+      { id: 'proof', label: 'Proof', hint: '0x01 · proof', group: 'go', run: () => go('proof') },
+      { id: 'work', label: 'Work', hint: '0x02 · work', group: 'go', run: () => go('work') },
+      { id: 'about', label: 'Who', hint: '0x03 · about', group: 'go', run: () => go('about') },
+      { id: 'toolkit', label: 'Toolkit', hint: '0x04 · toolkit', group: 'go', run: () => go('toolkit') },
+      { id: 'hope', label: 'Hope', hint: '0x05 · hope', group: 'go', run: () => go('hope') },
+      { id: 'contact', label: 'Contact', hint: '0x06 · contact', group: 'go', run: () => go('contact') },
       ...projects.map((p) => ({
         id: `p-${p.id}`,
         label: p.name,
@@ -101,7 +103,7 @@ export function CommandPalette() {
    * Cmd+K shortcut keeps working the whole time. Only the affordance leaves. */
   const [triggerHidden, setTriggerHidden] = useState(false);
   useEffect(() => {
-    const el = document.getElementById('connect');
+    const el = document.getElementById('contact');
     if (!el) return;
     const io = new IntersectionObserver(
       ([e]) => setTriggerHidden(e.isIntersecting),
@@ -180,7 +182,7 @@ export function CommandPalette() {
         onClick={show}
         /* Bottom left, not bottom centre: centred it sat on top of the footer
            and the closing paragraph of whichever section was in view. */
-        className="palette-trigger u-mono fixed bottom-5 left-5 z-50 hidden items-center gap-2 sm:flex rounded-full border border-[var(--edge)] bg-[var(--panel-0)]/85 px-3.5 py-2 text-[0.66rem] text-[var(--bone-dim)] backdrop-blur-md transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        className="palette-trigger u-mono fixed bottom-5 left-5 z-50 hidden items-center gap-2 sm:flex rounded-full border border-[var(--edge)] bg-[var(--panel-0)]/85 px-3.5 py-2 text-[0.78rem] text-[var(--bone-dim)] backdrop-blur-md transition-colors duration-300 hover:border-[var(--accent)] hover:text-[var(--accent)]"
         aria-haspopup="dialog"
         tabIndex={triggerHidden ? -1 : 0}
         aria-hidden={triggerHidden}
@@ -232,7 +234,7 @@ export function CommandPalette() {
                 aria-activedescendant={filtered[active] ? `cmd-${filtered[active].id}` : undefined}
                 className="u-mono w-full bg-transparent text-[0.82rem] text-[var(--bone)] outline-none placeholder:text-[var(--mute)]"
               />
-              <kbd className="u-mono shrink-0 rounded border border-[var(--edge)] px-1.5 py-0.5 text-[0.6rem] text-[var(--mute)]">
+              <kbd className="u-mono shrink-0 rounded border border-[var(--edge)] px-1.5 py-0.5 text-[0.75rem] text-[var(--mute)]">
                 esc
               </kbd>
             </div>
@@ -253,7 +255,7 @@ export function CommandPalette() {
                   return (
                     <li key={it.id} id={`cmd-${it.id}`}>
                       {newGroup ? (
-                        <div className="t-label px-3 pt-3 pb-1.5 !text-[0.54rem]">
+                        <div className="t-label px-3 pt-3 pb-1.5 !text-[0.72rem]">
                           {groupLabel[it.group]}
                         </div>
                       ) : null}
@@ -271,7 +273,7 @@ export function CommandPalette() {
                       >
                         <span
                           aria-hidden
-                          className="w-2 shrink-0 text-[0.6rem]"
+                          className="w-2 shrink-0 text-[0.75rem]"
                           style={{ color: i === active ? 'var(--accent)' : 'transparent' }}
                         >
                           ◈
@@ -297,10 +299,10 @@ export function CommandPalette() {
                 ['esc', 'close'],
               ].map(([k, v]) => (
                 <span key={k} className="flex items-center gap-1.5">
-                  <kbd className="u-mono rounded border border-[var(--edge)] px-1.5 py-0.5 text-[0.58rem] text-[var(--mute)]">
+                  <kbd className="u-mono rounded border border-[var(--edge)] px-1.5 py-0.5 text-[0.74rem] text-[var(--mute)]">
                     {k}
                   </kbd>
-                  <span className="t-label !text-[0.54rem]">{v}</span>
+                  <span className="t-label !text-[0.72rem]">{v}</span>
                 </span>
               ))}
             </div>

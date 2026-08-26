@@ -313,3 +313,58 @@ export const connect = {
     'text rather than hidden behind anything. Everything I have built or ' +
     'contributed to is linked here and open to inspection, which is the point.',
 } as const;
+
+/* --------------------------------------------------------------- chrome
+
+   Section identity, in one table.
+
+   Every section carries three names: an English label, a hex index, and the
+   command you would type if you wanted the same information from a machine
+   instead of from a page.
+
+   The previous build ran a Japanese reading and a formal kanji numeral down the
+   page. It looked good and it was borrowed wholesale from somebody else's site,
+   which is the one thing a portfolio cannot afford to be caught doing. This
+   scheme says something true about the person it belongs to instead: the site
+   is addressed the way memory is, and every section announces itself as a
+   command, because that is how its author would actually ask the question.
+
+   The order of this array is the order of the page, and both the navigation and
+   the particle field read their stage count from it. Adding a section here and
+   nowhere else is a supported thing to do. */
+export const sections = [
+  { id: 'hero', en: 'Home', hex: '0x00', cmd: 'cd ~' },
+  { id: 'proof', en: 'Proof', hex: '0x01', cmd: 'git log --merged --not-mine' },
+  { id: 'work', en: 'Work', hex: '0x02', cmd: 'ls -la ./built' },
+  { id: 'about', en: 'About', hex: '0x03', cmd: 'whoami' },
+  { id: 'toolkit', en: 'Toolkit', hex: '0x04', cmd: 'env | sort' },
+  { id: 'hope', en: 'Hope', hex: '0x05', cmd: 'echo $WHY' },
+  { id: 'contact', en: 'Contact', hex: '0x06', cmd: 'mail -s "hello"' },
+] as const;
+
+/* The one section on this site that is not an argument, not a claim, and not
+   defending anything.
+ *
+ * Andy Dufresne writes it in a letter to Red near the end of the film, and it
+ * is the line the whole story turns on. It sits between the work and the
+ * contact section on purpose: everything above it is evidence, everything below
+ * it is an ask, and this is the pause between the two. */
+export const hope = {
+  quote:
+    'Hope is a good thing, maybe the best of things, and no good thing ever dies.',
+  attribution: 'Andy Dufresne',
+  source: 'The Shawshank Redemption, 1994',
+  gloss:
+    'Every tool on this page exists because something did not work and could ' +
+    'have. That is the whole job: refusing to accept that the failing thing has ' +
+    'to keep failing.',
+} as const;
+
+/* The heading over the skills graph, kept with the content rather than in the
+   component that renders it. */
+export const toolkit = {
+  heading: 'What I reach for',
+  lede:
+    'Grouped by where it sits in the stack rather than by how confident I am ' +
+    'about it, and the two things I would call basic say so.',
+} as const;

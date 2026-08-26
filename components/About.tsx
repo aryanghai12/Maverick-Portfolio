@@ -1,12 +1,13 @@
-import { about, education, experience } from '@/lib/content';
-import { Kinetic } from './Kinetic';
+import { about, education, experience, sections } from '@/lib/content';
 import { SectionHead } from './SectionHead';
+import { Terminal3D } from './Terminal3D';
+
+const meta = sections.find((s) => s.id === 'about')!;
 
 /**
- * The log rows carry education and experience. The brief's section table left
- * them unplaced; they belong here rather than in a section of their own, because
- * two entries do not justify a chapter and they read as context for the prose
- * directly above them.
+ * The log rows carry education and experience. Two entries do not justify a
+ * chapter of their own, and they read as context for the prose directly above
+ * them, so they live here.
  */
 const log = [
   {
@@ -27,57 +28,52 @@ const log = [
 
 export function About() {
   return (
-    <section id="about" data-cam="about" className="section">
+    <section id="about" data-stage="terrain" className="section">
       <div className="shell">
-        <SectionHead index="03" label="who" />
+        <SectionHead
+          hex={meta.hex}
+          cmd={meta.cmd}
+          label="who"
+          heading={about.heading}
+        />
 
-        <h2 className="t-h2 max-w-[18ch] text-[var(--bone)]" data-rv>
-          <Kinetic text={about.heading} />
-        </h2>
-
-        {/* The decorative terminal that used to sit here printed five facts
-             that are all stated elsewhere on the page, in a fake shell that
-             accepted no input. The working console in Contact does the same
-             trick and actually runs. One of them had to go. */}
-        <div className="mt-12 grid [&>*]:min-w-0 gap-12 lg:mt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:gap-16">
-          <div>
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-16 [&>*]:min-w-0">
+          <div className="panel px-6 py-8 sm:px-9 sm:py-10" data-rv>
             {about.paragraphs.map((p, i) => (
-              <p
-                key={i}
-                className="t-body mb-6 last:mb-0"
-                data-rv
-                style={{ transitionDelay: `${i * 80}ms` }}
-              >
+              <p key={i} className="t-body mb-6 !max-w-none last:mb-0">
                 {p}
               </p>
             ))}
-          </div>
 
-          <div className="lg:pt-1">
-            <p className="t-statement border-l-2 border-[var(--bone)] pl-5" data-rv>
+            <p className="t-statement mt-10 border-l-2 border-[var(--accent)] pl-5">
               {about.aside}
             </p>
+          </div>
+
+          {/* The session. Everything it prints is stated exactly once, here. */}
+          <div className="lg:pt-2">
+            <Terminal3D />
           </div>
         </div>
 
         {/* The log */}
-        <ol className="mt-16 list-none space-y-px p-0 sm:mt-20">
-          {log.map((row) => (
+        <ol className="mt-20 list-none space-y-4 p-0 sm:mt-24">
+          {log.map((row, i) => (
             <li
               key={row.title}
-              className="group relative border-t border-[var(--hair-soft)] pt-6 pb-7 transition-[padding] duration-300 [transition-timing-function:var(--ease)] hover:pl-3 sm:pt-7"
-              data-rv
+              className="panel spot depth px-6 py-8 sm:px-9 sm:py-10"
+              data-rv="scale"
+              data-spot
+              data-depth
+              style={{ '--dir': i % 2 ? -1 : 1 } as React.CSSProperties}
             >
-              {/* Ember tick appears in the gutter on hover. */}
-              <span
-                aria-hidden
-                className="absolute top-[26px] left-0 h-[7px] w-[7px] rounded-[1px] bg-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 sm:top-[30px]"
-              />
               <div className="grid gap-4 sm:grid-cols-[13rem_1fr] sm:gap-8">
-                <div className="t-data !text-[var(--mute)]">{row.stamp}</div>
+                <div>
+                  <div className="t-data !text-[var(--bone-dim)]">{row.stamp}</div>
+                </div>
                 <div>
                   <h3 className="t-h3 text-[var(--bone)]">{row.title}</h3>
-                  <p className="t-label mt-2 !normal-case !tracking-[0.02em] !text-[0.78rem] !text-[var(--bone-dim)]">
+                  <p className="mt-2 text-[0.82rem] tracking-[0.02em] text-[var(--accent)]">
                     {row.sub}
                   </p>
                   <p className="t-body mt-4 !max-w-[68ch] !text-[0.98rem]">{row.body}</p>
@@ -86,7 +82,7 @@ export function About() {
                       {row.stack.map((s) => (
                         <li
                           key={s}
-                          className="u-mono rounded border border-[var(--edge)] px-2.5 py-1 text-[0.68rem] tracking-[-0.01em] text-[var(--bone-dim)]"
+                          className="u-mono rounded-full border border-[var(--edge)] bg-[rgba(255,255,255,0.04)] px-3 py-1.5 text-[0.8rem] tracking-[-0.01em] text-[var(--bone-dim)]"
                         >
                           {s}
                         </li>
