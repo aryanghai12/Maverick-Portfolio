@@ -1,9 +1,13 @@
 /**
  * The three replay views, and the helpers that read a step.
  *
- * story        eight captured steps, the shortest path from install to a
- *              staged capsule. The default, because it explains the product.
- * captured     every Velra command that was captured, in order. See captured.ts.
+ * story        eight steps: seven captured, the shortest path from installing
+ *              Velra to a capsule that is staged and waiting, then a guide to
+ *              checking the handoff. The default, because it explains the
+ *              product.
+ * captured     every distinct Velra command, once each, in the order it was
+ *              run, then the same guide. See captured.ts, published.ts and
+ *              handoff.ts.
  * documented   the engineering example published in Velra's own docs. See
  *              documented.ts.
  *
@@ -23,16 +27,16 @@ export const MODES: Record<ModeId, Mode> = {
     label: 'Walkthrough',
     provenance: 'Captured output, sanitized',
     description:
-      'Eight steps, from a first install to a staged capsule, using real commands and their real output. Private values are replaced with placeholders, and the home directory is shown as ~.',
+      'Seven captured steps, from installing Velra to a capsule staged and waiting, then a guide to checking the handoff yourself. Prompts, file names, ids and paths are replaced with placeholders, and the home directory is shown as ~.',
     phases: CAPTURED_PHASES,
     steps: STORY_STEPS,
   },
   captured: {
     id: 'captured',
-    label: 'Full capture',
+    label: 'All commands',
     provenance: 'Captured output, sanitized',
     description:
-      'Every Velra command from the same two terminals, in the order it was run, including the repeats and the early warnings.',
+      'Every Velra command, once each, in the order it was run, with its real output: the install, then a working session three days later. The last step is a guide, not a capture.',
     phases: CAPTURED_PHASES,
     steps: CAPTURED_STEPS,
   },
@@ -104,8 +108,15 @@ export const PLACEHOLDER = new RegExp(
     .join('|'),
 );
 
-/** How many times a kind's placeholder appears in a piece of captured text. */
+/**
+ * How many times a kind's placeholder appears in a piece of captured text.
+ *
+ * The home directory is the one placeholder that is also an ordinary character.
+ * It is counted only where it starts a path, because Velra prints a tilde of
+ * its own for "about", as in "~34 MB", and that is not a redaction.
+ */
 export function countRedactions(text: string, kind: RedactionKind): number {
+  if (kind === 'USER_HOME_REDACTED') return (text.match(/~(?=[\\/])/g) ?? []).length;
   return text.split(REDACTION_TOKEN[kind]).length - 1;
 }
 
@@ -125,6 +136,36 @@ export function outputText(step: Step): string {
   return step.output
     .map((item) => (item.kind === 'gap' ? `[${item.text}]` : item.text))
     .join('\n');
+}
+
+/* ---------------------------------------------------------------- staging */
+
+/** The captured step in which a real capsule is staged. The hero shows it. */
+export const STAGING_STEP: Step = (() => {
+  const step = CAPTURED_STEPS.find((s) => s.id === 'N11');
+  if (!step) throw new Error('The captured staging step (N11) is missing.');
+  return step;
+})();
+
+/** Velra's documented limits for a capsule, in estimated tokens. */
+export const CAPSULE_LIMITS = { target: 740, ceiling: 1000 } as const;
+
+/**
+ * Reads a staging result out of a step's own output: how many estimated
+ * tokens, and what was staged. It throws if the output does not say, so a
+ * figure can only ever be shown because Velra printed it.
+ */
+export function stagedSummary(step: Step): { tokens: number; parts: string[] } {
+  const text = step.output
+    .filter((item) => item.kind === 'line')
+    .map((item) => item.text)
+    .join('\n');
+  const tokens = /(\d+) estimated tokens/.exec(text);
+  const parts = /Staged (.+?) from session/.exec(text);
+  if (!tokens || !parts) {
+    throw new Error(`Step ${step.id} does not read as a staging result.`);
+  }
+  return { tokens: Number(tokens[1]), parts: parts[1].split(', ') };
 }
 
 /** Whether there is any real output to copy, as opposed to only a marker. */

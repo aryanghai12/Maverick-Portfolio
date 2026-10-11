@@ -14,7 +14,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { CopyButton } from './CopyButton';
 import { IconArrowDown, IconExternal, IconInfo, LogoMark } from './icons';
 import { Replay } from './Replay';
-import { TerminalLine } from './TerminalLine';
+import { RichText, TerminalLine } from './TerminalLine';
 import {
   INSTALL_COMMAND,
   cta,
@@ -26,8 +26,9 @@ import {
   trust,
   why,
 } from '@/lib/velra/content';
-import { DOCS, DOCUMENTED_STEPS, VELRA_REPO } from '@/lib/velra/documented';
-import { FIELD_TAG_LABEL } from '@/lib/velra/types';
+import { DOCS, VELRA_REPO } from '@/lib/velra/documented';
+import { CAPSULE_LIMITS, STAGING_STEP, stagedSummary } from '@/lib/velra/transcripts';
+import { FIELD_TAG_LABEL, PROVENANCE_LABEL } from '@/lib/velra/types';
 
 const reveal = (d = 0) => ({ 'data-vl-reveal': '', style: { '--d': d } as CSSProperties });
 
@@ -75,12 +76,12 @@ function Head({
 
 /* --------------------------------------------------------------------- hero */
 
-/* The hero's terminal quotes the same documented step the replay uses, so the
-   first thing on the page and the walkthrough below it cannot disagree. */
-const stage = DOCUMENTED_STEPS.find((s) => s.id === 'DOC-RESTORE')!;
-
-/** The documented capsule's size against the two limits the docs give for it. */
-const CAPSULE = { tokens: 711, target: 740, ceiling: 1000 };
+/* The hero shows the moment the product exists for: a real capsule being
+   staged. It is the same captured step the walkthrough plays, and the figures
+   on the card beside it are read out of that step's own output, so the first
+   thing on the page and the replay below it cannot disagree. */
+const stage = STAGING_STEP;
+const staged = stagedSummary(stage);
 
 export function Hero() {
   let row = 0;
@@ -131,13 +132,19 @@ export function Hero() {
                 <i />
                 <i />
               </span>
-              <span className="vl-term-title">{stage.workspace}</span>
-              <span className="vl-tagchip">Documented example</span>
+              <span className="vl-term-title">
+                <RichText text={stage.workspace} />
+              </span>
+              <span className="vl-tagchip">Captured output</span>
             </div>
             <div className="vl-hterm-body">
               <div className="vl-cmdline" style={next()}>
-                <span className="vl-prompt">{stage.prompt} </span>
-                <span className="vl-cmd">{stage.command}</span>
+                <span className="vl-prompt">
+                  <RichText text={stage.prompt} />{' '}
+                </span>
+                <span className="vl-cmd">
+                  <RichText text={stage.command ?? ''} />
+                </span>
               </div>
               {stage.output.map((item, i) => (
                 <TerminalLine key={i} item={item} style={next()} />
@@ -148,25 +155,28 @@ export function Hero() {
           {/* The capsule card hangs off the terminal's lower edge, over padding
               only, so it never covers a line of quoted output. */}
           <div className="vl-hero-under">
-            <figcaption>Quoted from the Velra README. Nothing is run on this page.</figcaption>
-            <div className="vl-hcap" role="group" aria-label="The capsule in the documented example">
+            <figcaption>
+              {PROVENANCE_LABEL[stage.provenance]}, from a real working session. Nothing is run on this
+              page.
+            </figcaption>
+            <div className="vl-hcap" role="group" aria-label="The capsule staged in the captured run">
               <p className="vl-kicker">Velra capsule</p>
               <p className="vl-hcap-num">
-                <b>{CAPSULE.tokens}</b>
+                <b>{staged.tokens}</b>
                 <span>estimated tokens</span>
               </p>
               <div className="vl-meter" aria-hidden="true">
-                <i style={{ width: `${(CAPSULE.tokens / CAPSULE.ceiling) * 100}%` }} />
-                <u style={{ left: `${(CAPSULE.target / CAPSULE.ceiling) * 100}%` }} />
+                <i style={{ width: `${(staged.tokens / CAPSULE_LIMITS.ceiling) * 100}%` }} />
+                <u style={{ left: `${(CAPSULE_LIMITS.target / CAPSULE_LIMITS.ceiling) * 100}%` }} />
               </div>
               <p className="vl-meter-key">
-                <span>{CAPSULE.target} default target</span>
-                <span>{CAPSULE.ceiling.toLocaleString('en-US')} ceiling</span>
+                <span>{CAPSULE_LIMITS.target} default target</span>
+                <span>{CAPSULE_LIMITS.ceiling.toLocaleString('en-US')} ceiling</span>
               </p>
               <ul className="vl-chips" aria-label="What was staged">
-                <li>objective</li>
-                <li>1 failing test</li>
-                <li>2 dead ends</li>
+                {staged.parts.map((part) => (
+                  <li key={part}>{part}</li>
+                ))}
               </ul>
             </div>
           </div>

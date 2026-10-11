@@ -2,6 +2,10 @@
  * Regenerates data/velra/captured.json, the public-safe transcript data behind
  * the /velra replay, and audits what is about to be published.
  *
+ * The source pack holds everything that was ever run. The page shows each
+ * distinct Velra command once (lib/velra/published.ts), and only those
+ * executions are written out.
+ *
  *   npm run velra:transcripts            rewrite data/velra/captured.json
  *   npm run velra:transcripts -- --check verify without writing anything
  *
@@ -26,8 +30,10 @@ import {
   buildCaptured,
   privateStrings,
   findLeaks,
+  publish,
   FORBIDDEN_PATTERNS,
 } from '../lib/velra/sanitize';
+import { PUBLISHED } from '../lib/velra/published';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE = join(ROOT, SOURCE_FILE);
@@ -59,7 +65,9 @@ async function main() {
   }
 
   const raw = await readFile(SOURCE, 'utf8');
-  const next = JSON.stringify(buildCaptured(raw), null, 2) + '\n';
+  // The whole pack is parsed and checked. Only the published selection is written.
+  const everything = buildCaptured(raw);
+  const next = JSON.stringify(publish(everything, PUBLISHED), null, 2) + '\n';
   const needles = privateStrings(raw);
   const problems: string[] = [];
 
@@ -106,7 +114,7 @@ async function main() {
   );
   console.log(
     `✓ ${check ? 'verified' : 'wrote'} data/velra/captured.json\n` +
-      `  ${parsed.entries.length} executions, ${redactions} redactions, ` +
+      `  ${parsed.entries.length} published of ${everything.entries.length} captured, ${redactions} redactions, ` +
       `${needles.length} private values checked and absent`,
   );
 }

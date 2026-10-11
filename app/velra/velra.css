@@ -1363,14 +1363,14 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
-      padding: 10px 12px 18px;
+      padding: 6px 12px 12px;
     }
 
     .vl-rail-phase {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      padding: 16px 8px 10px;
+      gap: 1px;
+      padding: 13px 8px 7px;
     }
 
     .vl-rail-phase b {
@@ -1403,9 +1403,10 @@
       transform: rotate(45deg);
     }
 
-    .vl-rail-phase[data-pending='1'] b::before {
+    /* A guide, not a capture: an outline where a capture has a solid mark. */
+    .vl-rail-phase[data-guide='1'] b::before {
       background: transparent;
-      border: 1px dashed var(--vl-amber);
+      border: 1px dashed var(--vl-accent);
     }
 
     .vl-rail-phase span {
@@ -1454,7 +1455,7 @@
       align-items: center;
       gap: 12px;
       width: 100%;
-      padding: 9px 8px;
+      padding: 7px 8px;
       border-radius: 12px;
       border: 1px solid transparent;
       text-align: left;
@@ -1504,16 +1505,16 @@
       box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.14);
     }
 
-    .vl-rail-step[data-pending='1'] .vl-rail-dot {
+    .vl-rail-step[data-guide='1']:not([data-state='current']) .vl-rail-dot {
       border-style: dashed;
-      border-color: var(--vl-amber);
+      border-color: var(--vl-accent-line);
     }
 
     .vl-rail-title {
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
-      line-height: 1.35;
+      line-height: 1.3;
       color: var(--vl-text-2);
     }
 
@@ -1530,6 +1531,17 @@
       font-family: var(--font-mono);
       font-size: 0.7rem;
       color: var(--vl-text-3);
+    }
+
+    .vl-rail-cmd[data-guide='1'] {
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--vl-accent);
+    }
+
+    .vl-sig[data-sig='err'] {
+      color: var(--vl-red);
+      background: var(--vl-red-soft);
     }
 
     .vl-sig {
@@ -1637,16 +1649,17 @@
       background: currentColor;
     }
 
-    .vl-provchip[data-prov='captured-redacted'],
-    .vl-provchip[data-prov='pending'] {
+    .vl-provchip[data-prov='captured-redacted'] {
       color: var(--vl-amber);
     }
 
-    .vl-provchip[data-prov='documented'] {
+    .vl-provchip[data-prov='documented'],
+    .vl-provchip[data-prov='guide'] {
       color: var(--vl-accent);
     }
 
-    .vl-provchip[data-prov='pending']::before {
+    /* Hollow, because a guide is not evidence of anything. */
+    .vl-provchip[data-prov='guide']::before {
       background: transparent;
       border: 1px dashed currentColor;
     }
@@ -1883,6 +1896,290 @@
       color: var(--vl-text-3);
     }
 
+    /* ------------------------------------------------------------ the guide
+
+       The last step has no recording behind it, so the window holds a guide
+       in place of output. It keeps the window's dark ground and its mono
+       labels, and drops everything that would read as a transcript: no prompt
+       line, no typed command, no printed result. Prose is set in the sans
+       face, like every other editorial note in the terminal. */
+
+    .vl-guide-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px dashed var(--vl-accent-line);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      color: var(--vl-accent);
+    }
+
+    .vl-guide {
+      display: grid;
+      gap: 18px;
+      font-family: var(--font-sans);
+      font-size: 0.94rem;
+      line-height: 1.6;
+      white-space: normal;
+      color: var(--vl-text-2);
+    }
+
+    .vl-guide code {
+      padding: 1px 6px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.09);
+      font-family: var(--font-mono);
+      font-size: 0.86em;
+      color: #fff;
+      overflow-wrap: anywhere;
+    }
+
+    .vl-guide-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--vl-accent);
+    }
+
+    /* The payoff: what does not happen, said first and said large. */
+    .vl-quiet {
+      display: grid;
+      gap: 8px;
+      padding: 18px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--vl-accent-line);
+      background:
+        linear-gradient(135deg, rgba(122, 162, 255, 0.16), rgba(176, 107, 255, 0.1) 55%, rgba(255, 93, 125, 0.07)),
+        rgba(255, 255, 255, 0.03);
+      animation: vl-rise 0.5s var(--vl-ease-out) both;
+    }
+
+    .vl-quiet-head {
+      font-size: clamp(1.12rem, 1rem + 0.5vw, 1.36rem);
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .vl-quiet-head span {
+      display: inline-block;
+    }
+
+    .vl-quiet-body {
+      color: var(--vl-text);
+    }
+
+    .vl-quiet-note {
+      margin-top: 4px;
+      padding-top: 10px;
+      border-top: 1px solid var(--vl-line);
+      font-size: 0.88rem;
+      color: var(--vl-text-2);
+    }
+
+    .vl-guide-parts {
+      display: grid;
+      gap: 18px;
+    }
+
+    .vl-guide-part {
+      position: relative;
+      display: grid;
+      grid-template-columns: 30px minmax(0, 1fr);
+      gap: 14px;
+      animation: vl-rise 0.5s var(--vl-ease-out) both;
+      animation-delay: calc(var(--i, 0) * 90ms);
+    }
+
+    /* One line down the letters, so the three read as a sequence. */
+    .vl-guide-part:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      top: 34px;
+      bottom: -14px;
+      left: 14.5px;
+      width: 1px;
+      background: var(--vl-line-2);
+    }
+
+    .vl-guide-id {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 1px solid var(--vl-accent-line);
+      background: var(--vl-accent-soft);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #cfdcff;
+    }
+
+    .vl-guide-main {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+      padding-top: 3px;
+    }
+
+    .vl-guide-main h4 {
+      font-size: 1.04rem;
+      font-weight: 600;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    /* Same workspace, new session: the two conditions, side by side. */
+    .vl-req {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .vl-req li {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--vl-accent-line);
+      background: var(--vl-accent-soft);
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .vl-req li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 2px;
+      background: var(--vl-accent);
+    }
+
+    .vl-req li + li::before {
+      border-radius: 50%;
+      background: var(--vl-violet);
+    }
+
+    /* Something to copy. A card with its own bar, not a line of output. */
+    .vl-snip {
+      border-radius: 12px;
+      border: 1px solid var(--vl-line-2);
+      background: rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .vl-snip figcaption {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px 12px;
+      padding: 8px 8px 8px 14px;
+      border-bottom: 1px solid var(--vl-line);
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--vl-text-3);
+    }
+
+    .vl-snip-copy {
+      min-height: 32px;
+      padding: 0 12px;
+      font-size: 0.7rem;
+      border-color: var(--vl-accent-line);
+      color: #fff;
+    }
+
+    .vl-snip-copy .vl-icon {
+      width: 13px;
+      height: 13px;
+    }
+
+    .vl-snip pre {
+      margin: 0;
+      padding: 14px 16px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      color: var(--vl-term-text);
+    }
+
+    .vl-snip pre code {
+      padding: 0;
+      border-radius: 0;
+      background: none;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    .vl-snip[data-kind='command'] pre {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    /* What each check is evidence of, and no more. */
+    .vl-proof {
+      display: grid;
+      border-radius: 12px;
+      border: 1px solid var(--vl-line-2);
+      overflow: hidden;
+    }
+
+    .vl-proof > div {
+      display: grid;
+      grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+      gap: 4px 14px;
+      align-items: baseline;
+      padding: 10px 14px;
+    }
+
+    .vl-proof > div + div {
+      border-top: 1px solid var(--vl-line);
+    }
+
+    .vl-proof dt {
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .vl-proof dd {
+      margin: 0;
+    }
+
+    .vl-proof-caveat {
+      padding-left: 12px;
+      border-left: 2px solid var(--vl-accent-line);
+      color: var(--vl-text);
+    }
+
+    .vl-guide-end {
+      padding-top: 14px;
+      border-top: 1px dashed var(--vl-line-2);
+      font-size: 0.84rem;
+      color: var(--vl-text-3);
+      animation: vl-rise 0.5s var(--vl-ease-out) both;
+      animation-delay: calc(var(--i, 0) * 90ms);
+    }
+
     .vl-term-note {
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
@@ -2051,14 +2348,76 @@
       color: var(--vl-amber);
     }
 
-    .vl-tag[data-tag='output'] {
+    .vl-tag[data-tag='output'],
+    .vl-tag[data-tag='recorded'] {
       border-color: var(--vl-accent-line);
       color: var(--vl-accent);
     }
 
     .vl-tag[data-tag='absent'],
-    .vl-tag[data-tag='not-captured'] {
+    .vl-tag[data-tag='to-verify'] {
       border-style: dashed;
+    }
+
+    /* A guide's inspector: the same rows, numbered, because the order is the
+       point. The number is a plain marker and never turns into a tick. */
+    .vl-fields[data-sequence='1'] .vl-field > button {
+      grid-template-columns: 26px minmax(0, 1fr) auto;
+      column-gap: 12px;
+    }
+
+    .vl-field-no {
+      grid-column: 1;
+      grid-row: 1 / span 3;
+      align-self: start;
+      display: grid;
+      place-items: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px dashed var(--vl-line-3);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      color: var(--vl-text-2);
+    }
+
+    .vl-field[data-tag='recorded'] .vl-field-no {
+      border-style: solid;
+      border-color: var(--vl-accent-line);
+      background: var(--vl-accent-soft);
+      color: #cfdcff;
+    }
+
+    .vl-fields[data-sequence='1'] .vl-field-label {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .vl-fields[data-sequence='1'] .vl-field-value {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    /* The tag drops under the text, where a narrow column still has room for it. */
+    .vl-fields[data-sequence='1'] .vl-field-side {
+      display: contents;
+    }
+
+    .vl-fields[data-sequence='1'] .vl-tag {
+      grid-column: 2;
+      grid-row: 3;
+      justify-self: start;
+      margin-top: 6px;
+    }
+
+    .vl-fields[data-sequence='1'] .vl-field-side .vl-icon {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .vl-fields[data-sequence='1'] .vl-field-more {
+      padding-left: 56px;
     }
 
     .vl-field-more {
@@ -2219,6 +2578,12 @@
         height: clamp(300px, 52vh, 440px);
       }
 
+      /* A guide is read from top to bottom, so on a single column it takes
+         the height it needs and scrolls with the page, not inside a box. */
+      .vl-term-body[data-guide='1'] {
+        height: auto;
+      }
+
       .vl-insp {
         border-left: 0;
         border-top: 1px solid var(--vl-line);
@@ -2273,6 +2638,43 @@
       .vl-term-body {
         padding: 14px 14px 18px;
         font-size: 0.76rem;
+      }
+
+      .vl-guide {
+        font-size: 0.9rem;
+      }
+
+      .vl-quiet {
+        padding: 16px 14px;
+      }
+
+      .vl-guide-part {
+        grid-template-columns: 26px minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .vl-guide-part:not(:last-child)::before {
+        top: 30px;
+        left: 12.5px;
+      }
+
+      .vl-guide-id {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+      }
+
+      .vl-snip pre {
+        padding: 12px 12px 14px;
+        font-size: 0.74rem;
+      }
+
+      .vl-snip-copy {
+        flex: 1 1 auto;
+      }
+
+      .vl-proof > div {
+        grid-template-columns: minmax(0, 1fr);
       }
 
       .vl-term-title {

@@ -65,24 +65,28 @@ becomes `out/velra.html`, and `cleanUrls` serves that file at `/velra`.
 | `app/velra/velra.css` | Every style for the page, scoped under `.velra` |
 | `components/velra/Replay.tsx` | The interactive terminal, controls and keyboard handling |
 | `components/velra/ReplayRail.tsx` | The step rail: session timeline and command list in one, with a mobile drawer |
-| `components/velra/CapsuleInspector.tsx` | The expandable capsule inspector |
+| `components/velra/CapsuleInspector.tsx` | The expandable capsule inspector. On the last step it becomes the numbered verification sequence |
+| `components/velra/HandoffGuide.tsx` | The verification guide drawn in the terminal on the last step, with its two copy buttons |
 | `components/velra/TerminalLine.tsx` | Draws one line of output, redaction chips included |
 | `components/velra/Sections.tsx` | Hero, properties, why, pipeline, trust, call to action, footer |
 | `components/velra/VelraNav.tsx` | Header and mobile menu |
 | `components/velra/CopyButton.tsx`, `Reveal.tsx`, `icons.tsx` | Small shared pieces |
 | `lib/velra/types.ts` | The shape of a step, a phase and a mode |
-| `lib/velra/captured.ts` | The captured run: which steps are shown, what each one is for, and the inspector data |
+| `lib/velra/published.ts` | Which captured executions the page shows: each distinct Velra command, once |
+| `lib/velra/captured.ts` | The captured run: the two captures, which steps the walkthrough shows, and the inspector data for the install |
+| `lib/velra/captured-session.ts` | The same for the working-session capture |
+| `lib/velra/handoff.ts` | The last step: the verification prompt, the status command and the guide's wording. Guidance, with no output in it |
 | `lib/velra/documented.ts` | The documented example, quoted from Velra's docs |
-| `lib/velra/transcripts.ts` | The three views (walkthrough, full capture, documented example) and the copy helpers |
+| `lib/velra/transcripts.ts` | The three views (walkthrough, all commands, documented example) and the copy helpers |
 | `lib/velra/player.ts` | Playback, as a pure state machine |
 | `lib/velra/content.ts` | Every sentence of page copy |
 | `lib/velra/sanitize.ts` | The redaction rules |
 | `lib/velra/clipboard.ts` | Copy with an honest result |
-| `data/velra/captured.json` | Generated, public-safe transcript text. This is what the build reads. |
+| `data/velra/captured.json` | Generated, public-safe transcript text for the published executions only. This is what the build reads. |
 | `scripts/velra-transcripts.ts` | Regenerates and audits `captured.json` |
 | `scripts/make-velra-og.ts` | Renders the share card |
 | `public/velra-og.png` | The share card, 1200 by 630 |
-| `tests/velra/*.test.ts` | 57 tests: playback, transcript integrity, privacy, copy |
+| `tests/velra/*.test.ts` | 72 tests: playback, transcript integrity, the handoff guide, privacy, copy |
 | `VELRA-MICROSITE-DEPLOYMENT.md` | This file |
 
 **Not changed:** `app/page.tsx`, `app/layout.tsx`, `app/globals.css`,
@@ -144,7 +148,7 @@ same build minus the prefetch.
 
 ```powershell
 npm run typecheck                       # tsc --noEmit
-npm test                                # 57 tests, about a second
+npm test                                # 72 tests, about a second
 npm run build                           # must list "○ /velra" in the route table
 npm run velra:transcripts -- --check    # privacy audit of the data and of ./out
 ```
@@ -157,13 +161,14 @@ What each one proves:
 - **`npm run typecheck`** covers the app, the scripts and the tests.
 - **`npm test`** checks playback (play, pause, restart, back, next, direct
   selection, speed, reduced motion), that the walkthrough is its eight steps in
-  source order, that the full capture holds every Velra command with complete
-  output, that no command in any view is anything but a Velra command, that
-  repeated commands stay separate, that Windows and Linux captures never share
-  a phase, that nothing is shown for output that was not supplied, that every
-  inspector quote exists in its step's output, that every step carries a plain
-  explanation, that no private pattern is present, and that no em dash appears
-  in written copy.
+  the order they were run and every one but the last has complete real output,
+  that no command appears twice in any view, that nothing mistyped, failed or
+  unrelated is shown, that the walkthrough's `velra doctor` is the run where
+  every check passes, that the two captures are never interleaved, that every
+  inspector quote exists in its step's output, that the figures in the hero
+  are read from the output, that a private capsule keeps its structure and
+  none of its content, that a session id is redacted in every spelling it is
+  printed in, and that no em dash appears in written copy.
 - **`npm run velra:transcripts -- --check`** regenerates the data in memory
   from the raw file, confirms the committed JSON matches, and then scans every
   text file in `out/` for each private value in the raw file, in plain,
@@ -174,12 +179,12 @@ What each one proves:
 Expected last lines:
 
 ```
-ℹ pass 57
+ℹ pass 72
 ℹ fail 0
 
   scanned 36 built files in ./out
 ✓ verified data/velra/captured.json
-  23 executions, 82 redactions, 56 private values checked and absent
+  12 published of 38 captured, 60 redactions, 120 private values checked and absent
 ```
 
 **Check by hand in the browser**, at http://localhost:3000/velra:
@@ -189,17 +194,36 @@ Expected last lines:
   look flat, see Troubleshooting.
 - Each link in the bar lands its section with the label just under the bar, at
   the same distance every time, and the bar marks the section you are in.
-- The replay opens on **Walkthrough**, step 1 of 8, and every command in the
-  rail is a Velra command.
+- The hero terminal shows a real staging result, with `706` on the card
+  beside it and placeholders where the session id and paths were.
+- The replay opens on **Walkthrough**, step 1 of 8. Every command in the rail
+  is a Velra command, and none appears twice.
 - Play, Pause, Restart, Back and Next all respond, and the step counter follows.
 - Clicking any step in the rail opens it, with its explanation above the
   terminal and its full output inside.
-- **Full capture** lists 18 steps. Step 12 (`velra restore --list --json`)
-  scrolls through all 20 sessions.
+- Step 3, `velra doctor`, shows six passing checks, with the database present.
+- Step 5 shows a whole capsule with `<prompt-text>` and `<file-path>` where
+  the private content was. Step 6 shows the real `✓ Staged` line. Step 7
+  shows status with the `Staged:` line.
+- **All commands** lists 13 steps: twelve distinct commands and the guide as
+  the last step. No repeats and no mistyped flags.
+- On a short window, scroll the step list down and click a step near the
+  bottom. The list stays where it is. It moves only when the selected step
+  would otherwise be out of view, as during playback.
 - Copy command and Copy output both confirm, and paste what was shown.
 - **Documented example** replaces every command and the inspector.
-- The last walkthrough step reads **Not captured**, awaiting a handoff
-  recording.
+- The last walkthrough step, **Start a new session**, is a guide and says so:
+  the bar reads **How to verify** and the status line reads **Guide, not a
+  recording**. It opens with "No popup. No manual copy-paste. No need to
+  explain the task all over again.", then three steps, A to C.
+- **Copy verification prompt** copies the whole prompt shown under it, and
+  **Copy command** copies `velra status`. Both confirm on the button.
+- On that step the inspector is headed **How to verify** and lists four
+  numbered items. Only the first is tagged **Recorded in this run**, and
+  opening it shows the real `✓ Staged` line. The other three read **Yours to
+  check**. Nothing is ticked.
+- Nowhere on that step is there a delivery line, a status listing or a reply
+  from Claude. None was captured, so none is shown.
 - With focus in the terminal, Space plays and pauses and the arrow keys step.
 - At 390px wide: the menu button opens and closes, the step rail folds behind
   a toggle, and there is no sideways scroll.
@@ -222,8 +246,13 @@ Then:
 
 ```powershell
 git status --short
-git switch -c feature/velra-microsite
+git switch feature/velra-microsite
 ```
+
+The branch already exists. It holds one checkpoint commit, "Add the Velra
+microsite at /velra", made before the working-session capture was added. If
+you are starting from somewhere it does not exist, create it with
+`git switch -c feature/velra-microsite`.
 
 Stage by path rather than with `git add -A`, so nothing rides along by
 accident:
@@ -548,31 +577,64 @@ to `.gitignore` and `package.json`. No existing page depends on any of it.
 
 ## 11. Updating the transcripts later
 
-The last captured step is intentionally open: no recording yet shows a new
-Claude Code session receiving the staged capsule. When you have one, or when
-you have the full text of the `velra restore` and `velra status` output from
-the Linux session:
+The source pack holds three captures. The page shows a selection from two of
+them, and each distinct Velra command appears once:
 
-1. Add the new output to `VELRA-ALL-PROVIDED-TERMINAL-OUTPUTS.md` under the
-   relevant transcript heading. It stays local.
+| Transcripts | Capture | On the page |
+|---|---|---|
+| A to J | First install on Windows | Install, version, disable, enable |
+| K to M | A Linux workspace | Nothing. Two outputs were never supplied, and the complete Windows session covers the same commands |
+| N | A working session on Windows, one continuous run | Doctor, inspect, list, capsule preview, dry run, staging, the picker, status |
+
+Which executions are shown is one list, `PUBLISHED` in
+`lib/velra/published.ts`. Anything not in it stays in the local source pack
+and never reaches `data/velra/captured.json` or the build: repeated runs of a
+command, the early runs made before the database existed, mistyped flags, and
+tool checks that have nothing to do with Velra. The build fails if the list,
+the generated data and the step metadata stop describing the same executions.
+
+The last step has no capture behind it: nothing in the pack shows a new
+Claude Code session receiving the staged capsule. The handoff is silent, so
+the step is written as a verification guide (`lib/velra/handoff.ts`) and is
+labelled as guidance everywhere it appears. It contains no output, and
+`npm test` fails if a delivery line, a status listing or a claim that
+something was delivered is added to it.
+
+If you later record a real handoff, the guide can stay as it is, since it
+teaches a reader to check their own installation. To add the recording as
+evidence beside it, start a new session in the workspace, copy what the
+terminal shows as plain text, and add it:
+
+1. Add the new output to `VELRA-ALL-PROVIDED-TERMINAL-OUTPUTS.md` under a new
+   `## Transcript` heading, or the relevant existing one. It stays local. Paste
+   it as plain text from the terminal. Text copied out of rendered Markdown
+   picks up artifacts, which is where the doubled backslashes in transcripts B
+   to G came from.
 2. If a transcript's layout changed, update `MANIFEST` in
    `lib/velra/sanitize.ts`. If the new text has a kind of private value the
    rules do not cover, add a rule there. Rules are patterns, never literal
    private strings.
-3. Regenerate:
+3. To show a new execution, add its id to `PUBLISHED` in
+   `lib/velra/published.ts`. To replace an existing one with a better run of
+   the same command, swap the id. Do not list the same command twice.
+4. Regenerate:
 
    ```powershell
    npm run velra:transcripts
    ```
 
    It refuses to write if any private value from the raw file survives.
-4. Update the matching entry in `lib/velra/captured.ts`: remove the "not
-   supplied" marker, set the status, and point the inspector's `evidence` at
-   real lines. For the handoff, replace the `HANDOFF` step with a real one.
-   The `STORY` list in the same file decides which steps the walkthrough
-   shows and in what order. Every captured Velra command stays available under
-   **Full capture** whether or not it is in that list.
-5. Run the checks from section 4. The tests fail if an inspector quote is not
+5. Give the new id a title, a one-line explanation and inspector fields in
+   `lib/velra/captured.ts` (first install) or `lib/velra/captured-session.ts`
+   (working session), with each `evidence` line quoted from its real output.
+   Remove the metadata for any id you took out. A recorded handoff goes in as
+   an ordinary captured step before `HANDOFF`, and the guide's inspector can
+   then mark its other items as recorded, each with a quoted line, in
+   `handoffInspector` in `lib/velra/handoff.ts`. The `STORY` list in
+   `captured.ts` decides
+   which steps the walkthrough shows and in what order. Every published
+   command is listed under **All commands** whether or not it is in `STORY`.
+6. Run the checks from section 4. The tests fail if an inspector quote is not
    in the output, if a redaction is uncounted, or if a figure from the
    documented example appears in the captured run.
 

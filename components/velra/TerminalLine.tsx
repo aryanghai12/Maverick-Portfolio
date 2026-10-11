@@ -21,7 +21,7 @@ export function toneOf(text: string): Tone {
   if (text.trim() === '') return 'blank';
   if (/^\s*✓/.test(text)) return 'ok';
   if (/^\s*!/.test(text)) return 'warn';
-  if (/^\s*✗/.test(text) || /command not found/.test(text)) return 'err';
+  if (/^\s*✗/.test(text) || /^error:/.test(text) || /command not found/.test(text)) return 'err';
   if (/^\s*⚡/.test(text)) return 'accent';
   if (/^<\/?[A-Z_]+[\s>]/.test(text)) return 'tag';
   if (/^\[[A-Z_]+\]/.test(text)) return 'section';

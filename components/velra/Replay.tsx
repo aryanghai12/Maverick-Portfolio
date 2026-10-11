@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { CapsuleInspector } from './CapsuleInspector';
+import { HandoffGuide } from './HandoffGuide';
 import { ReplayRail } from './ReplayRail';
 import { RichText, TerminalLine, isJson } from './TerminalLine';
 import {
@@ -154,16 +155,17 @@ export function Replay() {
 
   /* --------------------------------------------------------------- scroll */
 
-  // While playing, follow the output as it arrives.
+  /* While playing, follow the output as it arrives. A guide has no output
+     arriving. It is read from the top, so it is never followed to its end. */
   useLayoutEffect(() => {
     const body = bodyRef.current;
-    if (body && player.playing) body.scrollTop = body.scrollHeight;
-  }, [player.playing, player.rows, player.typed, player.stage]);
+    if (body && player.playing && !step.guide) body.scrollTop = body.scrollHeight;
+  }, [player.playing, player.rows, player.typed, player.stage, step.guide]);
 
-  // A step opened by hand starts at its first line.
+  // A step opened by hand starts at its first line, and a guide always does.
   useLayoutEffect(() => {
     const body = bodyRef.current;
-    if (body && !player.playing) body.scrollTop = 0;
+    if (body && (!player.playing || step.guide)) body.scrollTop = 0;
     // Only when the step itself changes, not on every pause.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step.id, modeId]);
@@ -265,6 +267,51 @@ export function Replay() {
           ? 'Copy failed. Select the text in the terminal instead.'
           : '';
 
+  /* A guide has no command or output of its own to copy. What it offers to
+     copy sits beside the text, inside the guide, so the bar only names it. */
+  const termActions = step.guide ? (
+    <span className="vl-guide-chip">{step.guide.label}</span>
+  ) : (
+    <>
+      <button
+        type="button"
+        className="vl-ctl"
+        onClick={() => doCopy('command')}
+        disabled={!step.command}
+        data-done={copied === 'command' ? '1' : undefined}
+        title={step.command ? 'Copy this command' : 'This step is not a command'}
+        aria-label={copied === 'command' ? 'Command copied' : 'Copy command'}
+      >
+        {copied === 'command' ? <IconCheck /> : <IconCopy />}
+        {copied === 'command' ? (
+          'Copied'
+        ) : (
+          <span>
+            <span className="vl-copy-word">Copy </span>command
+          </span>
+        )}
+      </button>
+      <button
+        type="button"
+        className="vl-ctl"
+        onClick={() => doCopy('output')}
+        disabled={!canCopyOutput}
+        data-done={copied === 'output' ? '1' : undefined}
+        title={canCopyOutput ? 'Copy the full output of this step' : 'There is no output to copy'}
+        aria-label={copied === 'output' ? 'Output copied' : 'Copy output'}
+      >
+        {copied === 'output' ? <IconCheck /> : <IconCopy />}
+        {copied === 'output' ? (
+          'Copied'
+        ) : (
+          <span>
+            <span className="vl-copy-word">Copy </span>output
+          </span>
+        )}
+      </button>
+    </>
+  );
+
   return (
     <div ref={rootRef} className="vl-replay">
       <div className="vl-replay-top">
@@ -323,59 +370,25 @@ export function Replay() {
                 <span className="vl-sr">Workspace: </span>
                 <RichText text={step.workspace} />
               </span>
-              <span className="vl-term-actions">
-                <button
-                  type="button"
-                  className="vl-ctl"
-                  onClick={() => doCopy('command')}
-                  disabled={!step.command}
-                  data-done={copied === 'command' ? '1' : undefined}
-                  title={step.command ? 'Copy this command' : 'This step is not a command'}
-                  aria-label={copied === 'command' ? 'Command copied' : 'Copy command'}
-                >
-                  {copied === 'command' ? <IconCheck /> : <IconCopy />}
-                  {copied === 'command' ? (
-                    'Copied'
-                  ) : (
-                    <span>
-                      <span className="vl-copy-word">Copy </span>command
-                    </span>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="vl-ctl"
-                  onClick={() => doCopy('output')}
-                  disabled={!canCopyOutput}
-                  data-done={copied === 'output' ? '1' : undefined}
-                  title={canCopyOutput ? 'Copy the full output of this step' : 'There is no output to copy'}
-                  aria-label={copied === 'output' ? 'Output copied' : 'Copy output'}
-                >
-                  {copied === 'output' ? <IconCheck /> : <IconCopy />}
-                  {copied === 'output' ? (
-                    'Copied'
-                  ) : (
-                    <span>
-                      <span className="vl-copy-word">Copy </span>output
-                    </span>
-                  )}
-                </button>
-              </span>
+              <span className="vl-term-actions">{termActions}</span>
             </div>
 
             <div
               ref={bodyRef}
               className="vl-term-body vl-scroll"
+              data-guide={step.guide ? '1' : undefined}
               tabIndex={0}
               role="region"
-              aria-label={`Terminal, step ${index + 1} of ${steps.length}: ${step.title}`}
+              aria-label={`${step.guide ? 'Verification guide' : 'Terminal'}, step ${index + 1} of ${steps.length}: ${step.title}`}
               onWheel={pause}
               onTouchStart={pause}
               onPointerDown={pause}
             >
               {/* Keyed by step, so the content swap is one short fade and not a jump. */}
               <div key={`${modeId}-${step.id}`} className="vl-term-inner">
-                {step.command !== null ? (
+                {step.guide ? (
+                  <HandoffGuide guide={step.guide} />
+                ) : step.command !== null ? (
                   <div className="vl-cmdline">
                     <span
                       className="vl-prompt"
@@ -421,7 +434,13 @@ export function Replay() {
                 {PROVENANCE_LABEL[step.provenance]}
               </span>
               <span>
-                {lineCount === 0 ? 'no output' : lineCount === 1 ? '1 line' : `${lineCount} lines`}
+                {step.guide
+                  ? 'no capture'
+                  : lineCount === 0
+                    ? 'no output'
+                    : lineCount === 1
+                      ? '1 line'
+                      : `${lineCount} lines`}
               </span>
             </div>
           </div>
