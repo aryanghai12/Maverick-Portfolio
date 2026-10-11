@@ -8,7 +8,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "og": "tsx scripts/make-og.ts"
+    "og": "tsx scripts/make-og.ts",
+    "og:velra": "tsx scripts/make-velra-og.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test \"tests/**/*.test.ts\"",
+    "velra:transcripts": "tsx scripts/velra-transcripts.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",
