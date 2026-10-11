@@ -1,6 +1,6 @@
 <div align="center">
 
-# aryanghai.dev
+# aryanghai.in
 
 **A portfolio built on one rule: no number on this site is typed by hand.**
 
